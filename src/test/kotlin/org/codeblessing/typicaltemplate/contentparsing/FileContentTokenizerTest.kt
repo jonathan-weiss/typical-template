@@ -79,7 +79,6 @@ class FileContentTokenizerTest {
     // --- New tests for line comments ---
 
     @Test
-    @Disabled
     fun `tokenize handles single line comment with and without prefix`() {
         val input = "abc // @@tt-this is a command\ndef // just a comment\nghi"
         val expected = listOf(
@@ -91,19 +90,17 @@ class FileContentTokenizerTest {
     }
 
     @Test
-    @Disabled
     fun `tokenize handles line comment at end of input with and without prefix`() {
         val input = "abc // @@tt-comment at end\ndef // not a template"
         val expected = listOf(
             PlainContentToken("abc "),
-            TemplateCommentToken(" @@tt-comment at end"),
+            TemplateCommentToken("@@tt-comment at end"),
             PlainContentToken("\ndef // not a template")
         )
         assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
     }
 
     @Test
-    @Disabled
     fun `tokenize handles multiple line comments with and without prefix`() {
         val input = "a // @@tt-one\nb //two\nc // @@tt-three"
         val expected = listOf(
@@ -118,24 +115,19 @@ class FileContentTokenizerTest {
     }
 
     @Test
-    @Disabled
     fun `tokenize handles block and line comments mixed with and without prefix`() {
         val input = "a /* @@tt-block*/ b // @@tt-line\nc /*no-prefix*/ //notemplate"
         val expected = listOf(
             PlainContentToken("a "),
-            TemplateCommentToken(" @@tt-block"),
+            TemplateCommentToken("@@tt-block"),
             PlainContentToken(" b "),
             TemplateCommentToken(" @@tt-line"),
-            PlainContentToken("\nc "),
-            PlainContentToken("no-prefix"),
-            PlainContentToken(" "),
-            PlainContentToken("notemplate")
+            PlainContentToken("\nc /*no-prefix*/ //notemplate"),
         )
         assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
     }
 
     @Test
-    @Disabled
     fun `tokenize handles block and line comments on same line with and without prefix`() {
         val input = "a /* @@tt-block*/ //line\nb /*no-prefix*/ // @@tt-line"
         val expected = listOf(
@@ -152,7 +144,6 @@ class FileContentTokenizerTest {
     }
 
     @Test
-    @Disabled
     fun `tokenize handles block comment with one space before COMMAND_PREFIX`() {
         val input = "abc /* @@tt-block*/ def"
         val expected = listOf(
@@ -164,7 +155,6 @@ class FileContentTokenizerTest {
     }
 
     @Test
-    @Disabled
     fun `tokenize handles line comment with one space before COMMAND_PREFIX`() {
         val input = "abc // @@tt-line\ndef"
         val expected = listOf(
@@ -176,7 +166,6 @@ class FileContentTokenizerTest {
     }
 
     @Test
-    @Disabled
     fun `tokenize handles block and line comments with one leading and trailing space before COMMAND_PREFIX`() {
         val input = "/* @@tt-block */ // @@tt-line \n"
         val expected = listOf(

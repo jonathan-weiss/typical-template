@@ -69,20 +69,20 @@ class TemplateContentCreatorTest {
         .addEndReplaceValueByFieldCommand()
         .build()
 
-    private val expectedContent = """
+    private val expectedContent = $$"""
         this is a test A 1.
         this is a test A 2.
         this is a test B 1.
         this is a test B 2.
-        fun get${'$'}{model.entityName}(): ${'$'}{model.entityName} {
-            return ${'$'}{model.entityNameDecapitalized};
-        }${'$'}{if(model.isEntityNullable) ""${'"'}
-        fun get${'$'}{model.entityName}Nullable(): ${'$'}{model.entityName}? {
-            return ${'$'}{model.entityNameDecapitalized}
-        }}""${'"'} else ""}
+        fun get${model.entityName}(): ${model.entityName} {
+            return ${model.entityNameDecapitalized};
+        }${if(model.isEntityNullable) ""$${'"'}
+        fun get${model.entityName}Nullable(): ${model.entityName}? {
+            return ${model.entityNameDecapitalized}
+        }}""$${'"'} else ""}
         This author and Author should not be replaced.
-        fun get${'$'}{model.entityNameCapitalized}(): ${'$'}{model.entityNameCapitalized} {
-            return ${'$'}{model.entityNameDecapitalized}
+        fun get${model.entityNameCapitalized}(): ${model.entityNameCapitalized} {
+            return ${model.entityNameDecapitalized}
         }
     """.trimIndent()
 

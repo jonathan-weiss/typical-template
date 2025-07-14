@@ -2,8 +2,9 @@ package org.codeblessing.typicaltemplate.contentparsing
 
 object FileContentTokenizer {
 
-    const val START_COMMAND_PREFIX = "@@tt-"
-    const val END_COMMAND_PREFIX = "@@\$tt-"
+    const val IGNORE_LINE_BEFORE_MARKER = "@#ignore-line-before"
+    const val IGNORE_LINE_AFTER_MARKER = "@#ignore-line-after"
+    const val TT_COMMAND_MARKER = "@@tt-"
 
     sealed interface Token {
         val value: String
@@ -17,29 +18,78 @@ object FileContentTokenizer {
         override val value: String,
     ) : Token
 
-    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
-        val startCommandPrefixEscaped = Regex.escape(START_COMMAND_PREFIX)
-        val endCommandPrefixEscaped = Regex.escape(END_COMMAND_PREFIX)
-        val commentPatterns = supportedCommentStyles.map { style ->
-                val startEscaped = Regex.escape(style.startOfComment)
-                val endEscaped = Regex.escape(style.endOfComment)
-                "$startEscaped\\s*(($startCommandPrefixEscaped|$endCommandPrefixEscaped).*?)\\s*$endEscaped"
+    private fun <E> cartesianProduct(list1: List<E>, list2: List<E>): List<Pair<E, E>> {
+        return list1.flatMap { item1 ->
+            list2.map { item2 ->
+                item1 to item2
+            }
         }
+    }
+
+    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
+        val ttCommandMarkerEscaped = Regex.escape(TT_COMMAND_MARKER)
+        val ignoreLineBeforeMarkerEscaped = Regex.escape(IGNORE_LINE_BEFORE_MARKER)
+        val ignoreLineAfterMarkerEscaped = Regex.escape(IGNORE_LINE_AFTER_MARKER)
+        val commentPatterns = supportedCommentStyles.flatMap { style ->
+            val startEscaped = Regex.escape(style.startOfComment)
+
+            val startOfCommentRegexes = listOf(
+                "(?:^.*)$startEscaped\\s*$ignoreLineBeforeMarkerEscaped\\s*",
+                "(?:)$startEscaped\\s*",
+            )
+            val endEscaped = Regex.escape(style.endOfComment)
+            val endCommentRegex = if(style.includeEndCommentInContent) "($endEscaped)" else "()$endEscaped"
+            val endOfCommentRegexes = listOf(
+                "\\s*$ignoreLineAfterMarkerEscaped\\s*$endCommentRegex(?:.*$)",
+                "\\s*$endCommentRegex(?:)",
+            )
+
+            cartesianProduct(startOfCommentRegexes, endOfCommentRegexes).map { (beforeRegex, afterRegex) ->
+                "$beforeRegex((?:$ttCommandMarkerEscaped).*?)$afterRegex"
+            }
+        }
+
         val regexPattern = commentPatterns.joinToString("|")
         val regex = Regex(regexPattern, RegexOption.DOT_MATCHES_ALL)
         val result = mutableListOf<Token>()
         var lastIndex = 0
+        var leftoverContent = ""
         for (match in regex.findAll(content)) {
-            if (match.range.first > lastIndex) {
-                result.add(PlainContentToken(content.substring(lastIndex, match.range.first)))
-            }
-            val stripped = match.groupValues[1]
-            result.add(TemplateCommentToken(stripped))
+            val contentBeforeCommand = if (match.range.first > lastIndex) {
+                content.substring(lastIndex, match.range.first)
+            } else ""
+
+            result.addPlainContentToken(leftoverContent + contentBeforeCommand)
+
+            val strippedCommand = match.groupValueSegment( offset = 0, numberOfGroupsPerExpression = 2)
+            result.add(TemplateCommentToken(strippedCommand))
+
+            leftoverContent = match.groupValueSegment(offset = 1, numberOfGroupsPerExpression = 2)
             lastIndex = match.range.last + 1
         }
-        if (lastIndex < content.length) {
-            result.add(PlainContentToken(content.substring(lastIndex)))
+
+
+        if (leftoverContent.isNotEmpty() || lastIndex < content.length) {
+            result.addPlainContentToken(leftoverContent + content.substring(lastIndex))
         }
         return result
+    }
+
+    private fun MatchResult.groupValueSegment(
+        offset: Int,
+        numberOfGroupsPerExpression: Int,
+    ): String {
+        var content = ""
+        for (index in 1 + offset until this.groupValues.size step numberOfGroupsPerExpression) {
+            content += this.groupValues[index]
+
+        }
+        return content
+    }
+
+    private fun MutableList<Token>.addPlainContentToken(content: String) {
+        if(content.isNotEmpty()) {
+            add(PlainContentToken(content))
+        }
     }
 }

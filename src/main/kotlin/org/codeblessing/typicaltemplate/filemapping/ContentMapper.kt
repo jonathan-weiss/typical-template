@@ -19,6 +19,21 @@ object ContentMapper {
             startOfComment = "/*",
             endOfComment = "*/"
         ),
+        CommentStyle(
+            startOfComment = "//",
+            endOfComment = "\r\n",
+            includeEndCommentInContent = true
+        ),
+        CommentStyle(
+            startOfComment = "//",
+            endOfComment = "\n",
+            includeEndCommentInContent = true
+        ),
+        CommentStyle(
+            startOfComment = "//",
+            endOfComment = "\r",
+            includeEndCommentInContent = true
+        ),
     )
 
     fun mapContent(file: Path): List<CommentStyle> {
