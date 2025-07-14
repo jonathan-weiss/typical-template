@@ -1,7 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing
 
 data class CommentStyle(
-    val startOfCommentRegex: String,
-    val endOfCommentRegex: String,
-    val includeEndCommentInContent : Boolean = false,
+    val startOfComment: String,
+    val endOfComment: String,
+    val isEndOfCommentEqualsEndOfLine : Boolean = false,
 )

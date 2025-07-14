@@ -272,4 +272,49 @@ class FileContentTokenizerTest {
             assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
         }
     }
+
+    @Nested
+    inner class KotlinLineAndBlockStripBeginAndEndOfLine {
+
+        @Test
+        fun `tokenize removes begin of line if marker ignore-line-before is set`() {
+            val input = "start here\na stripped begin of line /* @#ignore-line-before @@tt-block */ but not at the end of line\n and a stripped begin of line // @#ignore-line-before @@tt-line\n but a new line at the end of line."
+            val expected = listOf(
+                PlainContentToken("start here"),
+                TemplateCommentToken("@@tt-block"),
+                PlainContentToken(" but not at the end of line"),
+                TemplateCommentToken("@@tt-line"),
+                PlainContentToken("\n but a new line at the end of line."),
+            )
+            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+        }
+
+        @Test
+        fun `tokenize removes end of line if marker ignore-line-after is set`() {
+            val input = "start here\nand keep begin of line /* @@tt-block @#ignore-line-after */ but do not keep the end of line\n and again keep begin of line // @@tt-line @#ignore-line-after \n but remove the line-break."
+            val expected = listOf(
+                PlainContentToken("start here\nand keep begin of line "),
+                TemplateCommentToken("@@tt-block"),
+                PlainContentToken(" and again keep begin of line "),
+                TemplateCommentToken("@@tt-line"),
+                PlainContentToken(" but remove the line-break."),
+            )
+            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+        }
+
+        @Test
+        fun `tokenize removes begin and end of line if marker ignore-line-before and ignore-line-after is set`() {
+            val input = "start here\na stripped begin of line /* @#ignore-line-before @@tt-block  @#ignore-line-after  */ and also at the end of line\nbut no line in between\n and a stripped begin of line // @#ignore-line-before @@tt-line @#ignore-line-after  \nbut not a comment free line."
+            val expected = listOf(
+                PlainContentToken("start here"),
+                TemplateCommentToken("@@tt-block"),
+                PlainContentToken("but no line in between"),
+                TemplateCommentToken("@@tt-line"),
+                PlainContentToken("but not a comment free line."),
+            )
+            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+        }
+
+    }
+
 }

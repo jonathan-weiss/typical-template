@@ -9,20 +9,20 @@ object ContentMapper {
     val HTML_FILENAME_REGEX: Regex = Regex(".*\\.(html|xhtml)")
     val HTML_COMMENT_STYLES = listOf(
         CommentStyle(
-            startOfCommentRegex = "<!--",
-            endOfCommentRegex = "-->"
+            startOfComment = "<!--",
+            endOfComment = "-->"
         ),
     )
     val KOTLIN_FILENAME_REGEX: Regex = Regex(".*\\.kt")
     val KOTLIN_COMMENT_STYLES = listOf(
         CommentStyle(
-            startOfCommentRegex = "/\\*",
-            endOfCommentRegex = "\\*/"
+            startOfComment = "/*",
+            endOfComment = "*/"
         ),
         CommentStyle(
-            startOfCommentRegex = "//",
-            endOfCommentRegex = "\\z|\\r\\n|\\r|\\n",
-            includeEndCommentInContent = true
+            startOfComment = "//",
+            endOfComment = "",
+            isEndOfCommentEqualsEndOfLine = true
         ),
     )
 

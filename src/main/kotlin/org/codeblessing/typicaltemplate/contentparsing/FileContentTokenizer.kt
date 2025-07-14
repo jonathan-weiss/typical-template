@@ -5,6 +5,9 @@ object FileContentTokenizer {
     const val IGNORE_LINE_BEFORE_MARKER = "@#ignore-line-before"
     const val IGNORE_LINE_AFTER_MARKER = "@#ignore-line-after"
     const val TT_COMMAND_MARKER = "@@tt-"
+    const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
+    const val ALL_LINE_BREAKS_OR_BEGIN_OF_FILE = "$ALL_LINE_BREAKS|^"
+    const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
     sealed interface Token {
         val value: String
@@ -31,25 +34,30 @@ object FileContentTokenizer {
         val ignoreLineBeforeMarkerEscaped = Regex.escape(IGNORE_LINE_BEFORE_MARKER)
         val ignoreLineAfterMarkerEscaped = Regex.escape(IGNORE_LINE_AFTER_MARKER)
         val commentPatterns = supportedCommentStyles.flatMap { style ->
-            val startEscaped = "(?:${style.startOfCommentRegex})"
+            val startOfCommentEscaped = Regex.escape(style.startOfComment)
+            val endOfCommentEscaped = Regex.escape(style.endOfComment)
 
             val startOfCommentRegexes = listOf(
-                "(?:^.*)$startEscaped\\s*$ignoreLineBeforeMarkerEscaped\\s*",
-                "(?:)$startEscaped\\s*",
+                "(?:$ALL_LINE_BREAKS_OR_BEGIN_OF_FILE)[^$ALL_LINE_BREAKS]*?$startOfCommentEscaped\\s*$ignoreLineBeforeMarkerEscaped\\s*",
+                "$startOfCommentEscaped\\s*",
             )
-            val endEscaped = "(?:${style.endOfCommentRegex})"
-            val endCommentRegex = if(style.includeEndCommentInContent) "($endEscaped)" else "()$endEscaped"
-            val endOfCommentRegexes = listOf(
-                "\\s*$ignoreLineAfterMarkerEscaped\\s*$endCommentRegex(?:.*$)",
-                "\\s*$endCommentRegex(?:)",
-            )
+            val endOfCommentRegexes = if(style.isEndOfCommentEqualsEndOfLine)
+                    listOf(
+                        "\\s*$ignoreLineAfterMarkerEscaped\\s*(?:$ALL_LINE_BREAKS_OR_END_OF_FILE)()",
+                        "\\s*($ALL_LINE_BREAKS_OR_END_OF_FILE)",
+                    )
+                else
+                    listOf(
+                        "\\s*$ignoreLineAfterMarkerEscaped\\s*${endOfCommentEscaped}()(?:.*?(?:$ALL_LINE_BREAKS_OR_END_OF_FILE))",
+                        "\\s*${endOfCommentEscaped}()",
+                    )
 
             cartesianProduct(startOfCommentRegexes, endOfCommentRegexes).map { (beforeRegex, afterRegex) ->
                 "$beforeRegex((?:$ttCommandMarkerEscaped).*?)$afterRegex"
             }
         }
 
-        val regexPattern = commentPatterns.joinToString("|")
+        val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
         val regex = Regex(regexPattern, RegexOption.DOT_MATCHES_ALL)
         val result = mutableListOf<Token>()
         var lastIndex = 0
