@@ -9,29 +9,19 @@ object ContentMapper {
     val HTML_FILENAME_REGEX: Regex = Regex(".*\\.(html|xhtml)")
     val HTML_COMMENT_STYLES = listOf(
         CommentStyle(
-            startOfComment = "<!--",
-            endOfComment = "-->"
+            startOfCommentRegex = "<!--",
+            endOfCommentRegex = "-->"
         ),
     )
     val KOTLIN_FILENAME_REGEX: Regex = Regex(".*\\.kt")
     val KOTLIN_COMMENT_STYLES = listOf(
         CommentStyle(
-            startOfComment = "/*",
-            endOfComment = "*/"
+            startOfCommentRegex = "/\\*",
+            endOfCommentRegex = "\\*/"
         ),
         CommentStyle(
-            startOfComment = "//",
-            endOfComment = "\r\n",
-            includeEndCommentInContent = true
-        ),
-        CommentStyle(
-            startOfComment = "//",
-            endOfComment = "\n",
-            includeEndCommentInContent = true
-        ),
-        CommentStyle(
-            startOfComment = "//",
-            endOfComment = "\r",
+            startOfCommentRegex = "//",
+            endOfCommentRegex = "\\z|\\r\\n|\\r|\\n",
             includeEndCommentInContent = true
         ),
     )

@@ -31,13 +31,13 @@ object FileContentTokenizer {
         val ignoreLineBeforeMarkerEscaped = Regex.escape(IGNORE_LINE_BEFORE_MARKER)
         val ignoreLineAfterMarkerEscaped = Regex.escape(IGNORE_LINE_AFTER_MARKER)
         val commentPatterns = supportedCommentStyles.flatMap { style ->
-            val startEscaped = Regex.escape(style.startOfComment)
+            val startEscaped = "(?:${style.startOfCommentRegex})"
 
             val startOfCommentRegexes = listOf(
                 "(?:^.*)$startEscaped\\s*$ignoreLineBeforeMarkerEscaped\\s*",
                 "(?:)$startEscaped\\s*",
             )
-            val endEscaped = Regex.escape(style.endOfComment)
+            val endEscaped = "(?:${style.endOfCommentRegex})"
             val endCommentRegex = if(style.includeEndCommentInContent) "($endEscaped)" else "()$endEscaped"
             val endOfCommentRegexes = listOf(
                 "\\s*$ignoreLineAfterMarkerEscaped\\s*$endCommentRegex(?:.*$)",
