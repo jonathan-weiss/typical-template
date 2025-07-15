@@ -6,19 +6,28 @@ package examples
 import examples.DtoModel
 
 /**
- * Generate the content for the template SimpleDto filled up
+ * Generate the content for the template EntityDto filled up
  * with the content of the model [examples.DtoModel].
  */
-object class SimpleDto {
+object class EntityDto {
 
     fun renderTemplate(model: DtoModel): String {
         return """
           |
           |
-          |data class Author(
-          |  val firstname: String,
+          |data class ${model.entityCapitalized}Dto(
+          |  val ${model.entityField}: String,
           |  val lastname: String,
-          |)
+          |) {
+          |${ if(model.model.generateToString)  { """
+              |  fun toString(): String {
+              |    return "${model.entityCapitalized}[${super.toString()}]"
+              |  }
+              |
+          """ }  else  { """
+          """ } }
+          |
+          |}
         """.trimMargin(marginPrefix = "|")
     }
 }

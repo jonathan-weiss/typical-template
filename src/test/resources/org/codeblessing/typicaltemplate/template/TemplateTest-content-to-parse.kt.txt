@@ -1,11 +1,18 @@
 /* @@tt-template [
-    templateClassName="SimpleDto"
+    templateClassName="EntityDto"
     templateClassPackageName="examples"
     templateModelClassName="DtoModel"
     templateModelClassPackageName="examples"
 ] */
-
-data class Author(
-  val firstname: String,
+/* @@tt-replace-value-by-field [ searchValue="Author" replaceByFieldName="entityCapitalized" ] */
+data class AuthorDto(// @@tt-replace-value-by-field [ searchValue="firstname" replaceByFieldName="entityField" ]
+  val firstname: String,// @@tt-end-replace-value-by-field
   val lastname: String,
-)
+) {
+/* @@tt-if-field [ conditionField="model.generateToString" ] */
+  fun toString(): String {
+    return "Author[${super.toString()}]"
+  }
+/* @@tt-end-if-field */
+/* @@tt-end-replace-value-by-field */
+}

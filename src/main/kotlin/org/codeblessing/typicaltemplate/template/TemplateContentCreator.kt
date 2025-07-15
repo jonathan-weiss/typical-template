@@ -15,7 +15,7 @@ object TemplateContentCreator {
 
     fun createMultilineStringTemplateContent(template: Template): String {
         val ctx = TemplateCreationContext(template)
-        val sb = StringBuilder()
+        val sb = StringBuilder("|")
         template.templateFragments.forEach { templateFragment ->
             when (templateFragment) {
                 is TextFragment -> sb.append(rawContent(
@@ -107,12 +107,12 @@ object TemplateContentCreator {
 
     private fun startExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.increaseLevel()
-        return $$" { $$MULTILINE_STRING_DELIMITER$$LINE_BREAK"
+        return $$" { $$MULTILINE_STRING_DELIMITER"
     }
 
     private fun endExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.decreaseLevel()
-        return $$"$$MULTILINE_STRING_DELIMITER$$LINE_BREAK }"
+        return $$"$$LINE_BREAK$$MULTILINE_STRING_DELIMITER }"
     }
 
     private fun createFieldPlaceholder(modelName: String, fieldName: String): String {
@@ -127,8 +127,10 @@ object TemplateContentCreator {
 
     private fun String.addMargin(ctx: TemplateCreationContext): String {
         return this.lines()
-            .mapIndexed { index, line -> lineWithIdent(line, ctx, marginSymbol = "|")}
-            .joinToString("\n")
+            .joinToString("\n${identAndMarker(ctx, marginSymbol = "|")}")
+    }
+    private fun identAndMarker(ctx: TemplateCreationContext, marginSymbol: String = ""): String {
+        return "${" ".repeat(4 * ctx.identLevel.identLevel)}$marginSymbol"
     }
 
     private fun lineWithIdent(line: String, ctx: TemplateCreationContext, marginSymbol: String = ""): String {
