@@ -13,7 +13,6 @@ class TemplateContentCreatorTest {
             """
                 this is a test A 1.
                 this is a test A 2.
-                
             """.trimIndent()
         )
         .addText(
@@ -76,7 +75,10 @@ class TemplateContentCreatorTest {
 
     @Test
     fun `create template content with various commands`() {
-        val kotlinClassContent = TemplateContentCreator.createTemplateContent(createTemplateWithFragments())
+        val kotlinClassContent = TemplateContentCreator.createMultilineStringTemplateContent(createTemplateWithFragments())
+        println("---------------------")
+        println(kotlinClassContent)
+        println("---------------------")
         assertEquals(expectedContent, kotlinClassContent)
     }
 

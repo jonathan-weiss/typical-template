@@ -12,6 +12,8 @@ import org.codeblessing.typicaltemplate.template.model.TemplateModel
 object class TemplateTest {
 
     fun renderTemplate(model: TemplateModel): String {
-        return hello world
+        return """
+          | hello world
+        """.trimMargin(marginPrefix = "|")
     }
 }

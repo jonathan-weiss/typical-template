@@ -13,10 +13,9 @@ object TemplateContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createTemplateContent(template: Template): String {
+    fun createMultilineStringTemplateContent(template: Template): String {
         val ctx = TemplateCreationContext(template)
         val sb = StringBuilder()
-        sb.append(MULTILINE_STRING_DELIMITER + LINE_BREAK)
         template.templateFragments.forEach { templateFragment ->
             when (templateFragment) {
                 is TextFragment -> sb.append(rawContent(
@@ -30,12 +29,11 @@ object TemplateContentCreator {
                 ))
             }
         }
-        sb.append(LINE_BREAK + MULTILINE_STRING_DELIMITER)
         return sb.toString()
     }
 
     private fun rawContent(ctx: TemplateCreationContext, textFragment: TextFragment): String {
-        return ctx.tokenReplacementStack.replaceInString(textFragment.text)
+        return ctx.tokenReplacementStack.replaceInString(textFragment.text).addMargin(ctx)
     }
 
     private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment, modelName: String): String {
@@ -108,10 +106,12 @@ object TemplateContentCreator {
     }
 
     private fun startExpressionBlockWithText(ctx: TemplateCreationContext): String {
+        ctx.identLevel.increaseLevel()
         return $$" { $$MULTILINE_STRING_DELIMITER$$LINE_BREAK"
     }
 
     private fun endExpressionBlockWithText(ctx: TemplateCreationContext): String {
+        ctx.identLevel.decreaseLevel()
         return $$"$$MULTILINE_STRING_DELIMITER$$LINE_BREAK }"
     }
 
@@ -119,15 +119,20 @@ object TemplateContentCreator {
         return "${'$'}{${modelName}.${fieldName}}"
     }
 
-    private fun addMargin(text: String): String {
-        return text.lines()
-            .mapIndexed { index, line -> lineWithMargin(line, index > 0)} // not the first line
+    private fun String.addIdent(ctx: TemplateCreationContext): String {
+        return this.lines()
+            .mapIndexed { index, line -> lineWithIdent(line, ctx)}
             .joinToString("\n")
     }
 
-    private fun lineWithMargin(line: String, hasIdent: Boolean): String {
-        val hasIdentFactor = if(hasIdent) 1 else 0
-        return "${" ".repeat(4 * 6 * hasIdentFactor)}|$line"
+    private fun String.addMargin(ctx: TemplateCreationContext): String {
+        return this.lines()
+            .mapIndexed { index, line -> lineWithIdent(line, ctx, marginSymbol = "|")}
+            .joinToString("\n")
+    }
+
+    private fun lineWithIdent(line: String, ctx: TemplateCreationContext, marginSymbol: String = ""): String {
+        return "${" ".repeat(4 * ctx.identLevel.identLevel)}$marginSymbol$line"
     }
 
     private data class TemplateCreationContext(
@@ -136,7 +141,23 @@ object TemplateContentCreator {
         val tokenReplacementStack: TokenReplacementsStack = TokenReplacementsStack()
     )
 
-    private class IdentLevel
+    private class IdentLevel {
+        private var level = 0
+
+        val identLevel: Int
+            get() = level
+
+        fun increaseLevel(): IdentLevel {
+            level++
+            return this
+        }
+
+        fun decreaseLevel(): IdentLevel {
+            level--
+            return this
+        }
+
+    }
 
     private class TokenReplacementsStack {
         private val replacementsStack: MutableList<Map<String, String>> = mutableListOf()

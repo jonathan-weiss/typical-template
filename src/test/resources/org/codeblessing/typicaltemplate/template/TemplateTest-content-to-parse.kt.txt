@@ -1,0 +1,11 @@
+/* @@tt-template [
+    templateClassName="SimpleDto"
+    templateClassPackageName="examples"
+    templateModelClassName="DtoModel"
+    templateModelClassPackageName="examples"
+] */
+
+data class Author(
+  val firstname: String,
+  val lastname: String,
+)

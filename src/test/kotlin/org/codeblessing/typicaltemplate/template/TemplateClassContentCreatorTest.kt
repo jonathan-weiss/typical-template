@@ -16,7 +16,7 @@ class TemplateClassContentCreatorTest {
             modelClassPackage = "org.codeblessing.typicaltemplate.template.model",
             templateFragments = emptyList()
         )
-        val kotlinClassContent = TemplateClassContentCreator.wrapInKotlinTemplateClassContent(template, "hello world")
+        val kotlinClassContent = TemplateClassContentCreator.wrapInKotlinTemplateClassContent(template, "| hello world")
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
             classpathResourcePath = "org/codeblessing/typicaltemplate/template/TemplateClassContentCreatorTest-expected-content.txt"

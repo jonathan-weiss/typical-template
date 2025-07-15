@@ -8,7 +8,7 @@ import kotlin.io.path.writeText
 object TemplateWriter {
 
     fun writeTemplate(template: Template, templateConfiguration: TemplateConfiguration) {
-        val templateSourceContent = TemplateContentCreator.createTemplateContent(template)
+        val templateSourceContent = TemplateContentCreator.createMultilineStringTemplateContent(template)
         val kotlinTemplateClassContent = TemplateClassContentCreator.wrapInKotlinTemplateClassContent(template, templateSourceContent)
         val kotlinFilePath = template.kotlinTemplateClassFilePath(templateConfiguration.templateBaseSrcPath)
         println("Writing file ${kotlinFilePath.absolutePathString()}")
