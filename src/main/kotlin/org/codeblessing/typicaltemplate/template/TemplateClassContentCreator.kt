@@ -20,30 +20,15 @@ object TemplateClassContentCreator {
             import $modelFqn
             
             /**
-             * Generate the content for the template $templateClassName filled up 
+             * Generate the content for the template $templateClassName filled up
              * with the content of the model [$modelFqn].
              */
             object class $templateClassName {
-                
+            
                 fun renderTemplate(model: ${modelClassName}): String {
-                    return ""${"\""}
-                        ${addMargin(sourceContent)}
-                    ""${"\""}.trimMargin()
+                    return $sourceContent
                 }
             }
         """.trimIndent()
     }
-
-    private fun addMargin(text: String): String {
-        return text.lines()
-            .mapIndexed { index, line -> lineWithMargin(line, index > 0)} // not the first line
-            .joinToString("\n")
-    }
-
-    private fun lineWithMargin(line: String, hasIdent: Boolean): String {
-        val hasIdentFactor = if(hasIdent) 1 else 0
-        return "${" ".repeat(4 * 6 * hasIdentFactor)}|$line"
-    }
-
-
 }

@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.template
 
+import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.CommandChainBuilder
 import org.codeblessing.typicaltemplate.contentparsing.Template
 import org.junit.jupiter.api.Assertions.*
@@ -69,22 +70,9 @@ class TemplateContentCreatorTest {
         .addEndReplaceValueByFieldCommand()
         .build()
 
-    private val expectedContent = $$"""
-        this is a test A 1.
-        this is a test A 2.
-        this is a test B 1.
-        this is a test B 2.
-        fun get${model.entityName}(): ${model.entityName} {
-            return ${model.entityNameDecapitalized};
-        }${if(model.isEntityNullable) ""$${'"'}
-        fun get${model.entityName}Nullable(): ${model.entityName}? {
-            return ${model.entityNameDecapitalized}
-        }}""$${'"'} else ""}
-        This author and Author should not be replaced.
-        fun get${model.entityNameCapitalized}(): ${model.entityNameCapitalized} {
-            return ${model.entityNameDecapitalized}
-        }
-    """.trimIndent()
+    private val expectedContent = ClasspathResourceLoader.loadClasspathResource(
+        classpathResourcePath = "org/codeblessing/typicaltemplate/template/TemplateContentCreatorTest-expected-content.txt",
+    )
 
     @Test
     fun `create template content with various commands`() {
