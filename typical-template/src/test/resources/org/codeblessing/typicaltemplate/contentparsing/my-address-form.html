@@ -1,8 +1,11 @@
-<!-- @@tt-template [
-    templateClassName="AddressForm"
-    templateClassPackageName="examples"
-    templateModelClassName="MyAddressFormModel"
-    templateModelClassPackageName="examples"
+<!-- @@tt-template-renderer [
+    templateRendererClassName="AddressForm"
+    templateRendererPackageName="examples"
+]  -->
+<!-- @@tt-template-model [
+    modelClassName="MyAddressFormModel"
+    modelPackageName="examples"
+    modelName="model"
 ]  -->
 <form [formGroup]="addressForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">

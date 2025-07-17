@@ -9,7 +9,7 @@ object MarkdownCreator {
     private const val COMMAND_PREFIX = "@@tt-"
 
     private val commandKeyDocumentation: Map<CommandKey, String> = mapOf(
-        CommandKey.TEMPLATE to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
+        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
         CommandKey.REPLACE_VALUE_BY_FIELD to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
         CommandKey.END_REPLACE_VALUE_BY_FIELD to "",
         CommandKey.IF_FIELD to "Render the enclosed content only if the condition is true",
@@ -17,10 +17,10 @@ object MarkdownCreator {
     )
 
     private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = mapOf(
-        CommandAttributeKey.TEMPLATE_CLASS_NAME to "The name of the template class that will generate this template.",
-        CommandAttributeKey.TEMPLATE_CLASS_PACKAGE_NAME to "The name of the package where the class defined with '${CommandAttributeKey.TEMPLATE_CLASS_NAME.keyAsString}' resides in.",
+        CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to "The name of the template class that will generate this template.",
+        CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to "The name of the package where the class defined with '${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}' resides in.",
         CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
-        CommandAttributeKey.TEMPLATE_MODEL_CLASS_PACKAGE_NAME to "The name of the package where the model class defined with '${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}' resides in.",
+        CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with '${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}' resides in.",
         CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
         CommandAttributeKey.REPLACE_BY_FIELD_NAME to "The field name on the model class with which the token defined with the attribute ${CommandAttributeKey.SEARCH_VALUE.keyAsString} is replaced.",
         CommandAttributeKey.CONDITION_FIELD_NAME to "The field returning a boolean value that is used for the condition.",

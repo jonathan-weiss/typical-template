@@ -21,22 +21,18 @@ class FragmentFactoryTest {
     fun `valid command fragment is created`() {
         val templateComment = createTemplateComment(
             comment = """ 
-                        @@tt-template [
-                            templateClassName="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @@tt-template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
 
         val commandFragment = FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
         val keywordCommand = commandFragment.keywordCommand
-        assertEquals(CommandKey.TEMPLATE, keywordCommand.commandKey)
-        assertEquals("MyTemplate", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_CLASS_NAME))
-        assertEquals("MyTemplateModel", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME))
-        assertEquals("org.codeblessing.typicaltemplate.examples", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_CLASS_PACKAGE_NAME))
-        assertEquals("org.codeblessing.typicaltemplate.examples", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_PACKAGE_NAME))
+        assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
+        assertEquals("MyTemplate", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME))
+        assertEquals("org.codeblessing.typicaltemplate.examples", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME))
     }
 
     @Test

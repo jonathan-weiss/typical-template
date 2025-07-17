@@ -1,9 +1,9 @@
 package org.codeblessing.typicaltemplate
 
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_CLASS_NAME
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_CLASS_PACKAGE_NAME
+import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME
+import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME
 import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_MODEL_CLASS_PACKAGE_NAME
+import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME
 import org.codeblessing.typicaltemplate.contentparsing.AttributeGroup
 import org.codeblessing.typicaltemplate.contentparsing.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
@@ -43,11 +43,11 @@ class CommandChainBuilder private constructor() {
         templatePackageName: String = "org.example.template",
         modelPackageName: String = "org.example.model",
     ): CommandChainBuilder {
-        return this.createCommand(CommandKey.TEMPLATE)
-            .withAttribute(TEMPLATE_CLASS_NAME, templateClassName)
-            .withAttribute(TEMPLATE_CLASS_PACKAGE_NAME, templatePackageName)
+        return this.createCommand(CommandKey.TEMPLATE_RENDERER)
+            .withAttribute(TEMPLATE_RENDERER_CLASS_NAME, templateClassName)
+            .withAttribute(TEMPLATE_RENDERER_PACKAGE_NAME, templatePackageName)
             .withAttribute(TEMPLATE_MODEL_CLASS_NAME, modelClassName)
-            .withAttribute(TEMPLATE_MODEL_CLASS_PACKAGE_NAME, modelPackageName)
+            .withAttribute(TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
             .addCommandToChain()
     }
 

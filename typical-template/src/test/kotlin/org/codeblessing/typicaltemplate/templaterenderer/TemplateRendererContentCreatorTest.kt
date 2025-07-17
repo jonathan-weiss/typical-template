@@ -2,7 +2,9 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.CommandChainBuilder
-import org.codeblessing.typicaltemplate.contentparsing.Template
+import org.codeblessing.typicaltemplate.contentparsing.ClassDescription
+import org.codeblessing.typicaltemplate.contentparsing.ModelDescription
+import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -82,12 +84,21 @@ class TemplateRendererContentCreatorTest {
         assertEquals(expectedContent, kotlinClassContent)
     }
 
-    private fun createTemplateWithFragments(): Template =
-        Template(
-            templateClassName = "TemplateTest",
-            templateClassPackage = "org.codeblessing.typicaltemplate.template",
-            modelClassName = "TemplateModel",
-            modelClassPackage = "org.codeblessing.typicaltemplate.template.model",
-            templateFragments = fragments
+    private fun createTemplateWithFragments(): TemplateRenderer =
+        TemplateRenderer(
+            templateRendererClass = ClassDescription(
+                className = "TemplateTest",
+                classPackageName = "org.codeblessing.typicaltemplate.template",
+            ),
+            modelClasses = listOf(
+                ModelDescription(
+                    modelClassDescription = ClassDescription(
+                        className = "TemplateModel",
+                        classPackageName = "org.codeblessing.typicaltemplate.template",
+                    ),
+                    modelName = "model",
+                )
+            ),
+            templateFragments = fragments,
         )
 }

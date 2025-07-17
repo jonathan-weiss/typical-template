@@ -1,9 +1,13 @@
-/* @@tt-template [
-    templateClassName="EntityDto"
-    templateClassPackageName="examples"
-    templateModelClassName="DtoModel"
-    templateModelClassPackageName="examples"
+/* @@tt-template-renderer [
+    templateRendererClassName="EntityDto"
+    templateRendererPackageName="examples"
 ] */
+/* @@tt-template-model [
+    modelClassName="DtoModel"
+    modelPackageName="examples"
+    modelName="myModel"
+] */
+
 /* @@tt-replace-value-by-field [ searchValue="Author" replaceByFieldName="entityCapitalized" ] */
 data class AuthorDto(// @@tt-replace-value-by-field [ searchValue="firstname" replaceByFieldName="entityField" ]
   val firstname: String,// @@tt-end-replace-value-by-field

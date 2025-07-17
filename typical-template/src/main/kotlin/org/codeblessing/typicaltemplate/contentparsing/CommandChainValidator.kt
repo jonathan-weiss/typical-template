@@ -1,6 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
+import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
@@ -8,14 +9,27 @@ object CommandChainValidator {
 
     private const val DEFAULT_PACKAGE_NAME = ""
 
-    fun validateCommands(templateFragments: List<TemplateFragment>): List<Template> {
-        val keywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
+    fun validateCommands(templateFragments: List<TemplateFragment>): List<TemplateRenderer> {
+        val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
+        val templateClass = templateRendererKeywordCommand
+            .toClassDescription(
+                classNameAttribute = TEMPLATE_RENDERER_CLASS_NAME,
+                packageNameAttribute = TEMPLATE_RENDERER_PACKAGE_NAME
+            )
+        val templateModels = templateFragments
+            .filterIsInstance<CommandFragment>()
+            .filter { it.isModelDefinitionCommand() }
+            .flatMap { it.keywordCommand.toModelDescription() }
+
 
 
         val templateFragmentsToApply = mutableListOf<TemplateFragment>()
 
         val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
-        templateFragments.filterNot { it.isTemplateDefinitionCommand() }.forEach { templateFragment ->
+        val remainingFragments = templateFragments
+            .filterNot { it.isTemplateDefinitionCommand() }
+            .filterNot { it.isModelDefinitionCommand() }
+        remainingFragments.forEach { templateFragment ->
             if(templateFragment is CommandFragment) {
                 val commandKey = templateFragment.keywordCommand.commandKey
                 if(commandKey.isOpeningCommand) {
@@ -45,14 +59,12 @@ object CommandChainValidator {
             )
         }
 
-        val template = Template(
-            templateClassName = keywordCommand.attribute(CommandAttributeKey.TEMPLATE_CLASS_NAME),
-            templateClassPackage = keywordCommand.attributeOptional(CommandAttributeKey.TEMPLATE_CLASS_PACKAGE_NAME) ?: DEFAULT_PACKAGE_NAME,
-            modelClassName = keywordCommand.attribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME),
-            modelClassPackage = keywordCommand.attributeOptional(CommandAttributeKey.TEMPLATE_MODEL_CLASS_PACKAGE_NAME) ?: DEFAULT_PACKAGE_NAME,
+        val templateRenderer = TemplateRenderer(
+            templateRendererClass = templateClass,
+            modelClasses = templateModels,
             templateFragments = templateFragmentsToApply
         )
-        return listOf(template)
+        return listOf(templateRenderer)
 
     }
 
@@ -64,7 +76,7 @@ object CommandChainValidator {
         if(count != 1) {
             throw TemplateParsingException(
                 lineNumbers = templateFragments.firstOrNull()?.lineNumbers ?: EMPTY_LINE_NUMBERS,
-                msg = "There must be exactly one template command '${CommandKey.TEMPLATE.keyword}'. ",
+                msg = "There must be exactly one template command '${CommandKey.TEMPLATE_RENDERER.keyword}'. ",
             )
         }
 
@@ -75,14 +87,46 @@ object CommandChainValidator {
         if(!commandFragment.isTemplateDefinitionCommand()) {
             throw TemplateParsingException(
                 lineNumbers = commandFragment.lineNumbers,
-                msg = "The first command in a file must be '${CommandKey.TEMPLATE.keyword}' " +
+                msg = "The first command in a file must be '${CommandKey.TEMPLATE_RENDERER.keyword}' " +
                         "but was ${commandFragment.keywordCommand.commandKey.keyword}. ",
             )
         }
         return commandFragment.keywordCommand
     }
 
-    private fun TemplateFragment.isTemplateDefinitionCommand(): Boolean {
-        return this is CommandFragment && this.keywordCommand.commandKey == CommandKey.TEMPLATE
+    private fun KeywordCommand.toModelDescription(): List<ModelDescription> {
+        return this.attributeGroupIndices().map { attributeGroupIndex ->
+            ModelDescription(
+                modelClassDescription = this.toClassDescription(
+                    groupId = attributeGroupIndex,
+                    classNameAttribute = TEMPLATE_MODEL_CLASS_NAME,
+                    packageNameAttribute = TEMPLATE_MODEL_PACKAGE_NAME,
+                ),
+                modelName = this.attribute(
+                    groupId = attributeGroupIndex,
+                    key = TEMPLATE_MODEL_NAME,
+                ),
+            )
+        }
     }
+
+    private fun KeywordCommand.toClassDescription(
+        groupId: Int = 0,
+        classNameAttribute: CommandAttributeKey,
+        packageNameAttribute: CommandAttributeKey,
+    ): ClassDescription {
+        return ClassDescription(
+            className = this.attribute(groupId, classNameAttribute),
+            classPackageName = this.attributeOptional(groupId, packageNameAttribute) ?: DEFAULT_PACKAGE_NAME,
+        )
+    }
+
+    private fun TemplateFragment.isTemplateDefinitionCommand(): Boolean {
+        return this is CommandFragment && this.keywordCommand.commandKey == CommandKey.TEMPLATE_RENDERER
+    }
+
+    private fun TemplateFragment.isModelDefinitionCommand(): Boolean {
+        return this is CommandFragment && this.keywordCommand.commandKey == CommandKey.TEMPLATE_MODEL
+    }
+
 }

@@ -11,11 +11,11 @@ class TemplateRendererTest {
     @Test
     fun `create template content from file`() {
         val contentToParse = ClasspathResourceLoader.loadClasspathResource(
-            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateTest-content-to-parse.kt.txt",
+            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererTest-content-to-parse.kt.txt",
         )
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
-            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateTest-expected-content.txt",
+            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererTest-expected-content.txt",
         )
 
 

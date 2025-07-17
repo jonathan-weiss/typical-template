@@ -4,7 +4,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.Template
+import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
 import org.codeblessing.typicaltemplate.contentparsing.TextFragment
 
 object TemplateRendererContentCreator {
@@ -13,10 +13,10 @@ object TemplateRendererContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createMultilineStringTemplateContent(template: Template): String {
-        val ctx = TemplateCreationContext(template)
+    fun createMultilineStringTemplateContent(templateRenderer: TemplateRenderer): String {
+        val ctx = TemplateCreationContext(templateRenderer)
         val sb = StringBuilder("|")
-        template.templateFragments.forEach { templateFragment ->
+        templateRenderer.templateFragments.forEach { templateFragment ->
             when (templateFragment) {
                 is TextFragment -> sb.append(rawContent(
                     ctx = ctx,
@@ -25,7 +25,7 @@ object TemplateRendererContentCreator {
                 is CommandFragment -> sb.append(commandContent(
                     ctx = ctx,
                     command = templateFragment,
-                    modelName = template.modelName,
+                    modelName = templateRenderer.modelName,
                 ))
             }
         }
@@ -38,7 +38,8 @@ object TemplateRendererContentCreator {
 
     private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment, modelName: String): String {
         return when (command.keywordCommand.commandKey) {
-            CommandKey.TEMPLATE -> throw IllegalArgumentException("Template command not allowed here")
+            CommandKey.TEMPLATE_RENDERER,
+            CommandKey.TEMPLATE_MODEL -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
             CommandKey.REPLACE_VALUE_BY_FIELD -> processReplaceValueByField(ctx, command.keywordCommand, modelName)
             CommandKey.END_REPLACE_VALUE_BY_FIELD -> processEndReplaceValueByField(ctx)
             CommandKey.IF_FIELD -> processIfField(ctx, command.keywordCommand, modelName)
@@ -138,7 +139,7 @@ object TemplateRendererContentCreator {
     }
 
     private data class TemplateCreationContext(
-        val template: Template,
+        val templateRenderer: TemplateRenderer,
         val identLevel: IdentLevel = IdentLevel(),
         val tokenReplacementStack: TokenReplacementsStack = TokenReplacementsStack()
     )

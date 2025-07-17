@@ -39,6 +39,10 @@ data class KeywordCommand(
         return attributeGroups[groupId].attributeOptional(key)
     }
 
+    fun attributeGroupIndices(): IntRange {
+        return attributeGroups.indices
+    }
+
 }
 
 data class AttributeGroup(

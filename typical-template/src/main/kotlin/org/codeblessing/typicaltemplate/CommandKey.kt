@@ -10,11 +10,17 @@ enum class CommandKey(
     val correspondingOpeningCommandKey: CommandKey? = null,
 
     ) {
-    TEMPLATE(
-        keyword = "template",
+    TEMPLATE_RENDERER(
+        keyword = "template-renderer",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(TEMPLATE_CLASS_NAME, TEMPLATE_MODEL_CLASS_NAME),
-        optionalAttributes = setOf(TEMPLATE_CLASS_PACKAGE_NAME, TEMPLATE_MODEL_CLASS_PACKAGE_NAME),
+        requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
+        optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
+    ),
+    TEMPLATE_MODEL(
+        keyword = "template-model",
+        attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
+        requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
+        optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME),
     ),
     REPLACE_VALUE_BY_FIELD(
         keyword = "replace-value-by-field",

@@ -7,12 +7,14 @@ import examples.DtoModel
 
 /**
  * Generate the content for the template EntityDto filled up
- * with the content of the model [examples.DtoModel].
+ * with the content of the passed models.
  */
 object EntityDto {
 
-    fun renderTemplate(model: DtoModel): String {
+    fun renderTemplate(myModel: DtoModel): String {
         return """
+          |
+          |
           |
           |
           |data class ${model.entityCapitalized}Dto(

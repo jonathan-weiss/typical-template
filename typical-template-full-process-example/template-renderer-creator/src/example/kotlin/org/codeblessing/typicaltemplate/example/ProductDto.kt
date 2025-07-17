@@ -1,9 +1,15 @@
 /*
-@@tt-template [
-    templateClassName="EntityDtoTemplateRenderer"
-    templateClassPackageName="examples"
-    templateModelClassName="DtoEntityRenderModel"
-    templateModelClassPackageName="examples.model"
+@@tt-template-renderer [
+    templateRendererClassName="EntityDtoTemplateRenderer"
+    templateRendererPackageName="examples"
+]
+*/
+
+/*
+@@tt-template-model [
+    modelClassName="DtoEntityRenderModel"
+    modelPackageName="examples.model"
+    modelName="model"
 ]
 */
 

@@ -5,7 +5,7 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException.
 
 object ContentParser {
 
-    fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Template> {
+    fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TemplateRenderer> {
         try {
             val tokens = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 
