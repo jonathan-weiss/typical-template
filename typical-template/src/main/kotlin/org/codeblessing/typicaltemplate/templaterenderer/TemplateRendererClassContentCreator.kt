@@ -25,7 +25,7 @@ import $modelFqn
  * Generate the content for the template $templateClassName filled up
  * with the content of the model [$modelFqn].
  */
-object class $templateClassName {
+object $templateClassName {
 
     fun renderTemplate(model: ${modelClassName}): String {
         return $MULTILINE_STRING_DELIMITER

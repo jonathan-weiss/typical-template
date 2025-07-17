@@ -9,7 +9,7 @@ import examples.DtoModel
  * Generate the content for the template EntityDto filled up
  * with the content of the model [examples.DtoModel].
  */
-object class EntityDto {
+object EntityDto {
 
     fun renderTemplate(model: DtoModel): String {
         return """

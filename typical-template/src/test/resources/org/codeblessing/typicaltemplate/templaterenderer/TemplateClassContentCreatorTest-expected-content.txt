@@ -9,7 +9,7 @@ import org.codeblessing.typicaltemplate.template.model.TemplateModel
  * Generate the content for the template TemplateTest filled up
  * with the content of the model [org.codeblessing.typicaltemplate.template.model.TemplateModel].
  */
-object class TemplateTest {
+object TemplateTest {
 
     fun renderTemplate(model: TemplateModel): String {
         return """
