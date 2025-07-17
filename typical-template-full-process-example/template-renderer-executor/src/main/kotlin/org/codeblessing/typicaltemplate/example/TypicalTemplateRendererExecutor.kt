@@ -7,6 +7,8 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
 
+private const val PRINT_KOTLIN_FILE = true
+
 fun main(args: Array<String>) {
     if(args.size != 1) {
         println("Wrong arguments!")
@@ -27,9 +29,12 @@ fun main(args: Array<String>) {
 
     dtoRenderModels.forEach { dtoRenderModel ->
         val kotlinContent = EntityDtoTemplateRenderer.renderTemplate(model = dtoRenderModel)
-        println(" ------------------ ")
-        println(kotlinContent)
-        println(" ------------------ ")
+        if(PRINT_KOTLIN_FILE) {
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(" ${dtoRenderModel.entityName} (${dtoRenderModel.dtoPackageName}.${dtoRenderModel.kotlinDtoClassName}) ")
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(kotlinContent)
+        }
 
         val kotlinFilePath = pathToGeneratedTargetFiles
             .resolve(dtoRenderModel.dtoNestedPackageDirectory)
