@@ -6,9 +6,9 @@ enum class CommandAttributeKey(val keyAsString: String) {
     TEMPLATE_MODEL_CLASS_NAME("modelClassName"),
     TEMPLATE_MODEL_PACKAGE_NAME("modelPackageName"),
     TEMPLATE_MODEL_NAME("modelName"),
-    REPLACE_BY_FIELD_NAME("replaceByFieldName"),
+    REPLACE_BY_EXPRESSION("replaceByExpression"),
     SEARCH_VALUE("searchValue"),
-    CONDITION_FIELD_NAME("conditionField"),
+    CONDITION_EXPRESSION("conditionExpression"),
     ;
 
     companion object {

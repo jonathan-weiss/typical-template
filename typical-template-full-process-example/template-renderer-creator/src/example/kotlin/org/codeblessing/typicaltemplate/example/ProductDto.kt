@@ -15,9 +15,9 @@
 
 package org.codeblessing.typicaltemplate.example
 
-/* @@tt-replace-value-by-field [ searchValue="ProductDto" replaceByFieldName="kotlinDtoClassName" ] */
-data class ProductDto( // @@tt-end-replace-value-by-field
-/* @@tt-replace-value-by-field [ searchValue="product" replaceByFieldName="entityPrimaryField" ] */
-    val productCode: String,// @@tt-end-replace-value-by-field
+/* @@tt-replace-value-by-expression [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ] */
+data class ProductDto( // @@tt-end-replace-value-by-expression
+/* @@tt-replace-value-by-expression [ searchValue="product" replaceByExpression="model.entityPrimaryField" ] */
+    val productCode: String,// @@tt-end-replace-value-by-expression
     val productName: String,
 )

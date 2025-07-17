@@ -3,7 +3,7 @@
 |this is a test B 2.
 |fun get${model.entityName}(): ${model.entityName} {
 |    return ${model.entityNameDecapitalized};
-|}${ if(model.isEntityNullable)  { """
+|}${ if(model.isEntityNullable())  { """
     |fun get${model.entityName}Nullable(): ${model.entityName}? {
     |    return ${model.entityNameDecapitalized}
     |}

@@ -24,8 +24,8 @@ class TemplateRendererContentCreatorTest {
             """.trimIndent()
         )
         .addReplaceValueByFieldCommand(
-            "author" to "entityNameDecapitalized",
-            "Author" to "entityName",
+            "author" to "model.entityNameDecapitalized",
+            "Author" to "model.entityName",
         )
         .addText(
             """
@@ -35,7 +35,7 @@ class TemplateRendererContentCreatorTest {
                 }
                 """.trimIndent()
         )
-        .addIfFieldCommand("isEntityNullable")
+        .addIfFieldCommand("model.isEntityNullable()")
         .addText(
             """
                 
@@ -53,11 +53,11 @@ class TemplateRendererContentCreatorTest {
                 """.trimIndent()
         )
         .addReplaceValueByFieldCommand(
-            "author" to "entityNameDecapitalized",
+            "author" to "model.entityNameDecapitalized",
             "Author" to "entityName",
         )
         .addReplaceValueByFieldCommand(
-            "Author" to "entityNameCapitalized",
+            "Author" to "model.entityNameCapitalized",
         )
         .addText(
             """

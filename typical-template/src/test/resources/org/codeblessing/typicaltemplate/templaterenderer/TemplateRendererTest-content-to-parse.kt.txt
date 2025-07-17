@@ -8,15 +8,15 @@
     modelName="myModel"
 ] */
 
-/* @@tt-replace-value-by-field [ searchValue="Author" replaceByFieldName="entityCapitalized" ] */
-data class AuthorDto(// @@tt-replace-value-by-field [ searchValue="firstname" replaceByFieldName="entityField" ]
-  val firstname: String,// @@tt-end-replace-value-by-field
+/* @@tt-replace-value-by-expression [ searchValue="Author" replaceByExpression="myModel.entityCapitalized" ] */
+data class AuthorDto(// @@tt-replace-value-by-expression [ searchValue="firstname" replaceByExpression="myModel.entityField" ]
+  val firstname: String,// @@tt-end-replace-value-by-expression
   val lastname: String,
 ) {
-/* @@tt-if-field [ conditionField="model.generateToString" ] */
+/* @@tt-if-condition [ conditionExpression="myModel.isGenerateToString()" ] */
   fun toString(): String {
     return "Author[${super.toString()}]"
   }
-/* @@tt-end-if-field */
-/* @@tt-end-replace-value-by-field */
+/* @@tt-end-if-condition */
+/* @@tt-end-replace-value-by-expression */
 }

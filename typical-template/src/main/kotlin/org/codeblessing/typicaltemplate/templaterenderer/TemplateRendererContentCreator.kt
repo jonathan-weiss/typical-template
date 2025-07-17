@@ -25,7 +25,6 @@ object TemplateRendererContentCreator {
                 is CommandFragment -> sb.append(commandContent(
                     ctx = ctx,
                     command = templateFragment,
-                    modelName = templateRenderer.modelName,
                 ))
             }
         }
@@ -36,43 +35,41 @@ object TemplateRendererContentCreator {
         return ctx.tokenReplacementStack.replaceInString(textFragment.text).addMargin(ctx)
     }
 
-    private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment, modelName: String): String {
+    private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment): String {
         return when (command.keywordCommand.commandKey) {
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.TEMPLATE_MODEL -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
-            CommandKey.REPLACE_VALUE_BY_FIELD -> processReplaceValueByField(ctx, command.keywordCommand, modelName)
-            CommandKey.END_REPLACE_VALUE_BY_FIELD -> processEndReplaceValueByField(ctx)
-            CommandKey.IF_FIELD -> processIfField(ctx, command.keywordCommand, modelName)
-            CommandKey.END_IF_FIELD -> processEndIfWithoutElseField(ctx)
+            CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, command.keywordCommand)
+            CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)
+            CommandKey.IF_CONDITION -> processIfCondition(ctx, command.keywordCommand)
+            CommandKey.END_IF_CONDITION -> processEndIfConditionWithoutElse(ctx)
         }
     }
 
-    private fun processReplaceValueByField(ctx: TemplateCreationContext, command: KeywordCommand, modelName: String): String {
+    private fun processReplaceValueByExpression(ctx: TemplateCreationContext, command: KeywordCommand): String {
         val replacements: Map<String, String> = command.attributeGroups.fold(emptyMap()) { resultMap, attributeGroup ->
             val searchValue = attributeGroup.attribute(CommandAttributeKey.SEARCH_VALUE)
-            val fieldPlaceholderExpression = createFieldPlaceholder(
-                modelName = modelName,
-                fieldName = attributeGroup.attribute(CommandAttributeKey.REPLACE_BY_FIELD_NAME),
+            val placeholderExpression = createExpressionPlaceholder(
+                expression = attributeGroup.attribute(CommandAttributeKey.REPLACE_BY_EXPRESSION),
             )
-            resultMap + (searchValue to fieldPlaceholderExpression)
+            resultMap + (searchValue to placeholderExpression)
         }
         ctx.tokenReplacementStack.pushReplacements(replacements)
         return NO_CONTENT_TO_WRITE
     }
 
-    private fun processEndReplaceValueByField(ctx: TemplateCreationContext): String {
+    private fun processEndReplaceValueByExpression(ctx: TemplateCreationContext): String {
         ctx.tokenReplacementStack.popReplacements()
         return NO_CONTENT_TO_WRITE
     }
 
-    private fun processIfField(
+    private fun processIfCondition(
         ctx: TemplateCreationContext,
         keywordCommand: KeywordCommand,
-        modelName: String,
     ): String {
         return startStatementInMultilineText(
             ctx = ctx,
-            statement = "if(${modelName}.${keywordCommand.attribute(CommandAttributeKey.CONDITION_FIELD_NAME)})",
+            statement = "if(${keywordCommand.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
         )
     }
 
@@ -82,7 +79,7 @@ object TemplateRendererContentCreator {
         return endStatementInMultilineText(ctx = ctx)
     }
 
-    private fun processEndIfWithoutElseField(
+    private fun processEndIfConditionWithoutElse(
         ctx: TemplateCreationContext,
     ): String {
         val elseClause = intermediateStatementInMultilineText(
@@ -116,8 +113,8 @@ object TemplateRendererContentCreator {
         return $$"$$LINE_BREAK$$MULTILINE_STRING_DELIMITER }"
     }
 
-    private fun createFieldPlaceholder(modelName: String, fieldName: String): String {
-        return "${'$'}{${modelName}.${fieldName}}"
+    private fun createExpressionPlaceholder(expression: String): String {
+        return $$"${$${expression}}"
     }
 
     private fun String.addIdent(ctx: TemplateCreationContext): String {

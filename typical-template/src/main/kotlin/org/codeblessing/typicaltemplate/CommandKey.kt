@@ -22,25 +22,25 @@ enum class CommandKey(
         requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
         optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME),
     ),
-    REPLACE_VALUE_BY_FIELD(
-        keyword = "replace-value-by-field",
+    REPLACE_VALUE_BY_EXPRESSION(
+        keyword = "replace-value-by-expression",
         attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_FIELD_NAME),
+        requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_EXPRESSION),
         optionalAttributes = setOf(),
     ),
-    END_REPLACE_VALUE_BY_FIELD(
-        keyword = "end-replace-value-by-field",
-        correspondingOpeningCommandKey = REPLACE_VALUE_BY_FIELD,
+    END_REPLACE_VALUE_BY_EXPRESSION(
+        keyword = "end-replace-value-by-expression",
+        correspondingOpeningCommandKey = REPLACE_VALUE_BY_EXPRESSION,
     ),
-    IF_FIELD(
-        keyword = "if-field",
+    IF_CONDITION(
+        keyword = "if-condition",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(CONDITION_FIELD_NAME),
+        requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
     ),
-    END_IF_FIELD(
-        keyword = "end-if-field",
-        correspondingOpeningCommandKey = IF_FIELD,
+    END_IF_CONDITION(
+        keyword = "end-if-condition",
+        correspondingOpeningCommandKey = IF_CONDITION,
     ),
     ;
 

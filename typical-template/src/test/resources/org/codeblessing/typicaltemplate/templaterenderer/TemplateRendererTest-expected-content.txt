@@ -17,13 +17,13 @@ object EntityDto {
           |
           |
           |
-          |data class ${model.entityCapitalized}Dto(
-          |  val ${model.entityField}: String,
+          |data class ${myModel.entityCapitalized}Dto(
+          |  val ${myModel.entityField}: String,
           |  val lastname: String,
           |) {
-          |${ if(model.model.generateToString)  { """
+          |${ if(myModel.isGenerateToString())  { """
               |  fun toString(): String {
-              |    return "${model.entityCapitalized}[${super.toString()}]"
+              |    return "${myModel.entityCapitalized}[${super.toString()}]"
               |  }
               |
           """ }  else  { """

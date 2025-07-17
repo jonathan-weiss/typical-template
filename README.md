@@ -91,7 +91,7 @@ Defines that the enclosed code will not be part of the template and is ignored.
 Defines that the enclosed code will be only rendered if the condition field evaluates to `true`.
 
 Attributes:
-* *conditionField*: The name of the boolean field on the model to use for evaluation.
+* *conditionExpression*: The name of the boolean field on the model to use for evaluation.
 
 #### Other keyword
 TODO specify those keywords

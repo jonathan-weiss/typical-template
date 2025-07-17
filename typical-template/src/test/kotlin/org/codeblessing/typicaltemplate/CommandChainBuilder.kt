@@ -55,40 +55,40 @@ class CommandChainBuilder private constructor() {
         searchValue: String = "search",
         fieldName: String = "myField",
     ): CommandChainBuilder {
-        return this.createCommand(CommandKey.REPLACE_VALUE_BY_FIELD)
+        return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
             .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-            .withAttribute(CommandAttributeKey.REPLACE_BY_FIELD_NAME, fieldName)
+            .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
             .addCommandToChain()
     }
 
     fun addReplaceValueByFieldCommand(
         vararg replacements: Pair<String, String>,
     ): CommandChainBuilder {
-        var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_FIELD)
+        var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
         replacements.forEach { (searchValue, fieldName) ->
             builder = builder
                 .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-                .withAttribute(CommandAttributeKey.REPLACE_BY_FIELD_NAME, fieldName)
+                .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
                 .nextAttributeGroup()
         }
         return builder.addCommandToChain()
     }
 
     fun addEndReplaceValueByFieldCommand(): CommandChainBuilder {
-        return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_FIELD)
+        return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
             .addCommandToChain()
     }
 
     fun addIfFieldCommand(
         conditionFieldName: String = "myConditionField",
     ): CommandChainBuilder {
-        return this.createCommand(CommandKey.IF_FIELD)
-            .withAttribute(CommandAttributeKey.CONDITION_FIELD_NAME, conditionFieldName)
+        return this.createCommand(CommandKey.IF_CONDITION)
+            .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionFieldName)
             .addCommandToChain()
     }
 
     fun addEndIfFieldCommand(): CommandChainBuilder {
-        return this.createCommand(CommandKey.END_IF_FIELD)
+        return this.createCommand(CommandKey.END_IF_CONDITION)
             .addCommandToChain()
     }
 
