@@ -35,5 +35,9 @@ tasks.register<JavaExec>("executeTypicalTemplateRenderers") {
     args(
         project.projectDir.resolve(directoryForTemplateRendererGeneratedSource)
     )
-
 }
+
+tasks.register("example") { // easier to remember and shorter to type
+    dependsOn("executeTypicalTemplateRenderers")
+}
+
