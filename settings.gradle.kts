@@ -14,6 +14,5 @@ dependencyResolutionManagement {
 
 include("typical-template")
 include("typical-template-api")
-include("typical-template-process-test")
 include("typical-template-full-process-example:template-renderer-creator")
 include("typical-template-full-process-example:template-renderer-executor")
