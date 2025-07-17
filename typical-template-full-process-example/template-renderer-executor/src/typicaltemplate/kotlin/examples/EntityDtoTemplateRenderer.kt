@@ -17,8 +17,10 @@ object EntityDtoTemplateRenderer {
           |
           |package org.codeblessing.typicaltemplate.example
           |
-          |data class ProductDto(
-          |    val productCode: String,
+          |
+          |data class ${model.kotlinDtoClassName}( 
+          |
+          |    val ${model.entityPrimaryField}Code: String,
           |    val productName: String,
           |)
           |

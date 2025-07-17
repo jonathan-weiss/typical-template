@@ -18,11 +18,11 @@ fun main(args: Array<String>) {
 
     println("Use template renderer with typical template")
 
-    val categoryRenderModel = DtoEntityRenderModel(
-        entityName = "Category"
-    )
     val dtoRenderModels = listOf(
-        categoryRenderModel,
+        createDtoEntity("Category"),
+        createDtoEntity("Cart"),
+        createDtoEntity("User"),
+        createDtoEntity("RelatedProduct"),
     )
 
     dtoRenderModels.forEach { dtoRenderModel ->
@@ -38,5 +38,11 @@ fun main(args: Array<String>) {
         kotlinFilePath.parent.createDirectories()
         kotlinFilePath.writeText(kotlinContent)
     }
+}
+
+private fun createDtoEntity(entityName: String): DtoEntityRenderModel {
+    return DtoEntityRenderModel(
+        entityName = entityName
+    )
 }
 
