@@ -19,7 +19,7 @@ tasks.register<Delete>("cleanGeneratedSource") {
 }
 
 tasks.named("clean") {
-    dependsOn("cleanGeneratedTemplateRenderer")
+    dependsOn("cleanGeneratedSource")
 }
 
 dependencies {
