@@ -11,6 +11,7 @@ tasks.test {
 }
 dependencies {
     implementation(project(":typical-template-api"))
+    runtimeOnly(project(":typical-template"))
 
     testImplementation(kotlin("test"))
 }

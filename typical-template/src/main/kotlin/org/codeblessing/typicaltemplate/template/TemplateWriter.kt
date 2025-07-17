@@ -1,13 +1,15 @@
 package org.codeblessing.typicaltemplate.template
 
+import org.codeblessing.typicaltemplate.TemplateConfiguration
 import org.codeblessing.typicaltemplate.contentparsing.Template
+import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.writeText
 
 object TemplateWriter {
 
-    fun writeTemplate(template: Template, templateConfiguration: TemplateConfiguration) {
+    fun writeTemplate(template: Template, templateConfiguration: TemplateConfiguration): Path {
         val templateSourceContent = TemplateContentCreator.createMultilineStringTemplateContent(template)
         val kotlinTemplateClassContent = TemplateClassContentCreator.wrapInKotlinTemplateClassContent(template, templateSourceContent)
         val kotlinFilePath = template.kotlinTemplateClassFilePath(templateConfiguration.templateBaseSrcPath)
@@ -17,5 +19,7 @@ object TemplateWriter {
         println("--------------------")
         kotlinFilePath.createParentDirectories()
         kotlinFilePath.writeText(kotlinTemplateClassContent)
+
+        return kotlinFilePath
     }
 }

@@ -13,3 +13,5 @@ dependencyResolutionManagement {
 
 
 include("typical-template")
+include("typical-template-api")
+include("typical-template-process-test")

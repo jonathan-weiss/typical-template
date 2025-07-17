@@ -1,8 +1,8 @@
-package org.codeblessing.typicaltemplate.filesearch
+package org.codeblessing.typicaltemplate
 
 import java.nio.file.Path
 
-class FileSearchLocation(
+data class FileSearchLocation(
     val rootDirectoryToSearch: Path,
     val filenameMatchingPattern: Regex,
 )

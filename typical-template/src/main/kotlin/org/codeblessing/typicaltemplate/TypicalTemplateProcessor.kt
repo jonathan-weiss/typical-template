@@ -2,17 +2,18 @@ package org.codeblessing.typicaltemplate
 
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.ContentMapper
-import org.codeblessing.typicaltemplate.filesearch.FileSearchLocation
 import org.codeblessing.typicaltemplate.filesearch.FileTraversal
-import org.codeblessing.typicaltemplate.template.TemplateConfiguration
 import org.codeblessing.typicaltemplate.template.TemplateWriter
-import java.nio.file.Paths
+import java.nio.file.Path
 import kotlin.io.path.readText
 
-object TypicalTemplateProcessor {
+class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
 
-    fun processTypicalTemplate() {
-        val templatingConfigurations = gatherTemplatingConfigurations()
+    override fun processTypicalTemplate(
+        templatingConfigurations: List<TemplatingConfiguration>,
+    ): Map<TemplatingConfiguration, List<Path>> {
+        val createdTemplateFactories: Map<TemplatingConfiguration, MutableList<Path>> = templatingConfigurations
+            .associateWith { mutableListOf()}
         templatingConfigurations.forEach { templatingConfiguration ->
             val foundFiles = FileTraversal.searchFiles(templatingConfiguration.fileSearchLocations)
 
@@ -21,33 +22,11 @@ object TypicalTemplateProcessor {
                 val templates = ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
 
                 templates.forEach { template ->
-                    TemplateWriter.writeTemplate(template, templatingConfiguration.templateConfiguration)
+                    val templatePath = TemplateWriter.writeTemplate(template, templatingConfiguration.templateConfiguration)
+                    requireNotNull(createdTemplateFactories[templatingConfiguration]).add(templatePath)
                 }
             }
         }
-    }
-
-    private fun gatherTemplatingConfigurations(): List<TemplatingConfiguration> {
-        // TODO support env/system-props/args
-
-        val angularRootDirectory = Paths.get("/Users/jweiss/private-work/senegal/typical-template/src/test/resources/org/codeblessing/typicaltemplate/contentparsing")
-
-        val rootDirectoriesToSearch = listOf(
-            FileSearchLocation(
-                rootDirectoryToSearch = angularRootDirectory,
-                filenameMatchingPattern = ContentMapper.HTML_FILENAME_REGEX,
-            ),
-        )
-        val srcBaseDir = Paths.get("/Users/jweiss/private-work/senegal/typical-template/build")
-
-        val templateConfiguration = TemplateConfiguration(
-            templateBaseSrcPath = srcBaseDir,
-            templateBaseTestSrcPath = srcBaseDir,
-        )
-        val configuration = TemplatingConfiguration(
-            fileSearchLocations = rootDirectoriesToSearch,
-            templateConfiguration = templateConfiguration,
-        )
-        return listOf(configuration)
+        return createdTemplateFactories
     }
 }

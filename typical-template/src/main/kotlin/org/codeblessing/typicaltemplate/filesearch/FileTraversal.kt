@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.filesearch
 
+import org.codeblessing.typicaltemplate.FileSearchLocation
 import java.nio.file.Path
 import kotlin.io.path.name
 
