@@ -22,7 +22,7 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
                 val templates = ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
 
                 templates.forEach { template ->
-                    val templatePath = TemplateRendererWriter.writeTemplate(template, templatingConfiguration.templateConfiguration)
+                    val templatePath = TemplateRendererWriter.writeTemplate(template, templatingConfiguration.templateRendererConfiguration)
                     requireNotNull(createdTemplateFactories[templatingConfiguration]).add(templatePath)
                 }
             }

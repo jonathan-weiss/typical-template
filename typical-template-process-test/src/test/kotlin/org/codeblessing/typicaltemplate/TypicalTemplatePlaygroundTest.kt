@@ -28,12 +28,12 @@ class TypicalTemplatePlaygroundTest {
         )
         val srcBaseDir = Paths.get("/Users/jweiss/private-work/senegal/typical-template/build")
 
-        val templateConfiguration = TemplateConfiguration(
-            templateBaseSrcPath = srcBaseDir,
+        val templateRendererConfiguration = TemplateRendererConfiguration(
+            templateRendererTargetSourceBasePath = srcBaseDir,
         )
         val configuration = TemplatingConfiguration(
             fileSearchLocations = rootDirectoriesToSearch,
-            templateConfiguration = templateConfiguration,
+            templateRendererConfiguration = templateRendererConfiguration,
         )
         return listOf(configuration)
     }
