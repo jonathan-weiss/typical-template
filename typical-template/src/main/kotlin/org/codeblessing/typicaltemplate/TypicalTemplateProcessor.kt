@@ -3,7 +3,7 @@ package org.codeblessing.typicaltemplate
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.ContentMapper
 import org.codeblessing.typicaltemplate.filesearch.FileTraversal
-import org.codeblessing.typicaltemplate.template.TemplateWriter
+import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererWriter
 import java.nio.file.Path
 import kotlin.io.path.readText
 
@@ -22,7 +22,7 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
                 val templates = ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
 
                 templates.forEach { template ->
-                    val templatePath = TemplateWriter.writeTemplate(template, templatingConfiguration.templateConfiguration)
+                    val templatePath = TemplateRendererWriter.writeTemplate(template, templatingConfiguration.templateConfiguration)
                     requireNotNull(createdTemplateFactories[templatingConfiguration]).add(templatePath)
                 }
             }

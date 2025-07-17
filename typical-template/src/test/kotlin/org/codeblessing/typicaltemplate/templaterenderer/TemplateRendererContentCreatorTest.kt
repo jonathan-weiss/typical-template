@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.template
+package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.CommandChainBuilder
@@ -6,7 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.Template
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class TemplateContentCreatorTest {
+class TemplateRendererContentCreatorTest {
 
     private val fragments = CommandChainBuilder.create()
         .addText(
@@ -70,12 +70,12 @@ class TemplateContentCreatorTest {
         .build()
 
     private val expectedContent = ClasspathResourceLoader.loadClasspathResource(
-        classpathResourcePath = "org/codeblessing/typicaltemplate/template/TemplateContentCreatorTest-expected-content.txt",
+        classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateContentCreatorTest-expected-content.txt",
     )
 
     @Test
     fun `create template content with various commands`() {
-        val kotlinClassContent = TemplateContentCreator.createMultilineStringTemplateContent(createTemplateWithFragments())
+        val kotlinClassContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(createTemplateWithFragments())
         println("---------------------")
         println(kotlinClassContent)
         println("---------------------")

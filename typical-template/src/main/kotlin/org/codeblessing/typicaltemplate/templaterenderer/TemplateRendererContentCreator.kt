@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.template
+package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
@@ -7,7 +7,7 @@ import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.Template
 import org.codeblessing.typicaltemplate.contentparsing.TextFragment
 
-object TemplateContentCreator {
+object TemplateRendererContentCreator {
 
     private const val NO_CONTENT_TO_WRITE = ""
     private const val LINE_BREAK = "\n"

@@ -1,8 +1,8 @@
-package org.codeblessing.typicaltemplate.template
+package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.contentparsing.Template
 
-object TemplateClassContentCreator {
+object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 

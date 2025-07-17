@@ -1,11 +1,11 @@
-package org.codeblessing.typicaltemplate.template
+package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.contentparsing.Template
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class TemplateClassContentCreatorTest {
+class TemplateRendererClassContentCreatorTest {
 
     @Test
     fun `wrap template content into kotlin template object class content`() {
@@ -16,10 +16,10 @@ class TemplateClassContentCreatorTest {
             modelClassPackage = "org.codeblessing.typicaltemplate.template.model",
             templateFragments = emptyList()
         )
-        val kotlinClassContent = TemplateClassContentCreator.wrapInKotlinTemplateClassContent(template, "| hello world")
+        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinTemplateClassContent(template, "| hello world")
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
-            classpathResourcePath = "org/codeblessing/typicaltemplate/template/TemplateClassContentCreatorTest-expected-content.txt"
+            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateClassContentCreatorTest-expected-content.txt"
         )
         assertEquals(expectedContent, kotlinClassContent)
     }

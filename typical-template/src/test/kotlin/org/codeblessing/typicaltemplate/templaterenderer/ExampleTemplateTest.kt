@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.template
+package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
