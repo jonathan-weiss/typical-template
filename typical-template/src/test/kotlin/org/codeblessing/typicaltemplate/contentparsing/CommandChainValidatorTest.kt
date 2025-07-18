@@ -77,14 +77,13 @@ class CommandChainValidatorTest {
     }
 
     @Test
-    @Disabled
     fun `throws for unmatched closing command`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addReplaceValueByExpressionCommand()
             .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndReplaceValueByExpressionCommand()
+            .addEndIfCommand()
             .build()
 
         assertThrows(TemplateParsingException::class.java) {
@@ -105,4 +104,37 @@ class CommandChainValidatorTest {
             CommandChainValidator.validateCommands(fragments)
         }
     }
+
+    @Test
+    fun `throws for else command not in if statement`() {
+        val fragments = CommandChainBuilder.create()
+            .addText("here is text")
+            .addTemplateRendererCommand()
+            .addIfCommand("model.isSerializable()")
+            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+            .addEndIfCommand()
+            .addElseCommand()
+            .build()
+
+        assertThrows(TemplateParsingException::class.java) {
+            CommandChainValidator.validateCommands(fragments)
+        }
+    }
+
+    @Test
+    fun `throws for else if command not in if statement`() {
+        val fragments = CommandChainBuilder.create()
+            .addText("here is text")
+            .addTemplateRendererCommand()
+            .addIfCommand("model.isSerializable()")
+            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+            .addEndIfCommand()
+            .addElseIfCommand("model.isEnum()")
+            .build()
+
+        assertThrows(TemplateParsingException::class.java) {
+            CommandChainValidator.validateCommands(fragments)
+        }
+    }
+
 }

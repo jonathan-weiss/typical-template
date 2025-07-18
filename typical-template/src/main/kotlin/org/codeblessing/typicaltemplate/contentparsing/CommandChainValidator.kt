@@ -40,6 +40,14 @@ object CommandChainValidator {
                         )
                     }
                 }
+                if(commandKey.directlyNestedInsideCommandKey != null &&
+                    commandKey.directlyNestedInsideCommandKey != openingCommandKeysStack.lastOrNull()) {
+                    throw TemplateParsingException(
+                        lineNumbers = templateFragment.lineNumbers,
+                        msg = "The command '${commandKey.keyword}' must reside as directly nested command " +
+                                "inside the command '${commandKey.directlyNestedInsideCommandKey.keyword}'."
+                    )
+                }
             }
 
             templateFragmentsToApply.add(templateFragment)

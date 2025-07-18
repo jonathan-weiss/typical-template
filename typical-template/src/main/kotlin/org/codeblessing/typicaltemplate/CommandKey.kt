@@ -8,6 +8,7 @@ enum class CommandKey(
     val requiredAttributes: Set<CommandAttributeKey> = emptySet(),
     val optionalAttributes: Set<CommandAttributeKey> = emptySet(),
     val correspondingOpeningCommandKey: CommandKey? = null,
+    val directlyNestedInsideCommandKey: CommandKey? = null,
 
     ) {
     TEMPLATE_RENDERER(
@@ -43,11 +44,11 @@ enum class CommandKey(
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
-        // TODO make that this is only possible in a direct if/end-if clause
+        directlyNestedInsideCommandKey = IF_CONDITION,
     ),
     ELSE_CLAUSE(
         keyword = "else-of-if-condition",
-        // TODO make that this is only possible in a direct if/end-if clause
+        directlyNestedInsideCommandKey = IF_CONDITION,
     ),
     END_IF_CONDITION(
         keyword = "end-if-condition",
