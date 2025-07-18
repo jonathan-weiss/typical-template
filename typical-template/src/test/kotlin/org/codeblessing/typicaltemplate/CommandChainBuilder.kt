@@ -135,6 +135,15 @@ class CommandChainBuilder private constructor() {
             .addCommandToChain()
     }
 
+    fun addPrintTextCommand(
+        text: String,
+    ): CommandChainBuilder {
+        return this.createCommand(CommandKey.PRINT_TEXT)
+            .withAttribute(TEXT, text)
+            .addCommandToChain()
+    }
+
+
     class KeywordCommandBuilder(
         private val commandChainBuilder: CommandChainBuilder,
         private val commandKey: CommandKey

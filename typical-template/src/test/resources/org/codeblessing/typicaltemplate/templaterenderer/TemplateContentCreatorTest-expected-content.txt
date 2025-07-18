@@ -33,7 +33,7 @@
 """ } else { """"regular-class",
 """ } }
 |// test the foreach..end-foreach statement
-|${ myList.joinToString("") { myItem ->  { """
+|${ myList.joinToString("") { myItem ->  """
     |"// here we access myItem in the loop",
 """ } }
 |// test the ignore-text statement
@@ -47,3 +47,8 @@
 """ } }
 |// end of test the ignore-text statement with nesting
 |
+|// test the print-text command
+|This text is to print
+|// and this text, too
+|
+|// end of test the print-text command 

@@ -52,6 +52,7 @@ object TemplateRendererContentCreator {
             CommandKey.END_FOREACH -> processEndForeach(ctx)
             CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, command.keywordCommand)
             CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
+            CommandKey.PRINT_TEXT -> processPrintText(ctx, command.keywordCommand)
         }
     }
 
@@ -145,6 +146,13 @@ object TemplateRendererContentCreator {
     ): String {
         ctx.nestingStack.pushNestingContext(CommandNestingContext(command, isInIgnoreMode = true))
         return NO_CONTENT_TO_WRITE
+    }
+
+    private fun processPrintText(
+        ctx: TemplateCreationContext,
+        command: KeywordCommand,
+    ): String {
+        return command.attribute(CommandAttributeKey.TEXT).addMargin(ctx)
     }
 
     private fun processEndIgnoreText(

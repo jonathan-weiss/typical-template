@@ -231,6 +231,28 @@ class TemplateRendererContentCreatorTest {
 
                 """.trimIndent(),
         )
+        .addText(
+            """
+
+                // test the print-text command
+
+                """.trimIndent(),
+        )
+        .addPrintTextCommand("This text is to print")
+        .addPrintTextCommand(
+            """
+
+                // and this text, too
+
+                """.trimIndent(),
+        )
+        .addText(
+            """
+
+                // end of test the print-text command 
+                """.trimIndent(),
+        )
+
         .build()
 
     private val expectedContent = ClasspathResourceLoader.loadClasspathResource(

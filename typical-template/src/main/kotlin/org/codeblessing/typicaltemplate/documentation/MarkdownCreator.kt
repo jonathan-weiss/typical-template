@@ -20,6 +20,7 @@ object MarkdownCreator {
         CommandKey.END_FOREACH to "",
         CommandKey.IGNORE_TEXT to "Ignores the text from the content and does not output it in the template renderer.",
         CommandKey.END_IGNORE_TEXT to "",
+        CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
     )
 
     private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = mapOf(
@@ -33,6 +34,7 @@ object MarkdownCreator {
         CommandAttributeKey.CONDITION_EXPRESSION to "The condition returning a boolean value that is used for the if statement or else-if statement.",
         CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to "The condition returning a boolean value that is used for the if statement.",
         CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from '${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}'. The variable holds the current instance of the loop iterable defined with '${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}'.",
+        CommandAttributeKey.TEXT to "Text that is to print as-is into the template renderer.",
     )
 
     fun printMarkdownDocumentation() {

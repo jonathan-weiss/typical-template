@@ -71,6 +71,11 @@ enum class CommandKey(
         keyword = "end-ignore-text",
         correspondingOpeningCommandKey = IGNORE_TEXT,
     ),
+    PRINT_TEXT(
+        keyword = "print-text",
+        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        requiredAttributes = setOf(TEXT),
+    ),
     ;
 
     companion object {
