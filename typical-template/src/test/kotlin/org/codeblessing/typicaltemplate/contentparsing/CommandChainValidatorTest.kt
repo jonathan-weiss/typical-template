@@ -127,7 +127,7 @@ class CommandChainValidatorTest {
             .addText("here is text")
             .addTemplateRendererCommand()
             .addIfCommand("model.isSerializable()")
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+            .addText("only if serializable")
             .addEndIfCommand()
             .addElseIfCommand("model.isEnum()")
             .build()
@@ -137,4 +137,21 @@ class CommandChainValidatorTest {
         }
     }
 
+    @Test
+    fun `throws for invalid open and closing command mix`() {
+        val fragments = CommandChainBuilder.create()
+            .addText("here is text")
+            .addTemplateRendererCommand()
+            .addIfCommand("model.isSerializable()")
+            .addText("only if serializable")
+            .addReplaceValueByExpressionCommand()
+            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+            .addEndIfCommand() // replace is inside of if and must be closed first
+            .addEndReplaceValueByExpressionCommand()
+            .build()
+
+        assertThrows(TemplateParsingException::class.java) {
+            CommandChainValidator.validateCommands(fragments)
+        }
+    }
 }
