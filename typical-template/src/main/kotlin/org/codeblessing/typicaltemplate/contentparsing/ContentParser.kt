@@ -9,6 +9,11 @@ object ContentParser {
         try {
             val tokens = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 
+            if(tokens.none { it is FileContentTokenizer.TemplateCommentToken }) {
+                // the file does not contain any typical template commands and can be ignored.
+                return emptyList()
+            }
+
             val templateFragments = tokens.map { token ->
                 val lineNumbers = LineNumberCalculator.calculateLineNumbers(token, tokens)
                 when (token) {
