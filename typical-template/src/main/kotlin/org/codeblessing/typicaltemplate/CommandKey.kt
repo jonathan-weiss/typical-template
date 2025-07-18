@@ -64,6 +64,13 @@ enum class CommandKey(
         keyword = "end-foreach",
         correspondingOpeningCommandKey = FOREACH,
     ),
+    IGNORE_TEXT(
+        keyword = "ignore-text",
+    ),
+    END_IGNORE_TEXT(
+        keyword = "end-ignore-text",
+        correspondingOpeningCommandKey = IGNORE_TEXT,
+    ),
     ;
 
     companion object {

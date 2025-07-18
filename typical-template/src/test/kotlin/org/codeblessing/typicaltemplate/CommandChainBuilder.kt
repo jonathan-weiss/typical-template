@@ -120,12 +120,20 @@ class CommandChainBuilder private constructor() {
             .addCommandToChain()
     }
 
-
     fun addEndForeachCommand(): CommandChainBuilder {
         return this.createCommand(CommandKey.END_FOREACH)
             .addCommandToChain()
     }
 
+    fun addIgnoreTextCommand(): CommandChainBuilder {
+        return this.createCommand(CommandKey.IGNORE_TEXT)
+            .addCommandToChain()
+    }
+
+    fun addEndIgnoreTextCommand(): CommandChainBuilder {
+        return this.createCommand(CommandKey.END_IGNORE_TEXT)
+            .addCommandToChain()
+    }
 
     class KeywordCommandBuilder(
         private val commandChainBuilder: CommandChainBuilder,

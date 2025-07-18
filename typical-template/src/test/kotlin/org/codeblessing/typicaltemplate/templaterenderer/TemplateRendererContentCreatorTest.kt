@@ -171,6 +171,66 @@ class TemplateRendererContentCreatorTest {
                 """.trimIndent(),
         )
         .addEndForeachCommand()
+        .addText(
+            """
+
+                // test the ignore-text statement
+
+                """.trimIndent(),
+        )
+        .addIgnoreTextCommand()
+        .addText(
+            """
+                
+                      "// THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!",
+                """.trimIndent(),
+        )
+        .addEndIgnoreTextCommand()
+        .addText(
+            """
+
+                // end of test the ignore-text statement
+
+                """.trimIndent(),
+        )
+        .addText(
+            """
+
+                // test the ignore-text statement with nesting
+
+                """.trimIndent(),
+        )
+        .addIgnoreTextCommand()
+        .addIfCommand("model.isIgnored()")
+        .addText(
+            """
+                
+                      "// THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!",
+                """.trimIndent(),
+        )
+        .addElseIfCommand("model.isIgnoredToo()")
+        .addText(
+            """
+                
+                      "// THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!",
+                """.trimIndent(),
+        )
+        .addElseCommand()
+        .addText(
+            """
+                
+                      "// THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!",
+                """.trimIndent(),
+        )
+        .addEndIfCommand()
+        .addEndIgnoreTextCommand()
+        .addText(
+            """
+
+                // end of test the ignore-text statement with nesting
+
+                """.trimIndent(),
+        )
         .build()
 
     private val expectedContent = ClasspathResourceLoader.loadClasspathResource(

@@ -32,6 +32,9 @@ object TemplateRendererContentCreator {
     }
 
     private fun rawContent(ctx: TemplateCreationContext, textFragment: TextFragment): String {
+        if(ctx.nestingStack.isInIgnoreMode()) {
+            return NO_CONTENT_TO_WRITE
+        }
         return ctx.nestingStack.replaceInString(textFragment.text).addMargin(ctx)
     }
 
@@ -47,6 +50,8 @@ object TemplateRendererContentCreator {
             CommandKey.END_IF_CONDITION -> processEndIf(ctx)
             CommandKey.FOREACH -> processForeach(ctx, command.keywordCommand)
             CommandKey.END_FOREACH -> processEndForeach(ctx)
+            CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, command.keywordCommand)
+            CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
         }
     }
 
@@ -127,12 +132,26 @@ object TemplateRendererContentCreator {
         )
     }
 
-
     private fun processEndForeach(
         ctx: TemplateCreationContext,
     ): String {
         ctx.nestingStack.popNestingContext()
         return endStatementInMultilineText(ctx = ctx)
+    }
+
+    private fun processIgnoreText(
+        ctx: TemplateCreationContext,
+        command: KeywordCommand,
+    ): String {
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(command, isInIgnoreMode = true))
+        return NO_CONTENT_TO_WRITE
+    }
+
+    private fun processEndIgnoreText(
+        ctx: TemplateCreationContext,
+    ): String {
+        ctx.nestingStack.popNestingContext()
+        return NO_CONTENT_TO_WRITE
     }
 
     private fun startStatementInMultilineText(ctx: TemplateCreationContext, statement: String): String {
@@ -236,12 +255,18 @@ object TemplateRendererContentCreator {
         fun hasElseClause(): Boolean {
             return nestingStack.last().hasElseClause
         }
+
+        fun isInIgnoreMode(): Boolean {
+            return nestingStack.any { it.isInIgnoreMode }
+        }
+
     }
 
     private class CommandNestingContext(
         val command: KeywordCommand,
         val replacements: Map<String, String> = emptyMap(),
         var hasElseClause: Boolean = false,
+        var isInIgnoreMode: Boolean = false,
     ) {
         fun markLastElementHasElseClause() {
             require(command.commandKey == CommandKey.IF_CONDITION) {

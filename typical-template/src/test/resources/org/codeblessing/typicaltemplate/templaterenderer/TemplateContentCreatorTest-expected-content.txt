@@ -36,3 +36,14 @@
 |${ myList.joinToString("") { myItem ->  { """
     |"// here we access myItem in the loop",
 """ } }
+|// test the ignore-text statement
+|
+|// end of test the ignore-text statement
+|
+|// test the ignore-text statement with nesting
+|${ if(model.isIgnored()) { """
+""" } else if(model.isIgnoredToo()) { """
+""" } else { """
+""" } }
+|// end of test the ignore-text statement with nesting
+|
