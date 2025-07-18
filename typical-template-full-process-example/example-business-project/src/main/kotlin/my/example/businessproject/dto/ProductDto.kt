@@ -1,19 +1,21 @@
+package my.example.businessproject.dto
+
 /*
 @@tt-template-renderer [
     templateRendererClassName="EntityDtoTemplateRenderer"
-    templateRendererPackageName="examples"
+    templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
 ]
 */
 
 /*
 @@tt-template-model [
     modelClassName="DtoEntityRenderModel"
-    modelPackageName="examples.model"
+    modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
     modelName="model"
 ]
 */
 
-package org.codeblessing.typicaltemplate.example
+
 
 /* @@tt-replace-value-by-expression [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ] */
 data class ProductDto( // @@tt-end-replace-value-by-expression

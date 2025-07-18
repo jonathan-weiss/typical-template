@@ -6,20 +6,12 @@ repositories {
     mavenCentral()
 }
 
-val directoryForGeneratedTemplateRenderer = "src/typicaltemplate/kotlin"
+val directoryForGeneratedTemplateRenderer = "src/typicaltemplate-generated/kotlin"
 val directoryForTemplateRendererGeneratedSource = "src/generated/kotlin"
 
+val exampleBusinessProjectPath = project(":typical-template-full-process-example:example-business-project").projectDir
 kotlin {
     sourceSets["main"].kotlin.srcDir(directoryForGeneratedTemplateRenderer)
-    sourceSets["main"].kotlin.srcDir(directoryForTemplateRendererGeneratedSource)
-}
-
-tasks.register<Delete>("cleanGeneratedSource") {
-    delete(file(directoryForTemplateRendererGeneratedSource))
-}
-
-tasks.named("clean") {
-    dependsOn("cleanGeneratedSource")
 }
 
 dependencies {
@@ -33,7 +25,7 @@ tasks.register<JavaExec>("executeTypicalTemplateRenderers") {
     mainClass.set("org.codeblessing.typicaltemplate.example.TypicalTemplateRendererExecutorKt")
 
     args(
-        project.projectDir.resolve(directoryForTemplateRendererGeneratedSource)
+        exampleBusinessProjectPath.resolve(directoryForTemplateRendererGeneratedSource)
     )
 }
 

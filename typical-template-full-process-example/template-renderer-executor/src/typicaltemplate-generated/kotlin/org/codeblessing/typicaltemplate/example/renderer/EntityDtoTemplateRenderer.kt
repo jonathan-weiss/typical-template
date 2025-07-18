@@ -1,9 +1,9 @@
 /*
  * This file is generated using typical-template.
  */
-package examples
+package org.codeblessing.typicaltemplate.example.renderer
 
-import examples.model.DtoEntityRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 
 /**
  * Generate the content for the template EntityDtoTemplateRenderer filled up
@@ -13,11 +13,13 @@ object EntityDtoTemplateRenderer {
 
     fun renderTemplate(model: DtoEntityRenderModel): String {
         return """
+          |package my.example.businessproject.dto
           |
           |
           |
           |
-          |package org.codeblessing.typicaltemplate.example
+          |
+          |
           |
           |
           |data class ${model.kotlinDtoClassName}( 

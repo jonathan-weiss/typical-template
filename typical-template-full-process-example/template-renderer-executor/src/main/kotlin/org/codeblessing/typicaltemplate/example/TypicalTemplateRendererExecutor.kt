@@ -1,7 +1,7 @@
 package org.codeblessing.typicaltemplate.example
 
-import examples.EntityDtoTemplateRenderer
-import examples.model.DtoEntityRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
+import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
