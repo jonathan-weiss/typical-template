@@ -32,7 +32,7 @@ object TemplateRendererContentCreator {
     }
 
     private fun rawContent(ctx: TemplateCreationContext, textFragment: TextFragment): String {
-        return ctx.tokenReplacementStack.replaceInString(textFragment.text).addMargin(ctx)
+        return ctx.nestingStack.replaceInString(textFragment.text).addMargin(ctx)
     }
 
     private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment): String {
@@ -54,12 +54,12 @@ object TemplateRendererContentCreator {
             )
             resultMap + (searchValue to placeholderExpression)
         }
-        ctx.tokenReplacementStack.pushReplacements(replacements)
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(replacements = replacements))
         return NO_CONTENT_TO_WRITE
     }
 
     private fun processEndReplaceValueByExpression(ctx: TemplateCreationContext): String {
-        ctx.tokenReplacementStack.popReplacements()
+        ctx.nestingStack.popNestingContext()
         return NO_CONTENT_TO_WRITE
     }
 
@@ -138,7 +138,7 @@ object TemplateRendererContentCreator {
     private data class TemplateCreationContext(
         val templateRenderer: TemplateRenderer,
         val identLevel: IdentLevel = IdentLevel(),
-        val tokenReplacementStack: TokenReplacementsStack = TokenReplacementsStack()
+        val nestingStack: CommandNestingContextStack = CommandNestingContextStack()
     )
 
     private class IdentLevel {
@@ -156,11 +156,18 @@ object TemplateRendererContentCreator {
             level--
             return this
         }
-
     }
 
-    private class TokenReplacementsStack {
-        private val replacementsStack: MutableList<Map<String, String>> = mutableListOf()
+    private class CommandNestingContextStack {
+        private val nestingStack: MutableList<CommandNestingContext> = mutableListOf()
+
+        fun pushNestingContext(ctx: CommandNestingContext) {
+            nestingStack.add(ctx)
+        }
+
+        fun popNestingContext() {
+            nestingStack.removeLast()
+        }
 
         fun replaceInString(text: String): String {
             var resultText = text
@@ -172,17 +179,15 @@ object TemplateRendererContentCreator {
         }
 
         private fun createReplacementMap(): Map<String, String> {
-            return replacementsStack.fold(emptyMap()) { acc, replacementMap ->
-                acc + replacementMap
+            return nestingStack.fold(emptyMap()) { acc, nestingCtx ->
+                acc + nestingCtx.replacements
             }
         }
+    }
 
-        fun pushReplacements(replacements: Map<String, String>) {
-            replacementsStack.add(replacements)
-        }
+    private class CommandNestingContext(
+        val replacements: Map<String, String> = emptyMap()
+    ) {
 
-        fun popReplacements() {
-            replacementsStack.removeLast()
-        }
     }
 }
