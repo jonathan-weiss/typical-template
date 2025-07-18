@@ -278,7 +278,7 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize removes begin of line if marker ignore-line-before is set`() {
-            val input = "start here\na stripped begin of line /* @#ignore-line-before @@tt-block */ but not at the end of line\n and a stripped begin of line // @#ignore-line-before @@tt-line\n but a new line at the end of line."
+            val input = "start here\na stripped begin of line /* @@<# @@tt-block */ but not at the end of line\n and a stripped begin of line // @@<# @@tt-line\n but a new line at the end of line."
             val expected = listOf(
                 PlainContentToken("start here"),
                 TemplateCommentToken("@@tt-block"),
@@ -291,7 +291,7 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize removes end of line if marker ignore-line-after is set`() {
-            val input = "start here\nand keep begin of line /* @@tt-block @#ignore-line-after */ but do not keep the end of line\n and again keep begin of line // @@tt-line @#ignore-line-after \n but remove the line-break."
+            val input = "start here\nand keep begin of line /* @@tt-block @@># */ but do not keep the end of line\n and again keep begin of line // @@tt-line @@># \n but remove the line-break."
             val expected = listOf(
                 PlainContentToken("start here\nand keep begin of line "),
                 TemplateCommentToken("@@tt-block"),
@@ -304,7 +304,7 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize removes begin and end of line if marker ignore-line-before and ignore-line-after is set`() {
-            val input = "start here\na stripped begin of line /* @#ignore-line-before @@tt-block  @#ignore-line-after  */ and also at the end of line\nbut no line in between\n and a stripped begin of line // @#ignore-line-before @@tt-line @#ignore-line-after  \nbut not a comment free line."
+            val input = "start here\na stripped begin of line /* @@<# @@tt-block  @@>#  */ and also at the end of line\nbut no line in between\n and a stripped begin of line // @@<# @@tt-line @@>#  \nbut not a comment free line."
             val expected = listOf(
                 PlainContentToken("start here"),
                 TemplateCommentToken("@@tt-block"),

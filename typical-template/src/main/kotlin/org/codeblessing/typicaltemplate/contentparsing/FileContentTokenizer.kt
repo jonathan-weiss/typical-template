@@ -2,8 +2,8 @@ package org.codeblessing.typicaltemplate.contentparsing
 
 object FileContentTokenizer {
 
-    const val IGNORE_LINE_BEFORE_MARKER = "@#ignore-line-before"
-    const val IGNORE_LINE_AFTER_MARKER = "@#ignore-line-after"
+    const val IGNORE_LINE_BEFORE_MARKER = "@@<#"
+    const val IGNORE_LINE_AFTER_MARKER = "@@>#"
     const val TT_COMMAND_MARKER = "@@tt-"
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_BEGIN_OF_FILE = "$ALL_LINE_BREAKS|^"
