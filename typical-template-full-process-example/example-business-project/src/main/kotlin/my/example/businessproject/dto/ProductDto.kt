@@ -17,7 +17,12 @@ package my.example.businessproject.dto
 
 /* @@<# @@tt-replace-value-by-expression [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ] @@># */
 data class ProductDto( // @@tt-end-replace-value-by-expression
-/* @@<# @@tt-replace-value-by-expression [ searchValue="product" replaceByExpression="model.entityPrimaryField" ] @@># */
-    val productCode: String,// @@tt-end-replace-value-by-expression
+/* @@<# @@tt-foreach [ iteratorExpression="model.fields" loopVariable="field" ] @@># */
+/* @@<# @@tt-replace-value-by-expression [ searchValue="productCode" replaceByExpression="field.fieldName" ] [ searchValue="String" replaceByExpression="field.fieldTypeName" ] @@># */
+    val productCode: String,
+/* @@<# @@tt-end-replace-value-by-expression @@># */
+/* @@<# @@tt-end-foreach @@># */
+/* @@<# @@tt-ignore-text @@># */
     val productName: String,
+/* @@<# @@tt-end-ignore-text @@># */
 )

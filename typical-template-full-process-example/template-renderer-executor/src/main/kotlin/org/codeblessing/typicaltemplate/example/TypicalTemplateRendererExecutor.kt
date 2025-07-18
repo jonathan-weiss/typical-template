@@ -2,7 +2,10 @@ package org.codeblessing.typicaltemplate.example
 
 import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.DtoFieldRenderModel
 import java.nio.file.Paths
+import java.util.Locale
+import java.util.Locale.getDefault
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import kotlin.system.exitProcess
@@ -46,8 +49,22 @@ fun main(args: Array<String>) {
 }
 
 private fun createDtoEntity(entityName: String): DtoEntityRenderModel {
+    val entityNameDecapitalized = entityName.replaceFirstChar { it.lowercase(getDefault()) }
     return DtoEntityRenderModel(
-        entityName = entityName
+        entityName = entityName,
+        fields = listOf(
+            createDtoField("${entityNameDecapitalized}Key"),
+            createDtoField("${entityNameDecapitalized}Ean", type = "Int"),
+            createDtoField("${entityNameDecapitalized}Text"),
+            createDtoField("${entityNameDecapitalized}Description"),
+        )
     )
 }
 
+private fun createDtoField(fieldName: String, type: String = "String", isNullable: Boolean = true): DtoFieldRenderModel {
+    return DtoFieldRenderModel(
+        fieldName = fieldName,
+        fieldTypeName = type,
+        isNullable = isNullable
+    )
+}

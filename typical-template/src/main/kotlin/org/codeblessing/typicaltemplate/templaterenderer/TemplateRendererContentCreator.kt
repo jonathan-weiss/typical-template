@@ -79,7 +79,7 @@ object TemplateRendererContentCreator {
         ctx.nestingStack.pushNestingContext(CommandNestingContext(command))
         return startStatementInMultilineText(
             ctx = ctx,
-            statement = "if(${command.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
+            statement = "if(${command.attribute(CommandAttributeKey.CONDITION_EXPRESSION)}) {",
         )
     }
 
@@ -89,7 +89,7 @@ object TemplateRendererContentCreator {
     ): String {
         return intermediateStatementInMultilineText(
             ctx = ctx,
-            statement = "else if(${keywordCommand.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
+            statement = "} else if(${keywordCommand.attribute(CommandAttributeKey.CONDITION_EXPRESSION)}) {",
         )
     }
 
@@ -99,7 +99,7 @@ object TemplateRendererContentCreator {
         ctx.nestingStack.markLastElementHasElseClause()
         return intermediateStatementInMultilineText(
             ctx = ctx,
-            statement = "else"
+            statement = "} else {"
         )
     }
 
@@ -109,13 +109,13 @@ object TemplateRendererContentCreator {
         val hasElseClause = ctx.nestingStack.hasElseClause()
         ctx.nestingStack.popNestingContext()
         if(hasElseClause) {
-            return endStatementInMultilineText(ctx = ctx)
+            return endStatementInMultilineText(ctx = ctx, statement = "}")
         } else {
             val elseClause = intermediateStatementInMultilineText(
                 ctx = ctx,
-                statement = "else"
+                statement = "} else {"
             )
-            val endIfClause = endStatementInMultilineText(ctx = ctx)
+            val endIfClause = endStatementInMultilineText(ctx = ctx, statement = "}")
 
             return elseClause + endIfClause
         }
@@ -136,7 +136,7 @@ object TemplateRendererContentCreator {
         ctx: TemplateCreationContext,
     ): String {
         ctx.nestingStack.popNestingContext()
-        return endStatementInMultilineText(ctx = ctx)
+        return endStatementInMultilineText(ctx = ctx, statement = "}")
     }
 
     private fun processIgnoreText(
@@ -162,18 +162,18 @@ object TemplateRendererContentCreator {
         return $$"$${endExpressionBlockWithText(ctx)} $$statement $${startExpressionBlockWithText(ctx)}"
     }
 
-    private fun endStatementInMultilineText(ctx: TemplateCreationContext): String {
-        return $$"$${endExpressionBlockWithText(ctx)} }"
+    private fun endStatementInMultilineText(ctx: TemplateCreationContext, statement: String): String {
+        return $$"$${endExpressionBlockWithText(ctx)} $$statement }"
     }
 
     private fun startExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.increaseLevel()
-        return $$"{ $$MULTILINE_STRING_DELIMITER"
+        return MULTILINE_STRING_DELIMITER
     }
 
     private fun endExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.decreaseLevel()
-        return $$"$$LINE_BREAK$$MULTILINE_STRING_DELIMITER }"
+        return $$"$$LINE_BREAK$$MULTILINE_STRING_DELIMITER"
     }
 
     private fun createExpressionPlaceholder(expression: String): String {

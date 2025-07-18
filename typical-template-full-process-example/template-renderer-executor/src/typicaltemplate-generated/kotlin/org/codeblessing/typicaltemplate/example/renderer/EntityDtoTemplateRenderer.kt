@@ -16,9 +16,8 @@ object EntityDtoTemplateRenderer {
           |package my.example.businessproject.dto
           |
           |data class ${model.kotlinDtoClassName}( 
-          |    val ${model.entityPrimaryField}Code: String,
-          |    val productName: String,
-          |)
+          |${ model.fields.joinToString("") { field ->  """    val ${field.fieldName}: ${field.fieldTypeName},
+          """ } })
           |
         """.trimMargin(marginPrefix = "|")
     }
