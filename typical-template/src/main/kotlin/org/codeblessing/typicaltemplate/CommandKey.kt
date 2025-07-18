@@ -54,6 +54,16 @@ enum class CommandKey(
         keyword = "end-if-condition",
         correspondingOpeningCommandKey = IF_CONDITION,
     ),
+    FOREACH(
+        keyword = "foreach",
+        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE),
+        optionalAttributes = setOf(),
+    ),
+    END_FOREACH(
+        keyword = "end-foreach",
+        correspondingOpeningCommandKey = FOREACH,
+    ),
     ;
 
     companion object {

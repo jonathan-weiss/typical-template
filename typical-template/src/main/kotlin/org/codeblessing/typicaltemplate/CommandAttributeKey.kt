@@ -9,6 +9,8 @@ enum class CommandAttributeKey(val keyAsString: String) {
     REPLACE_BY_EXPRESSION("replaceByExpression"),
     SEARCH_VALUE("searchValue"),
     CONDITION_EXPRESSION("conditionExpression"),
+    LOOP_ITERABLE_EXPRESSION("iteratorExpression"),
+    LOOP_VARIABLE("loopVariable"),
     ;
 
     companion object {

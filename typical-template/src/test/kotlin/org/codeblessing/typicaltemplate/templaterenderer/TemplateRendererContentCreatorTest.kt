@@ -126,11 +126,6 @@ class TemplateRendererContentCreatorTest {
         .addEndIfCommand()
         .addText(
             """
-                ) // end of characteristics list
-                """.trimIndent(),
-        )
-        .addText(
-            """
 
                 // test the if..else-if..else..end-if statement
 
@@ -161,6 +156,21 @@ class TemplateRendererContentCreatorTest {
                 """.trimIndent(),
         )
         .addEndIfCommand()
+        .addText(
+            """
+
+                // test the foreach..end-foreach statement
+
+                """.trimIndent(),
+        )
+        .addForeachCommand("myItem")
+        .addText(
+            """
+                
+                      "// here we access myItem in the loop",
+                """.trimIndent(),
+        )
+        .addEndForeachCommand()
         .build()
 
     private val expectedContent = ClasspathResourceLoader.loadClasspathResource(

@@ -110,6 +110,22 @@ class CommandChainBuilder private constructor() {
             .addCommandToChain()
     }
 
+    fun addForeachCommand(
+        loopVariable: String = "item",
+        loopIterable: String = "myList",
+    ): CommandChainBuilder {
+        return this.createCommand(CommandKey.FOREACH)
+            .withAttribute(LOOP_VARIABLE, loopVariable)
+            .withAttribute(LOOP_ITERABLE_EXPRESSION, loopIterable)
+            .addCommandToChain()
+    }
+
+
+    fun addEndForeachCommand(): CommandChainBuilder {
+        return this.createCommand(CommandKey.END_FOREACH)
+            .addCommandToChain()
+    }
+
 
     class KeywordCommandBuilder(
         private val commandChainBuilder: CommandChainBuilder,

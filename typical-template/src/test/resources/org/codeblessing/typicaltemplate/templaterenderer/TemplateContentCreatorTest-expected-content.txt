@@ -25,10 +25,14 @@
 """ } else if(model.isProtected()) { """"protected"
 """ } else if(model.isPublic()) { """"public"
 """ } else { """
-""" } }) // end of characteristics list
+""" } }
 |// test the if..else-if..else..end-if statement
 |
 |val mainCharacteristic: String = ${ if(model.isEnum()) { """"enum-class",
 """ } else if(model.isDataClass()) { """"data-class",
 """ } else { """"regular-class",
+""" } }
+|// test the foreach..end-foreach statement
+|${ myList.joinToString("") { myItem ->  { """
+    |"// here we access myItem in the loop",
 """ } }

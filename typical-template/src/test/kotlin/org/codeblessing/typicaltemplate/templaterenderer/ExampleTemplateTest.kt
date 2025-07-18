@@ -26,8 +26,8 @@ class ExampleTemplateTest {
                 |
                 |class ${model.entityName}Dto(
                ${
-                model.entityFields.joinToString("") {
-                    """|   val ${it.fieldNameDecapitalized}: ${it.fieldName}${if (it.isNullable) "?" else ""},
+                model.entityFields.joinToString("") { myModel -> 
+                    """|   val ${myModel.fieldNameDecapitalized}: ${myModel.fieldName}${if (myModel.isNullable) "?" else ""},
                     """
                 }
             }|) {

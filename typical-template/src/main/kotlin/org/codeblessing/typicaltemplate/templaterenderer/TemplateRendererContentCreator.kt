@@ -45,6 +45,8 @@ object TemplateRendererContentCreator {
             CommandKey.ELSE_IF_CONDITION -> processElseIfCondition(ctx, command.keywordCommand)
             CommandKey.ELSE_CLAUSE -> processElseCondition(ctx)
             CommandKey.END_IF_CONDITION -> processEndIf(ctx)
+            CommandKey.FOREACH -> processForeach(ctx, command.keywordCommand)
+            CommandKey.END_FOREACH -> processEndForeach(ctx)
         }
     }
 
@@ -112,6 +114,25 @@ object TemplateRendererContentCreator {
 
             return elseClause + endIfClause
         }
+    }
+
+    private fun processForeach(
+        ctx: TemplateCreationContext,
+        command: KeywordCommand,
+    ): String {
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(command))
+        return startStatementInMultilineText(
+            ctx = ctx,
+            statement = "${command.attribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION)}.joinToString(\"\") { ${command.attribute(CommandAttributeKey.LOOP_VARIABLE)} -> "
+        )
+    }
+
+
+    private fun processEndForeach(
+        ctx: TemplateCreationContext,
+    ): String {
+        ctx.nestingStack.popNestingContext()
+        return endStatementInMultilineText(ctx = ctx)
     }
 
     private fun startStatementInMultilineText(ctx: TemplateCreationContext, statement: String): String {
