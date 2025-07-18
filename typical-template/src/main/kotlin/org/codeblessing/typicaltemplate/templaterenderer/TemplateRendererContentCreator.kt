@@ -128,7 +128,7 @@ object TemplateRendererContentCreator {
         ctx.nestingStack.pushNestingContext(CommandNestingContext(command))
         return startStatementInMultilineText(
             ctx = ctx,
-            statement = "${command.attribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION)}.joinToString(\"\") { ${command.attribute(CommandAttributeKey.LOOP_VARIABLE)} -> "
+            statement = "${command.attribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION)}.joinToString(\"\") { ${command.attribute(CommandAttributeKey.LOOP_VARIABLE_NAME)} -> "
         )
     }
 

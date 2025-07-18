@@ -115,7 +115,7 @@ class CommandChainBuilder private constructor() {
         loopIterable: String = "myList",
     ): CommandChainBuilder {
         return this.createCommand(CommandKey.FOREACH)
-            .withAttribute(LOOP_VARIABLE, loopVariable)
+            .withAttribute(LOOP_VARIABLE_NAME, loopVariable)
             .withAttribute(LOOP_ITERABLE_EXPRESSION, loopIterable)
             .addCommandToChain()
     }

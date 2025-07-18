@@ -10,7 +10,7 @@ enum class CommandAttributeKey(val keyAsString: String) {
     SEARCH_VALUE("searchValue"),
     CONDITION_EXPRESSION("conditionExpression"),
     LOOP_ITERABLE_EXPRESSION("iteratorExpression"),
-    LOOP_VARIABLE("loopVariable"),
+    LOOP_VARIABLE_NAME("loopVariable"),
     ;
 
     companion object {

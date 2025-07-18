@@ -57,7 +57,7 @@ enum class CommandKey(
     FOREACH(
         keyword = "foreach",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE),
+        requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE_NAME),
         optionalAttributes = setOf(),
     ),
     END_FOREACH(
