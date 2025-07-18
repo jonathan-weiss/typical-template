@@ -23,7 +23,7 @@ class TemplateRendererContentCreatorTest {
                 this is a test B 2.
             """.trimIndent()
         )
-        .addReplaceValueByFieldCommand(
+        .addReplaceValueByExpressionCommand(
             "author" to "model.entityNameDecapitalized",
             "Author" to "model.entityName",
         )
@@ -35,7 +35,7 @@ class TemplateRendererContentCreatorTest {
                 }
                 """.trimIndent()
         )
-        .addIfFieldCommand("model.isEntityNullable()")
+        .addIfCommand("model.isEntityNullable()")
         .addText(
             """
                 
@@ -44,19 +44,19 @@ class TemplateRendererContentCreatorTest {
                 }
                 """.trimIndent()
         )
-        .addEndIfFieldCommand()
-        .addEndReplaceValueByFieldCommand()
+        .addEndIfCommand()
+        .addEndReplaceValueByExpressionCommand()
         .addText(
             """
                 
                 This author and Author should not be replaced.
                 """.trimIndent()
         )
-        .addReplaceValueByFieldCommand(
+        .addReplaceValueByExpressionCommand(
             "author" to "model.entityNameDecapitalized",
             "Author" to "entityName",
         )
-        .addReplaceValueByFieldCommand(
+        .addReplaceValueByExpressionCommand(
             "Author" to "model.entityNameCapitalized",
         )
         .addText(
@@ -67,8 +67,100 @@ class TemplateRendererContentCreatorTest {
                 }
                 """.trimIndent()
         )
-        .addEndReplaceValueByFieldCommand()
-        .addEndReplaceValueByFieldCommand()
+        .addEndReplaceValueByExpressionCommand()
+        .addEndReplaceValueByExpressionCommand()
+        .addText(
+            """
+
+                // test the if..else..end-if statement
+
+                """.trimIndent(),
+        )
+
+        .addIfCommand("model.isSerializable()")
+        .addText(
+            """
+                
+                fun isSerialize(): Boolean = true
+                """.trimIndent(),
+        )
+        .addElseCommand()
+        .addText(
+            """
+
+                fun isSerialize(): Boolean = false
+                """.trimIndent(),
+        )
+        .addEndIfCommand()
+        .addText(
+            """
+
+                // test the if..else-if..end-if statement
+
+                """.trimIndent(),
+        )
+        .addText(
+            """
+
+                val visibility: String = 
+                """.trimIndent(),
+        )
+        .addIfCommand("model.isPrivate()")
+        .addText(
+            """
+                      "private"
+                """.trimIndent(),
+        )
+        .addElseIfCommand("model.isProtected()")
+        .addText(
+            """
+                      "protected"
+                """.trimIndent(),
+        )
+        .addElseIfCommand("model.isPublic()")
+        .addText(
+            """
+                      "public"
+                """.trimIndent(),
+        )
+        .addEndIfCommand()
+        .addText(
+            """
+                ) // end of characteristics list
+                """.trimIndent(),
+        )
+        .addText(
+            """
+
+                // test the if..else-if..else..end-if statement
+
+                """.trimIndent(),
+        )
+        .addText(
+            """
+
+                val mainCharacteristic: String = 
+                """.trimIndent(),
+        )
+        .addIfCommand("model.isEnum()")
+        .addText(
+            """
+                      "enum-class",
+                """.trimIndent(),
+        )
+        .addElseIfCommand("model.isDataClass()")
+        .addText(
+            """
+                      "data-class",
+                """.trimIndent(),
+        )
+        .addElseCommand()
+        .addText(
+            """
+                      "regular-class",
+                """.trimIndent(),
+        )
+        .addEndIfCommand()
         .build()
 
     private val expectedContent = ClasspathResourceLoader.loadClasspathResource(
@@ -77,7 +169,8 @@ class TemplateRendererContentCreatorTest {
 
     @Test
     fun `create template content with various commands`() {
-        val kotlinClassContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(createTemplateWithFragments())
+        val kotlinClassContent =
+            TemplateRendererContentCreator.createMultilineStringTemplateContent(createTemplateWithFragments())
         println("---------------------")
         println(kotlinClassContent)
         println("---------------------")
@@ -97,7 +190,7 @@ class TemplateRendererContentCreatorTest {
                         classPackageName = "org.codeblessing.typicaltemplate.template",
                     ),
                     modelName = "model",
-                )
+                ),
             ),
             templateFragments = fragments,
         )

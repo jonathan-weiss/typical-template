@@ -11,17 +11,12 @@ object CommandChainValidator {
 
     fun validateCommands(templateFragments: List<TemplateFragment>): List<TemplateRenderer> {
         val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
+        val templateModels = assureNoDuplicateModelNames(templateFragments)
         val templateClass = templateRendererKeywordCommand
             .toClassDescription(
                 classNameAttribute = TEMPLATE_RENDERER_CLASS_NAME,
                 packageNameAttribute = TEMPLATE_RENDERER_PACKAGE_NAME
             )
-        val templateModels = templateFragments
-            .filterIsInstance<CommandFragment>()
-            .filter { it.isModelDefinitionCommand() }
-            .flatMap { it.keywordCommand.toModelDescription() }
-
-
 
         val templateFragmentsToApply = mutableListOf<TemplateFragment>()
 
@@ -67,6 +62,31 @@ object CommandChainValidator {
         return listOf(templateRenderer)
 
     }
+
+    private fun assureNoDuplicateModelNames(
+        templateFragments: List<TemplateFragment>
+    ): List<ModelDescription> {
+
+        val modelFragments = templateFragments
+            .filterIsInstance<CommandFragment>()
+            .filter { it.isModelDefinitionCommand() }
+
+        val usedModelNames = mutableSetOf<String>()
+        for(modelFragment in modelFragments) {
+            val modelDescriptions = modelFragment.keywordCommand.toModelDescription()
+            for(modelDescription in modelDescriptions) {
+                if(modelDescription.modelName in usedModelNames) {
+                    throw TemplateParsingException(
+                        lineNumbers = modelFragment.lineNumbers,
+                        msg = "The model name ${modelDescription.modelName} is used more than once."
+                    )
+                }
+                usedModelNames.add(modelDescription.modelName)
+            }
+        }
+        return modelFragments.flatMap { it.keywordCommand.toModelDescription() }
+    }
+
 
     private fun assureFirstAndOnlyCommandIsTemplateDefinition(
         templateFragments: List<TemplateFragment>

@@ -21,12 +21,12 @@ object EntityDto {
           |  val ${myModel.entityField}: String,
           |  val lastname: String,
           |) {
-          |${ if(myModel.isGenerateToString())  { """
+          |${ if(myModel.isGenerateToString()) { """
               |  fun toString(): String {
               |    return "${myModel.entityCapitalized}[${super.toString()}]"
               |  }
               |
-          """ }  else  { """
+          """ } else { """
           """ } }
           |
           |}

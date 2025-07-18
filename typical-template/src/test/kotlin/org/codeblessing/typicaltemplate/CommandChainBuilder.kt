@@ -1,9 +1,6 @@
 package org.codeblessing.typicaltemplate
 
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME
-import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME
+import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 import org.codeblessing.typicaltemplate.contentparsing.AttributeGroup
 import org.codeblessing.typicaltemplate.contentparsing.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
@@ -37,57 +34,78 @@ class CommandChainBuilder private constructor() {
         return commandFragments
     }
 
-    fun addTemplateCommand(
-        templateClassName: String = "MyTemplateClass",
-        modelClassName: String = "MyModelClass",
-        templatePackageName: String = "org.example.template",
-        modelPackageName: String = "org.example.model",
+    fun addTemplateRendererCommand(
+        templateRendererClassName: String = "MyTemplateClass",
+        templateRendererPackageName: String = "org.example.template",
     ): CommandChainBuilder {
         return this.createCommand(CommandKey.TEMPLATE_RENDERER)
-            .withAttribute(TEMPLATE_RENDERER_CLASS_NAME, templateClassName)
-            .withAttribute(TEMPLATE_RENDERER_PACKAGE_NAME, templatePackageName)
+            .withAttribute(TEMPLATE_RENDERER_CLASS_NAME, templateRendererClassName)
+            .withAttribute(TEMPLATE_RENDERER_PACKAGE_NAME, templateRendererPackageName)
+            .addCommandToChain()
+    }
+
+    fun addTemplateModel(
+        modelName: String = "model",
+        modelClassName: String = "MyModelClass",
+        modelPackageName: String = "org.example.model",
+    ): CommandChainBuilder {
+        return this.createCommand(CommandKey.TEMPLATE_MODEL)
+            .withAttribute(TEMPLATE_MODEL_NAME, modelName)
             .withAttribute(TEMPLATE_MODEL_CLASS_NAME, modelClassName)
             .withAttribute(TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
             .addCommandToChain()
     }
 
-    fun addReplaceValueByFieldCommand(
+    fun addReplaceValueByExpressionCommand(
         searchValue: String = "search",
         fieldName: String = "myField",
     ): CommandChainBuilder {
         return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
-            .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-            .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
+            .withAttribute(SEARCH_VALUE, searchValue)
+            .withAttribute(REPLACE_BY_EXPRESSION, fieldName)
             .addCommandToChain()
     }
 
-    fun addReplaceValueByFieldCommand(
+    fun addReplaceValueByExpressionCommand(
         vararg replacements: Pair<String, String>,
     ): CommandChainBuilder {
         var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
         replacements.forEach { (searchValue, fieldName) ->
             builder = builder
-                .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-                .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
+                .withAttribute(SEARCH_VALUE, searchValue)
+                .withAttribute(REPLACE_BY_EXPRESSION, fieldName)
                 .nextAttributeGroup()
         }
         return builder.addCommandToChain()
     }
 
-    fun addEndReplaceValueByFieldCommand(): CommandChainBuilder {
+    fun addEndReplaceValueByExpressionCommand(): CommandChainBuilder {
         return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
             .addCommandToChain()
     }
 
-    fun addIfFieldCommand(
-        conditionFieldName: String = "myConditionField",
+    fun addIfCommand(
+        conditionExpression: String = "myConditionExpression",
     ): CommandChainBuilder {
         return this.createCommand(CommandKey.IF_CONDITION)
-            .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionFieldName)
+            .withAttribute(CONDITION_EXPRESSION, conditionExpression)
             .addCommandToChain()
     }
 
-    fun addEndIfFieldCommand(): CommandChainBuilder {
+    fun addElseIfCommand(
+        conditionExpression: String = "myOtherConditionExpression",
+    ): CommandChainBuilder {
+        return this.createCommand(CommandKey.ELSE_IF_CONDITION)
+            .withAttribute(CONDITION_EXPRESSION, conditionExpression)
+            .addCommandToChain()
+    }
+
+    fun addElseCommand(): CommandChainBuilder {
+        return this.createCommand(CommandKey.ELSE_CLAUSE)
+            .addCommandToChain()
+    }
+
+    fun addEndIfCommand(): CommandChainBuilder {
         return this.createCommand(CommandKey.END_IF_CONDITION)
             .addCommandToChain()
     }

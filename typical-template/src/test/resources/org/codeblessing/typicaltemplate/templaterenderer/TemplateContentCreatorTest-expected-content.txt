@@ -3,13 +3,32 @@
 |this is a test B 2.
 |fun get${model.entityName}(): ${model.entityName} {
 |    return ${model.entityNameDecapitalized};
-|}${ if(model.isEntityNullable())  { """
+|}${ if(model.isEntityNullable()) { """
     |fun get${model.entityName}Nullable(): ${model.entityName}? {
     |    return ${model.entityNameDecapitalized}
     |}
-""" }  else  { """
+""" } else { """
 """ } }
 |This author and Author should not be replaced.
 |fun get${model.entityNameCapitalized}(): ${model.entityNameCapitalized} {
 |    return ${model.entityNameDecapitalized}
 |}
+|// test the if..else..end-if statement
+|${ if(model.isSerializable()) { """
+    |fun isSerialize(): Boolean = true
+""" } else { """
+    |fun isSerialize(): Boolean = false
+""" } }
+|// test the if..else-if..end-if statement
+|
+|val visibility: String = ${ if(model.isPrivate()) { """"private"
+""" } else if(model.isProtected()) { """"protected"
+""" } else if(model.isPublic()) { """"public"
+""" } else { """
+""" } }) // end of characteristics list
+|// test the if..else-if..else..end-if statement
+|
+|val mainCharacteristic: String = ${ if(model.isEnum()) { """"enum-class",
+""" } else if(model.isDataClass()) { """"data-class",
+""" } else { """"regular-class",
+""" } }

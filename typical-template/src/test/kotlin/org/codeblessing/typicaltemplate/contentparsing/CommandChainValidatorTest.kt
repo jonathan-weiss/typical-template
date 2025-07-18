@@ -11,11 +11,11 @@ class CommandChainValidatorTest {
     fun `valid template chain is accepted`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
-            .addTemplateCommand()
+            .addTemplateRendererCommand()
             .addText("here is text")
-            .addReplaceValueByFieldCommand()
+            .addReplaceValueByExpressionCommand()
             .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndReplaceValueByFieldCommand()
+            .addEndReplaceValueByExpressionCommand()
             .build()
 
         val templates = CommandChainValidator.validateCommands(fragments)
@@ -38,8 +38,23 @@ class CommandChainValidatorTest {
     fun `throws for multiple template definition commands`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
-            .addTemplateCommand()
-            .addTemplateCommand()
+            .addTemplateRendererCommand()
+            .addTemplateRendererCommand()
+            .addTemplateModel()
+            .build()
+
+        assertThrows(TemplateParsingException::class.java) {
+            CommandChainValidator.validateCommands(fragments)
+        }
+    }
+
+    @Test
+    fun `throws for multiple model commands with same model name`() {
+        val fragments = CommandChainBuilder.create()
+            .addText("here is text")
+            .addTemplateRendererCommand()
+            .addTemplateModel(modelName = "myModel")
+            .addTemplateModel(modelName = "myModel")
             .build()
 
         assertThrows(TemplateParsingException::class.java) {
@@ -51,9 +66,9 @@ class CommandChainValidatorTest {
     fun `throws if first command is not template definition`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
-            .addReplaceValueByFieldCommand()
-            .addEndReplaceValueByFieldCommand()
-            .addTemplateCommand()
+            .addReplaceValueByExpressionCommand()
+            .addEndReplaceValueByExpressionCommand()
+            .addTemplateRendererCommand()
             .build()
 
         assertThrows(TemplateParsingException::class.java) {
@@ -66,10 +81,10 @@ class CommandChainValidatorTest {
     fun `throws for unmatched closing command`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
-            .addTemplateCommand()
-            .addReplaceValueByFieldCommand()
+            .addTemplateRendererCommand()
+            .addReplaceValueByExpressionCommand()
             .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndReplaceValueByFieldCommand()
+            .addEndReplaceValueByExpressionCommand()
             .build()
 
         assertThrows(TemplateParsingException::class.java) {
@@ -81,8 +96,8 @@ class CommandChainValidatorTest {
     fun `throws for unclosed opening command`() {
         val fragments = CommandChainBuilder.create()
             .addText("here is text")
-            .addTemplateCommand()
-            .addReplaceValueByFieldCommand()
+            .addTemplateRendererCommand()
+            .addReplaceValueByExpressionCommand()
             .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
             .build()
 

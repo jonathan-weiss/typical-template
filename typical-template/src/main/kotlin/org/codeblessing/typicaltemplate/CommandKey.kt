@@ -38,6 +38,17 @@ enum class CommandKey(
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
     ),
+    ELSE_IF_CONDITION(
+        keyword = "else-if-condition",
+        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        requiredAttributes = setOf(CONDITION_EXPRESSION),
+        optionalAttributes = setOf(),
+        // TODO make that this is only possible in a direct if/end-if clause
+    ),
+    ELSE_CLAUSE(
+        keyword = "else-of-if-condition",
+        // TODO make that this is only possible in a direct if/end-if clause
+    ),
     END_IF_CONDITION(
         keyword = "end-if-condition",
         correspondingOpeningCommandKey = IF_CONDITION,

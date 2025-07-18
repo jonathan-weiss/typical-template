@@ -42,7 +42,9 @@ object TemplateRendererContentCreator {
             CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, command.keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)
             CommandKey.IF_CONDITION -> processIfCondition(ctx, command.keywordCommand)
-            CommandKey.END_IF_CONDITION -> processEndIfConditionWithoutElse(ctx)
+            CommandKey.ELSE_IF_CONDITION -> processElseIfCondition(ctx, command.keywordCommand)
+            CommandKey.ELSE_CLAUSE -> processElseCondition(ctx)
+            CommandKey.END_IF_CONDITION -> processEndIf(ctx)
         }
     }
 
@@ -54,7 +56,7 @@ object TemplateRendererContentCreator {
             )
             resultMap + (searchValue to placeholderExpression)
         }
-        ctx.nestingStack.pushNestingContext(CommandNestingContext(replacements = replacements))
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(command, replacements))
         return NO_CONTENT_TO_WRITE
     }
 
@@ -65,30 +67,51 @@ object TemplateRendererContentCreator {
 
     private fun processIfCondition(
         ctx: TemplateCreationContext,
-        keywordCommand: KeywordCommand,
+        command: KeywordCommand,
     ): String {
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(command))
         return startStatementInMultilineText(
             ctx = ctx,
-            statement = "if(${keywordCommand.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
+            statement = "if(${command.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
         )
     }
 
-    private fun processEndIfContainingElseField(
+    private fun processElseIfCondition(
         ctx: TemplateCreationContext,
+        keywordCommand: KeywordCommand,
     ): String {
-        return endStatementInMultilineText(ctx = ctx)
+        return intermediateStatementInMultilineText(
+            ctx = ctx,
+            statement = "else if(${keywordCommand.attribute(CommandAttributeKey.CONDITION_EXPRESSION)})",
+        )
     }
 
-    private fun processEndIfConditionWithoutElse(
+    private fun processElseCondition(
         ctx: TemplateCreationContext,
     ): String {
-        val elseClause = intermediateStatementInMultilineText(
+        ctx.nestingStack.markLastElementHasElseClause()
+        return intermediateStatementInMultilineText(
             ctx = ctx,
             statement = "else"
         )
-        val endIfClause = endStatementInMultilineText(ctx = ctx)
+    }
 
-        return elseClause + endIfClause
+    private fun processEndIf(
+        ctx: TemplateCreationContext,
+    ): String {
+        val hasElseClause = ctx.nestingStack.hasElseClause()
+        ctx.nestingStack.popNestingContext()
+        if(hasElseClause) {
+            return endStatementInMultilineText(ctx = ctx)
+        } else {
+            val elseClause = intermediateStatementInMultilineText(
+                ctx = ctx,
+                statement = "else"
+            )
+            val endIfClause = endStatementInMultilineText(ctx = ctx)
+
+            return elseClause + endIfClause
+        }
     }
 
     private fun startStatementInMultilineText(ctx: TemplateCreationContext, statement: String): String {
@@ -96,7 +119,7 @@ object TemplateRendererContentCreator {
     }
 
     private fun intermediateStatementInMultilineText(ctx: TemplateCreationContext, statement: String): String {
-        return $$"$${endExpressionBlockWithText(ctx)}  $$statement $${startExpressionBlockWithText(ctx)}"
+        return $$"$${endExpressionBlockWithText(ctx)} $$statement $${startExpressionBlockWithText(ctx)}"
     }
 
     private fun endStatementInMultilineText(ctx: TemplateCreationContext): String {
@@ -105,7 +128,7 @@ object TemplateRendererContentCreator {
 
     private fun startExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.increaseLevel()
-        return $$" { $$MULTILINE_STRING_DELIMITER"
+        return $$"{ $$MULTILINE_STRING_DELIMITER"
     }
 
     private fun endExpressionBlockWithText(ctx: TemplateCreationContext): String {
@@ -183,11 +206,29 @@ object TemplateRendererContentCreator {
                 acc + nestingCtx.replacements
             }
         }
+
+        fun markLastElementHasElseClause() {
+            nestingStack.last().markLastElementHasElseClause()
+        }
+
+
+        fun hasElseClause(): Boolean {
+            return nestingStack.last().hasElseClause
+        }
     }
 
     private class CommandNestingContext(
-        val replacements: Map<String, String> = emptyMap()
+        val command: KeywordCommand,
+        val replacements: Map<String, String> = emptyMap(),
+        var hasElseClause: Boolean = false,
     ) {
+        fun markLastElementHasElseClause() {
+            require(command.commandKey == CommandKey.IF_CONDITION) {
+                "try to change the 'hasElseClause' flag " +
+                        "but nesting element is not ${CommandKey.IF_CONDITION} but ${command.commandKey}"
+            }
+            hasElseClause = true
+        }
 
     }
 }
