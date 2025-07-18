@@ -15,15 +15,7 @@ object EntityDtoTemplateRenderer {
         return """
           |package my.example.businessproject.dto
           |
-          |
-          |
-          |
-          |
-          |
-          |
-          |
           |data class ${model.kotlinDtoClassName}( 
-          |
           |    val ${model.entityPrimaryField}Code: String,
           |    val productName: String,
           |)

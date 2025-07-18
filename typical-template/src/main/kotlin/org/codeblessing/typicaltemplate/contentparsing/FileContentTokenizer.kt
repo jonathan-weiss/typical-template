@@ -58,7 +58,7 @@ object FileContentTokenizer {
         }
 
         val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
-        val regex = Regex(regexPattern, RegexOption.DOT_MATCHES_ALL)
+        val regex = Regex(regexPattern, setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.MULTILINE))
         val result = mutableListOf<Token>()
         var lastIndex = 0
         var leftoverContent = ""
