@@ -348,4 +348,42 @@ class FileContentTokenizerTest {
 
     }
 
+
+    @Nested
+    inner class KotlinMultipleCommandsPerComment {
+
+        @Test
+        @Disabled
+        fun `tokenize correctly with two delimited comments that strip each the begin and end of line`() {
+            val input = """
+                |/* 
+                |@@tt-template-renderer [
+                |    templateRendererClassName="EntityDtoTemplateRenderer"
+                |    templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
+                |] 
+                |
+                |
+                |@@tt-template-model [
+                |    modelClassName="DtoEntityRenderModel"
+                |    modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
+                |    modelName="model"
+                |]
+                |*/
+            """.trimMargin()
+            val expected = listOf(
+                TemplateCommentToken("@@tt-template-renderer [\n" +
+                        "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
+                        "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
+                        "]"),
+                TemplateCommentToken("@@tt-template-model [\n" +
+                        "    modelClassName=\"DtoEntityRenderModel\"\n" +
+                        "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
+                        "    modelName=\"model\"\n" +
+                        "]"),
+            )
+            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+        }
+
+    }
+
 }
