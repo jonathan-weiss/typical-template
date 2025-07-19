@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
-data class TemplateComment(
+data class StructuredComment(
     val keyword: String,
     val brackets: List<Map<String, String>>,
 )

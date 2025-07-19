@@ -11,20 +11,29 @@ object TemplateCommentParser {
     private val attributePairsGroupingPattern = Regex("""(${attributeKeyPattern})="($attributeValuePattern)"""")
     private val keywordPattern = Regex("""[a-z][a-z\\-]+""")
 
-    private val commentValidationPattern = Regex("""^\s*@@tt-(${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)$""", RegexOption.MULTILINE)
+    private val singleCommandKeywordAndAttributesGroupingPattern = Regex("""\s*@@tt-(${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)""", RegexOption.MULTILINE)
     private val bracketsGroupingPattern = Regex("""\[((?:\s*$attributePairPattern\s*)*)]\s*""", RegexOption.MULTILINE)
 
+    private val multiCommandValidationPattern = Regex("""\s*(${singleCommandKeywordAndAttributesGroupingPattern.pattern}\s*)+\s*""", RegexOption.MULTILINE)
 
-    fun parseComment(comment: String): TemplateComment {
-        if(!commentValidationPattern.matches(comment)) {
+    fun parseComment(comment: String): List<StructuredComment> {
+        if(!multiCommandValidationPattern.matches(comment)) {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
-                        "Content of comment must be (without the < and > characters): " +
+                        "Content of comment must be (without the < and > characters) one or many commands of this structure: " +
                         "@@tt-<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
             )
         }
 
-        val match = requireNotNull(commentValidationPattern.find(comment))
+        return singleCommandKeywordAndAttributesGroupingPattern
+            .findAll(comment)
+            .map { match -> match.value }
+            .map { command -> parseSingleCommand(command) }
+            .toList()
+    }
+
+    private fun parseSingleCommand(command: String): StructuredComment {
+        val match = requireNotNull(singleCommandKeywordAndAttributesGroupingPattern.find(command))
         val keyword = match.groupValues[1]
         val bracketsString = match.groupValues[2]
 
@@ -33,7 +42,7 @@ object TemplateCommentParser {
             .map { it.groupValues[1].trim() }
             .toList()
 
-        return TemplateComment(
+        return StructuredComment(
             keyword = keyword,
             brackets = bracketsContent
                 .map { parseBracketContent(it) }

@@ -3,7 +3,7 @@ package org.codeblessing.typicaltemplate.contentparsing.fragmenter
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateComment
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredComment
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 import org.junit.jupiter.api.Assertions
@@ -21,7 +21,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `valid command fragment is created`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template-renderer [
                             templateRendererClassName="MyTemplate"
@@ -45,7 +45,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for unknown keyword`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-unknown
             """.trimIndent()
@@ -58,7 +58,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for too few attribute groups`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template
             """.trimIndent()
@@ -72,7 +72,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for too many attribute groups`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassName="MyTemplate"
@@ -95,7 +95,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for unknown attribute key`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassNameUnknown="MyTemplate"
@@ -113,7 +113,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for unallowed attribute key`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassName="MyTemplate"
@@ -133,7 +133,7 @@ class FragmentFactoryTest {
     @Test
     @Disabled("Enable this test as soon as there are values (like boolean true/false)")
     fun `throws for unallowed attribute value`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassName="MyTemplate"
@@ -151,7 +151,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for blank attribute value when not allowed`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassName=""
@@ -169,7 +169,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for missing required attribute`() {
-        val templateComment = createTemplateComment(
+        val templateComment = createSingleTemplateComment(
             comment = """ 
                         @@tt-template [
                             templateClassPackageName="org.codeblessing.typicaltemplate.examples"
@@ -186,7 +186,7 @@ class FragmentFactoryTest {
 
     private val stubLineNumbers = LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
-    private fun createTemplateComment(comment: String): TemplateComment {
-        return TemplateCommentParser.parseComment(comment)
+    private fun createSingleTemplateComment(comment: String): StructuredComment {
+        return TemplateCommentParser.parseComment(comment).single()
     }
 }

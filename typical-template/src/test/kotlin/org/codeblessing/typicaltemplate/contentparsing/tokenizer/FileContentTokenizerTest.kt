@@ -29,6 +29,18 @@ class FileContentTokenizerTest {
                 FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
             )
         }
+
+        @Test
+        fun `tokenize handles different line endings correctly`() {
+            val input = "here we have a newline \n and than a carriage return and a newline \r\n and then a carriage return \r and the end."
+            val expected = listOf(
+                PlainContentToken("here we have a newline \n and than a carriage return and a newline \r\n and then a carriage return \r and the end."),
+            )
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
+        }
     }
 
     @Nested
@@ -36,9 +48,9 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one overall kotlin block comment`() {
-            val input = "/*@@tt-a*/"
+            val input = "/*@@tt{{comment-content}}tt@@*/"
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("comment-content"),
             )
             Assertions.assertEquals(
                 expected,
@@ -48,9 +60,9 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one overall kotlin block comment and whitespaces inside the comment`() {
-            val input = "/* \n @@tt-a \n\t \n */"
+            val input = "/*    \n \t   @@tt{{comment-content}}tt@@   \n\t \n   */"
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("comment-content"),
             )
             Assertions.assertEquals(
                 expected,
@@ -60,10 +72,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one kotlin block comment surrounded by content `() {
-            val input = "abc def /*  @@tt-a  */ uvw xyz"
+            val input = "abc def /*  @@tt{{comment-content}}tt@@  */ uvw xyz"
             val expected = listOf(
                 PlainContentToken("abc def "),
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("comment-content"),
                 PlainContentToken(" uvw xyz"),
             )
             Assertions.assertEquals(
@@ -74,11 +86,12 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles regular kotlin comments and kotlin typical template command comments`() {
-            val input = "here we have a /* @@tt-command-comment*/ and than a /* kotlin comment */"
+            val input = "here we have a /* @@tt{{comment-content}}tt@@ */ and than a /* kotlin comment */ and than a /*@@tt{{second-comment-content}}tt@@ */"
             val expected = listOf(
                 PlainContentToken("here we have a "),
-                TemplateCommentToken("@@tt-command-comment"),
-                PlainContentToken(" and than a /* kotlin comment */"),
+                TemplateCommentToken("comment-content"),
+                PlainContentToken(" and than a /* kotlin comment */ and than a "),
+                TemplateCommentToken("second-comment-content"),
             )
             Assertions.assertEquals(
                 expected,
@@ -89,11 +102,11 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles adjacent comment tokens`() {
-            val input = "/* @@tt-a*//*b*//* @@tt-c*/"
+            val input = "/* @@tt{{comment-content}}tt@@*//*b*//*@@tt{{second-content}}tt@@*/"
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("comment-content"),
                 PlainContentToken("/*b*/"),
-                TemplateCommentToken("@@tt-c"),
+                TemplateCommentToken("second-content"),
             )
             Assertions.assertEquals(
                 expected,
@@ -103,10 +116,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles comment with special characters and prefix`() {
-            val input = "start /* @@tt-!@# 123*/ end /*no-prefix*/"
+            val input = "start /*@@tt{{!@# @tt{} 123}}tt@@*/ end /*no-prefix*/"
             val expected = listOf(
                 PlainContentToken("start "),
-                TemplateCommentToken("@@tt-!@# 123"),
+                TemplateCommentToken("!@# @tt{} 123"),
                 PlainContentToken(" end /*no-prefix*/"),
             )
             Assertions.assertEquals(
@@ -127,8 +140,8 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles unterminated typical template comment as regular content`() {
-            val input = "abc /* @@tt-not-closed not closed"
-            val expected = listOf(PlainContentToken("abc /* @@tt-not-closed not closed"))
+            val input = "abc /* @@tt{{-not-closed not closed"
+            val expected = listOf(PlainContentToken("abc /* @@tt{{-not-closed not closed"))
             Assertions.assertEquals(
                 expected,
                 FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
@@ -137,10 +150,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles comment at end of line`() {
-            val input = "start middle /* @@tt-end*/"
+            val input = "start middle /* @@tt{{end}}tt@@*/"
             val expected = listOf(
                 PlainContentToken("start middle "),
-                TemplateCommentToken("@@tt-end"),
+                TemplateCommentToken("end"),
             )
             Assertions.assertEquals(
                 expected,
@@ -150,12 +163,12 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize extracts multiple comment tokens and non-comment substrings`() {
-            val input = "abc /* @@tt-token1  */ def /*notemplate*/ xyz /* @@tt-token3  */"
+            val input = "abc /* @@tt{{token1}}tt@@  */ def /*notemplate*/ xyz /* @@tt{{token3}}tt@@  */"
             val expected = listOf(
                 PlainContentToken("abc "),
-                TemplateCommentToken("@@tt-token1"),
+                TemplateCommentToken("token1"),
                 PlainContentToken(" def /*notemplate*/ xyz "),
-                TemplateCommentToken("@@tt-token3"),
+                TemplateCommentToken("token3"),
             )
             Assertions.assertEquals(
                 expected,
@@ -167,15 +180,15 @@ class FileContentTokenizerTest {
         fun `tokenize correctly handles multiple block comments on the same line`() {
             val input = """
                 |
-                |    val productCode: String/* @@tt-if-condition[conditionExpression="field.isNullable"] *//* @@tt-print-text[text="?"] *//* @@tt-end-if-condition */,
+                |    val productCode: String/* @@tt{{if-condition[conditionExpression="field.isNullable"]}}tt@@ *//* @@tt{{print-text[text="?"]}}tt@@ *//* @@tt{{end-if-condition}}tt@@ */,
                 |    
             """.trimMargin()
 
             val expected = listOf(
                 PlainContentToken(value="\n    val productCode: String"),
-                TemplateCommentToken(value="@@tt-if-condition[conditionExpression=\"field.isNullable\"]"),
-                TemplateCommentToken(value="@@tt-print-text[text=\"?\"]"),
-                TemplateCommentToken(value="@@tt-end-if-condition"),
+                TemplateCommentToken(value="if-condition[conditionExpression=\"field.isNullable\"]"),
+                TemplateCommentToken(value="print-text[text=\"?\"]"),
+                TemplateCommentToken(value="end-if-condition"),
                 PlainContentToken(value=",\n    "),
             )
             Assertions.assertEquals(
@@ -190,9 +203,9 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one overall line block comment`() {
-            val input = "//@@tt-a\n"
+            val input = "//@@tt{{a}}tt@@\n"
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("a"),
             )
             Assertions.assertEquals(
                 expected,
@@ -202,9 +215,9 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one overall line block comment and whitespaces inside the comment`() {
-            val input = "// \t \t \t @@tt-a \t "
+            val input = "// \t \t \t @@tt{{a}}tt@@ \t "
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("a"),
             )
             Assertions.assertEquals(
                 expected,
@@ -214,10 +227,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles one kotlin line comment surrounded by content `() {
-            val input = "abc def //  @@tt-a  \n uvw xyz"
+            val input = "abc def //  @@tt{{a}}tt@@  \n uvw xyz"
             val expected = listOf(
                 PlainContentToken("abc def "),
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("a"),
                 PlainContentToken("\n uvw xyz"),
             )
             Assertions.assertEquals(
@@ -228,10 +241,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles regular kotlin line comments and kotlin typical template command line comments`() {
-            val input = "here we have a // @@tt-command-comment \n and than a // kotlin comment \n"
+            val input = "here we have a // @@tt{{command-comment}}tt@@ \n and than a // kotlin comment \n"
             val expected = listOf(
                 PlainContentToken("here we have a "),
-                TemplateCommentToken("@@tt-command-comment"),
+                TemplateCommentToken("command-comment"),
                 PlainContentToken("\n and than a // kotlin comment \n"),
             )
             Assertions.assertEquals(
@@ -242,13 +255,13 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles adjacent line comments`() {
-            val input = "// @@tt-a\n//@@tt-b\n//c\n// @@tt-d\n"
+            val input = "// @@tt{{a}}tt@@\n//@@tt{{b}}tt@@\n//c\n// @@tt{{d}}tt@@\n"
             val expected = listOf(
-                TemplateCommentToken("@@tt-a"),
+                TemplateCommentToken("a"),
                 PlainContentToken("\n"),
-                TemplateCommentToken("@@tt-b"),
+                TemplateCommentToken("b"),
                 PlainContentToken("\n//c\n"),
-                TemplateCommentToken("@@tt-d"),
+                TemplateCommentToken("d"),
             )
             Assertions.assertEquals(
                 expected,
@@ -258,10 +271,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles line comment with special characters and prefix`() {
-            val input = "start // @@tt-!@# 123\n end //no-prefix//"
+            val input = "start // @@tt{{!@# @tt{} 123}}tt@@\n end //no-prefix//"
             val expected = listOf(
                 PlainContentToken("start "),
-                TemplateCommentToken("@@tt-!@# 123"),
+                TemplateCommentToken("!@# @tt{} 123"),
                 PlainContentToken("\n end //no-prefix//"),
             )
             Assertions.assertEquals(
@@ -282,10 +295,10 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles unterminated typical template line comment`() {
-            val input = "abc // @@tt-not-closed-by-line-end"
+            val input = "abc // @@tt{{not-closed-by-line-end-but-by-content-end}}tt@@"
             val expected = listOf(
                 PlainContentToken("abc "),
-                TemplateCommentToken("@@tt-not-closed-by-line-end"),
+                TemplateCommentToken("not-closed-by-line-end-but-by-content-end"),
             )
             Assertions.assertEquals(
                 expected,
@@ -295,12 +308,12 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles multiple line comments with and without inner content`() {
-            val input = "a //@@tt-one\nb //two\nc //\t\t\t @@tt-three    \t"
+            val input = "a //@@tt{{one}}tt@@\nb //two\nc //\t\t\t @@tt{{three}}tt@@    \t"
             val expected = listOf(
                 PlainContentToken("a "),
-                TemplateCommentToken("@@tt-one"),
+                TemplateCommentToken("one"),
                 PlainContentToken("\nb //two\nc "),
-                TemplateCommentToken("@@tt-three"),
+                TemplateCommentToken("three"),
             )
             Assertions.assertEquals(
                 expected,
@@ -311,14 +324,14 @@ class FileContentTokenizerTest {
         @Test
         @Disabled
         fun `tokenize handles kotlin line comments and kotlin typical template command line comments with different line endings`() {
-            val input = "here we have a // @@tt-newline \n and than a // kotlin newline comment \n and we have a // @@tt-cr-newline \r\n and than a // kotlin cr-newline comment \r\n and we have a // @@tt-cr \r and than a // kotlin cr comment \r and the end."
+            val input = "here we have a // @@tt{{newline}}tt@@ \n and than a // kotlin newline comment \n and we have a // @@tt{{cr-newline}}tt@@ \r\n and than a // kotlin cr-newline comment \r\n and we have a // @@tt{{cr}}tt@@ \r and than a // kotlin cr comment \r and the end."
             val expected = listOf(
                 PlainContentToken("here we have a "),
-                TemplateCommentToken("@@tt-newline"),
+                TemplateCommentToken("newline"),
                 PlainContentToken("\n and than a // kotlin newline comment \n and we have a "),
-                TemplateCommentToken("@@tt-cr-newline"),
+                TemplateCommentToken("cr-newline"),
                 PlainContentToken("\r\n and than a // kotlin cr-newline comment \r\n and we have a "),
-                TemplateCommentToken("@@tt-cr"),
+                TemplateCommentToken("cr"),
                 PlainContentToken("\r and than a // kotlin cr comment \r and the end."),
             )
             Assertions.assertEquals(
@@ -333,12 +346,12 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles mixed block and line comments`() {
-            val input = "a /* @@tt-block*/ b // @@tt-line\nc /*no-prefix*/ //notemplate"
+            val input = "a /* @@tt{{block}}tt@@*/ b // @@tt{{line}}tt@@\nc /*no-prefix*/ //notemplate"
             val expected = listOf(
                 PlainContentToken("a "),
-                TemplateCommentToken("@@tt-block"),
+                TemplateCommentToken("block"),
                 PlainContentToken(" b "),
-                TemplateCommentToken("@@tt-line"),
+                TemplateCommentToken("line"),
                 PlainContentToken("\nc /*no-prefix*/ //notemplate"),
             )
             Assertions.assertEquals(
@@ -349,12 +362,12 @@ class FileContentTokenizerTest {
 
         @Test
         fun `tokenize handles block and line comments on same line`() {
-            val input = "a /* @@tt-block*/ //line\nb /*no-prefix*/ // @@tt-line"
+            val input = "a /* @@tt{{block}}tt@@*/ //line\nb /*no-prefix*/ // @@tt{{line}}tt@@"
             val expected = listOf(
                 PlainContentToken("a "),
-                TemplateCommentToken("@@tt-block"),
+                TemplateCommentToken("block"),
                 PlainContentToken(" //line\nb /*no-prefix*/ "),
-                TemplateCommentToken("@@tt-line"),
+                TemplateCommentToken("line"),
             )
             Assertions.assertEquals(
                 expected,
@@ -367,36 +380,38 @@ class FileContentTokenizerTest {
     inner class KotlinMultipleCommandsPerComment {
 
         @Test
-        @Disabled
         fun `tokenize correctly with two delimited comments that strip each the begin and end of line`() {
             val input = """
                 |/* 
-                |@@tt-template-renderer [
+                |@@tt{{
+                |template-renderer [
                 |    templateRendererClassName="EntityDtoTemplateRenderer"
                 |    templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
-                |] 
+                |]
                 |
                 |
-                |@@tt-template-model [
+                |template-model [
                 |    modelClassName="DtoEntityRenderModel"
                 |    modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
                 |    modelName="model"
                 |]
+                |}}tt@@
                 |*/
             """.trimMargin()
             val expected = listOf(
                 TemplateCommentToken(
-                    "@@tt-template-renderer [\n" +
+                    "\n" +
+                            "template-renderer [\n" +
                             "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
                             "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
-                            "]"
-                ),
-                TemplateCommentToken(
-                    "@@tt-template-model [\n" +
+                            "]\n" +
+                            "\n" +
+                            "\n" +
+                            "template-model [\n" +
                             "    modelClassName=\"DtoEntityRenderModel\"\n" +
                             "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
                             "    modelName=\"model\"\n" +
-                            "]"
+                            "]\n"
                 ),
             )
             Assertions.assertEquals(
@@ -406,5 +421,4 @@ class FileContentTokenizerTest {
         }
 
     }
-
 }

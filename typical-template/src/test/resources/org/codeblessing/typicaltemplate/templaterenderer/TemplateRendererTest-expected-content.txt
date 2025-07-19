@@ -18,9 +18,6 @@ object EntityDto {
           |
           |
           |
-          |
-          |
-          |
           |data class ${myModel.entityCapitalized}Dto(
           |  val ${myModel.entityField}: String,
           |  val lastname: String,
@@ -59,10 +56,10 @@ object EntityDto {
           |  // test the if..else..end-if statement
           |${ if(myModel.isSerializable()) { """
               |        fun isSerialize(): Boolean = true
-              |/* else-of-if-condition */
-              |        fun isSerialize(): Boolean = false
               |
           """ } else { """
+              |        fun isSerialize(): Boolean = false
+              |
           """ } }
           |
           |  // test the if..else-if..end-if statement
@@ -88,10 +85,10 @@ object EntityDto {
               |
           """ } else if(myModel.isDataClass()) { """
               |        "data-class"
-              |/* else-of-if-condition */
-              |        "regular-class"
               |
           """ } else { """
+              |        "regular-class"
+              |
           """ } }
           |
           |  // test the foreach..end-foreach statement

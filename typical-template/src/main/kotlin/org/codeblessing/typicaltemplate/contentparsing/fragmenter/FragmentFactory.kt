@@ -4,7 +4,7 @@ import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateComment
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredComment
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
@@ -18,10 +18,10 @@ object FragmentFactory {
     }
 
     fun createCommandFragment(
-        templateComment: TemplateComment,
+        structuredComment: StructuredComment,
         lineNumbers: LineNumbers
     ): CommandFragment {
-        val keyword = templateComment.keyword
+        val keyword = structuredComment.keyword
         val commandKey = CommandKey.Companion.fromKeyword(keyword)
 
         if(commandKey == null) {
@@ -31,7 +31,7 @@ object FragmentFactory {
             )
         }
 
-        val numberOfAttributeGroups = templateComment.brackets.size
+        val numberOfAttributeGroups = structuredComment.brackets.size
         if(numberOfAttributeGroups < commandKey.attributeGroupConstraint.minNumberOfAttributeGroups) {
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
@@ -48,7 +48,7 @@ object FragmentFactory {
             )
         }
 
-        val attributeGroups = templateComment.brackets.mapIndexed { groupIndex, attributeMap ->
+        val attributeGroups = structuredComment.brackets.mapIndexed { groupIndex, attributeMap ->
             AttributeGroup(
                 attributes = attributeMap
                     .mapKeys { (keyString) ->

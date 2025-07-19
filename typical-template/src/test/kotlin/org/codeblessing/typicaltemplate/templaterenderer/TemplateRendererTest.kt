@@ -4,6 +4,7 @@ import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class TemplateRendererTest {
@@ -21,6 +22,7 @@ class TemplateRendererTest {
 
         val templates = ContentParser.parseContent(content = contentToParse, KOTLIN_COMMENT_STYLES)
 
+        assertEquals(1, templates.size)
 
         val template = templates.single()
         val templateSourceContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(template)
@@ -29,6 +31,6 @@ class TemplateRendererTest {
         println("--- Kotlin Template ------------------")
         println(kotlinTemplateClassContent)
         println("--------------------------------------")
-        Assertions.assertEquals(expectedContent, kotlinTemplateClassContent)
+        assertEquals(expectedContent, kotlinTemplateClassContent)
     }
 }

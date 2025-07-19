@@ -10,21 +10,24 @@ import org.codeblessing.typicaltemplate.contentparsing.tokenizer.Token
 object Fragmenter {
 
     fun createFragmentsFromTokens(tokens: List<Token>): List<TemplateFragment> {
-        return tokens.map { token ->
+        return tokens.flatMap { token ->
             val lineNumbers = LineNumberCalculator.calculateLineNumbers(token, tokens)
             when (token) {
-                is PlainContentToken -> FragmentFactory.createTextFragment(
+                is PlainContentToken -> listOf(FragmentFactory.createTextFragment(
                     text = token.value,
                     lineNumbers = lineNumbers
 
-                )
-                is TemplateCommentToken -> FragmentFactory.createCommandFragment(
-                    templateComment = reThrowWithLineNumbers(lineNumbers) {
-                        TemplateCommentParser.parseComment(token.value)
-                    },
-                    lineNumbers = lineNumbers
-                )
-            }
+                ))
+                is TemplateCommentToken -> reThrowWithLineNumbers(lineNumbers) {
+                    TemplateCommentParser.parseComment(token.value)
+                }
+                .map { templateComment ->
+                    FragmentFactory.createCommandFragment(
+                        structuredComment = templateComment,
+                        lineNumbers = lineNumbers
+                    )
+                }
+        }
         }
     }
 }

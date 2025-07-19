@@ -5,19 +5,22 @@ import org.codeblessing.typicaltemplate.CommentType
 
 object FileContentTokenizer {
 
-    const val TT_COMMAND_MARKER = "@@tt"
+    const val TT_COMMAND_LIST_START = "@@tt{{"
+    const val TT_COMMAND_LIST_END = "}}tt@@"
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
     fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
-        val ttCommandMarkerEscaped = Regex.escape(TT_COMMAND_MARKER)
         val commentPatterns = supportedCommentStyles.map { style ->
-            val startOfCommentRegex = "${Regex.escape(style.startOfComment)}\\s*"
+            val startOfCommentRegex = Regex.escape(style.startOfComment)
             val endOfCommentRegex = when(style.commentType) {
-                CommentType.BLOCK_COMMENT -> "\\s*${Regex.escape(requireNotNull(style.endOfComment))}()"
-                CommentType.LINE_COMMENT -> "\\s*(${ALL_LINE_BREAKS_OR_END_OF_FILE})"
+                CommentType.BLOCK_COMMENT -> "${Regex.escape(requireNotNull(style.endOfComment))}()"
+                CommentType.LINE_COMMENT -> "(${ALL_LINE_BREAKS_OR_END_OF_FILE})"
             }
-            "$startOfCommentRegex((?:$ttCommandMarkerEscaped).*?)$endOfCommentRegex"
+
+            val startOfCommandList = Regex.escape(TT_COMMAND_LIST_START)
+            val endOfCommandList = Regex.escape(TT_COMMAND_LIST_END)
+            "(?:$startOfCommentRegex)\\s*(?:$startOfCommandList)(.*?)(?:$endOfCommandList)\\s*(?:$endOfCommentRegex)"
         }
 
         val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
@@ -33,7 +36,7 @@ object FileContentTokenizer {
             result.addPlainContentToken(leftoverContent + contentBeforeCommand)
 
             val strippedCommand = match.groupValueSegment( offset = 0, numberOfGroupsPerExpression = 2)
-            result.add(TemplateCommentToken(strippedCommand))
+            result.add(TemplateCommentToken(value = strippedCommand))
 
             leftoverContent = match.groupValueSegment(offset = 1, numberOfGroupsPerExpression = 2)
             lastIndex = match.range.last + 1
