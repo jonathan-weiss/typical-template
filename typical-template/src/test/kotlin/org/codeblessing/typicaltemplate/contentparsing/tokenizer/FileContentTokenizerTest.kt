@@ -162,6 +162,27 @@ class FileContentTokenizerTest {
                 FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
             )
         }
+
+        @Test
+        fun `tokenize correctly handles multiple block comments on the same line`() {
+            val input = """
+                |
+                |    val productCode: String/* @@tt-if-condition[conditionExpression="field.isNullable"] *//* @@tt-print-text[text="?"] *//* @@tt-end-if-condition */,
+                |    
+            """.trimMargin()
+
+            val expected = listOf(
+                PlainContentToken(value="\n    val productCode: String"),
+                TemplateCommentToken(value="@@tt-if-condition[conditionExpression=\"field.isNullable\"]"),
+                TemplateCommentToken(value="@@tt-print-text[text=\"?\"]"),
+                TemplateCommentToken(value="@@tt-end-if-condition"),
+                PlainContentToken(value=",\n    "),
+            )
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
+        }
     }
 
     @Nested
