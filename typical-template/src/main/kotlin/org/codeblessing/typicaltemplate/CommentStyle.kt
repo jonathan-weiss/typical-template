@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate
 
 data class CommentStyle(
     val startOfComment: String,

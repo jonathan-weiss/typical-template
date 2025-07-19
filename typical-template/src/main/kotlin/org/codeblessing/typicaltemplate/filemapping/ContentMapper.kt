@@ -1,30 +1,14 @@
 package org.codeblessing.typicaltemplate.filemapping
 
-import org.codeblessing.typicaltemplate.contentparsing.CommentStyle
+import org.codeblessing.typicaltemplate.CommentStyle
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles.HTML_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.filemapping.FileEndings.HTML_FILENAME_REGEX
+import org.codeblessing.typicaltemplate.filemapping.FileEndings.KOTLIN_FILENAME_REGEX
 import java.nio.file.Path
 import kotlin.io.path.name
 
 object ContentMapper {
-
-    val HTML_FILENAME_REGEX: Regex = Regex(".*\\.(html|xhtml)")
-    val HTML_COMMENT_STYLES = listOf(
-        CommentStyle(
-            startOfComment = "<!--",
-            endOfComment = "-->"
-        ),
-    )
-    val KOTLIN_FILENAME_REGEX: Regex = Regex(".*\\.kt")
-    val KOTLIN_COMMENT_STYLES = listOf(
-        CommentStyle(
-            startOfComment = "/*",
-            endOfComment = "*/"
-        ),
-        CommentStyle(
-            startOfComment = "//",
-            endOfComment = "",
-            isEndOfCommentEqualsEndOfLine = true
-        ),
-    )
 
     fun mapContent(file: Path): List<CommentStyle> {
         if(HTML_FILENAME_REGEX.matches(file.name)) {

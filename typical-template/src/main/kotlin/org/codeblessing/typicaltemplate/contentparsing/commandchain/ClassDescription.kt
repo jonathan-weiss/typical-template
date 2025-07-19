@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import java.nio.file.Path
 import java.nio.file.Paths

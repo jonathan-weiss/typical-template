@@ -1,4 +1,6 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.commentparser
+
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 
 object TemplateCommentParser {
     private val attributeKeyPattern = Regex("""[a-zA-Z]+""")
@@ -13,16 +15,12 @@ object TemplateCommentParser {
     private val bracketsGroupingPattern = Regex("""\[((?:\s*$attributePairPattern\s*)*)]\s*""", RegexOption.MULTILINE)
 
 
-    data class TemplateComment(
-        val keyword: String,
-        val brackets: List<Map<String, String>>,
-    )
-
     fun parseComment(comment: String): TemplateComment {
         if(!commentValidationPattern.matches(comment)) {
-            throw TemplateParsingException(msg = "Invalid comment structure. " +
-                    "Content of comment must be (without the < and > characters): " +
-                    "@@tt-<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
+            throw TemplateParsingException(
+                msg = "Invalid comment structure. " +
+                        "Content of comment must be (without the < and > characters): " +
+                        "@@tt-<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
             )
         }
 

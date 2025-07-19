@@ -1,13 +1,12 @@
 package org.codeblessing.typicaltemplate
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
-import org.codeblessing.typicaltemplate.contentparsing.AttributeGroup
-import org.codeblessing.typicaltemplate.contentparsing.CommandFragment
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.LineNumbers
-import org.codeblessing.typicaltemplate.contentparsing.LineNumbers.Companion.EMPTY_LINE_NUMBERS
-import org.codeblessing.typicaltemplate.contentparsing.TemplateFragment
-import org.codeblessing.typicaltemplate.contentparsing.TextFragment
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TemplateFragment
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
 
 class CommandChainBuilder private constructor() {
     companion object {

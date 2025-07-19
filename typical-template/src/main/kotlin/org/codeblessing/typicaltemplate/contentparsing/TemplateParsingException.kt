@@ -1,6 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing
 
-import org.codeblessing.typicaltemplate.contentparsing.LineNumbers.Companion.EMPTY_LINE_NUMBERS
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
 class TemplateParsingException(
     val lineNumbers: LineNumbers = EMPTY_LINE_NUMBERS,

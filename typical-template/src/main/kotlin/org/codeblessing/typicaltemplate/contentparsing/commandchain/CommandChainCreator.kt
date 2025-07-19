@@ -1,15 +1,19 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.contentparsing.LineNumbers.Companion.EMPTY_LINE_NUMBERS
+import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragment
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TemplateFragment
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
-object CommandChainValidator {
+object CommandChainCreator {
 
     private const val DEFAULT_PACKAGE_NAME = ""
 
-    fun validateCommands(templateFragments: List<TemplateFragment>): List<TemplateRenderer> {
+    fun validateAndInterpretFragments(templateFragments: List<TemplateFragment>): List<TemplateRenderer> {
         val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
         val templateModels = assureNoDuplicateModelNames(templateFragments)
         val templateClass = templateRendererKeywordCommand

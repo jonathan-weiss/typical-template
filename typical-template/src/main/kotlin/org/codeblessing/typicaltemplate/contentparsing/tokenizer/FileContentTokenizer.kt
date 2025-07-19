@@ -1,4 +1,6 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.tokenizer
+
+import org.codeblessing.typicaltemplate.CommentStyle
 
 object FileContentTokenizer {
 
@@ -8,26 +10,6 @@ object FileContentTokenizer {
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_BEGIN_OF_FILE = "$ALL_LINE_BREAKS|^"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
-
-    sealed interface Token {
-        val value: String
-    }
-
-    data class PlainContentToken(
-        override val value: String,
-    ) : Token
-
-    data class TemplateCommentToken(
-        override val value: String,
-    ) : Token
-
-    private fun <E> cartesianProduct(list1: List<E>, list2: List<E>): List<Pair<E, E>> {
-        return list1.flatMap { item1 ->
-            list2.map { item2 ->
-                item1 to item2
-            }
-        }
-    }
 
     fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
         val ttCommandMarkerEscaped = Regex.escape(TT_COMMAND_MARKER)
@@ -98,6 +80,14 @@ object FileContentTokenizer {
     private fun MutableList<Token>.addPlainContentToken(content: String) {
         if(content.isNotEmpty()) {
             add(PlainContentToken(content))
+        }
+    }
+
+    private fun <E> cartesianProduct(list1: List<E>, list2: List<E>): List<Pair<E, E>> {
+        return list1.flatMap { item1 ->
+            list2.map { item2 ->
+                item1 to item2
+            }
         }
     }
 }

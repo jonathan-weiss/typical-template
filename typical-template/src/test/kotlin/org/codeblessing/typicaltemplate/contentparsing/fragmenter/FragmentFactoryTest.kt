@@ -1,10 +1,12 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.fragmenter
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.contentparsing.LineNumbers.Companion.EMPTY_LINE_NUMBERS
-import org.codeblessing.typicaltemplate.contentparsing.TemplateCommentParser.TemplateComment
-import org.junit.jupiter.api.Assertions.*
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateComment
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
+import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -14,7 +16,7 @@ class FragmentFactoryTest {
     @Test
     fun `valid text fragment is created`() {
         val commandFragment = FragmentFactory.createTextFragment("my content", stubLineNumbers)
-        assertEquals("my content", commandFragment.text)
+        Assertions.assertEquals("my content", commandFragment.text)
     }
 
     @Test
@@ -30,9 +32,15 @@ class FragmentFactoryTest {
 
         val commandFragment = FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
         val keywordCommand = commandFragment.keywordCommand
-        assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
-        assertEquals("MyTemplate", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME))
-        assertEquals("org.codeblessing.typicaltemplate.examples", keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME))
+        Assertions.assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
+        Assertions.assertEquals(
+            "MyTemplate",
+            keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME)
+        )
+        Assertions.assertEquals(
+            "org.codeblessing.typicaltemplate.examples",
+            keywordCommand.attribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME)
+        )
     }
 
     @Test
@@ -176,7 +184,7 @@ class FragmentFactoryTest {
         }
     }
 
-    private val stubLineNumbers = EMPTY_LINE_NUMBERS
+    private val stubLineNumbers = LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
     private fun createTemplateComment(comment: String): TemplateComment {
         return TemplateCommentParser.parseComment(comment)

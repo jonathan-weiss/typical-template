@@ -1,10 +1,12 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.linenumbers
+
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.Token
 
 object LineNumberCalculator {
 
     fun calculateLineNumbers(
-        token: FileContentTokenizer.Token,
-        allTokens: List<FileContentTokenizer.Token>
+        token: Token,
+        allTokens: List<Token>
     ): LineNumbers {
 
         var previousTokenEndLineNumber = 0

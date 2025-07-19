@@ -1,13 +1,10 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-import org.codeblessing.typicaltemplate.contentparsing.FileContentTokenizer.PlainContentToken
-import org.codeblessing.typicaltemplate.contentparsing.FileContentTokenizer.TemplateCommentToken
-import org.codeblessing.typicaltemplate.filemapping.ContentMapper.KOTLIN_COMMENT_STYLES
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-
 
 class FileContentTokenizerTest {
     @Nested
@@ -17,14 +14,20 @@ class FileContentTokenizerTest {
         fun `tokenize returns whole string as single token when no comment tokens`() {
             val input = "abc def xyz\naddn"
             val expected = listOf(PlainContentToken(input))
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
         fun `tokenize returns whole string as single token when no typical template command comments`() {
             val input = "abc /* and \n\tthis */ def xyz\naddn // until the end"
             val expected = listOf(PlainContentToken(input))
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
     }
 
@@ -37,7 +40,10 @@ class FileContentTokenizerTest {
             val expected = listOf(
                 TemplateCommentToken("@@tt-a"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -46,7 +52,10 @@ class FileContentTokenizerTest {
             val expected = listOf(
                 TemplateCommentToken("@@tt-a"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -57,7 +66,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-a"),
                 PlainContentToken(" uvw xyz"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -68,7 +80,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-command-comment"),
                 PlainContentToken(" and than a /* kotlin comment */"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
 
@@ -80,7 +95,10 @@ class FileContentTokenizerTest {
                 PlainContentToken("/*b*/"),
                 TemplateCommentToken("@@tt-c"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -91,21 +109,30 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-!@# 123"),
                 PlainContentToken(" end /*no-prefix*/"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
         fun `tokenize handles unterminated regular comment`() {
             val input = "abc /*not closed"
             val expected = listOf(PlainContentToken("abc /*not closed"))
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
         fun `tokenize handles unterminated typical template comment as regular content`() {
             val input = "abc /* @@tt-not-closed not closed"
             val expected = listOf(PlainContentToken("abc /* @@tt-not-closed not closed"))
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -115,7 +142,10 @@ class FileContentTokenizerTest {
                 PlainContentToken("start middle "),
                 TemplateCommentToken("@@tt-end"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -127,7 +157,10 @@ class FileContentTokenizerTest {
                 PlainContentToken(" def /*notemplate*/ xyz "),
                 TemplateCommentToken("@@tt-token3"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
     }
 
@@ -140,7 +173,10 @@ class FileContentTokenizerTest {
             val expected = listOf(
                 TemplateCommentToken("@@tt-a"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -149,7 +185,10 @@ class FileContentTokenizerTest {
             val expected = listOf(
                 TemplateCommentToken("@@tt-a"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -160,7 +199,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-a"),
                 PlainContentToken("\n uvw xyz"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -171,7 +213,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-command-comment"),
                 PlainContentToken("\n and than a // kotlin comment \n"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -184,7 +229,10 @@ class FileContentTokenizerTest {
                 PlainContentToken("\n//c\n"),
                 TemplateCommentToken("@@tt-d"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -195,14 +243,20 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-!@# 123"),
                 PlainContentToken("\n end //no-prefix//"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
         fun `tokenize handles unterminated line comments`() {
             val input = "abc //not closed"
             val expected = listOf(PlainContentToken("abc //not closed"))
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -212,7 +266,10 @@ class FileContentTokenizerTest {
                 PlainContentToken("abc "),
                 TemplateCommentToken("@@tt-not-closed-by-line-end"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -224,7 +281,10 @@ class FileContentTokenizerTest {
                 PlainContentToken("\nb //two\nc "),
                 TemplateCommentToken("@@tt-three"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -240,7 +300,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-cr"),
                 PlainContentToken("\r and than a // kotlin cr comment \r and the end."),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
     }
 
@@ -257,7 +320,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-line"),
                 PlainContentToken("\nc /*no-prefix*/ //notemplate"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -269,7 +335,10 @@ class FileContentTokenizerTest {
                 PlainContentToken(" //line\nb /*no-prefix*/ "),
                 TemplateCommentToken("@@tt-line"),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
     }
 
@@ -286,7 +355,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-line"),
                 PlainContentToken("\n but a new line at the end of line."),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -299,7 +371,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-line"),
                 PlainContentToken(" but remove the line-break."),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -312,7 +387,10 @@ class FileContentTokenizerTest {
                 TemplateCommentToken("@@tt-line"),
                 PlainContentToken("but not a comment free line."),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -333,17 +411,24 @@ class FileContentTokenizerTest {
                 |*/
             """.trimMargin()
             val expected = listOf(
-                TemplateCommentToken("@@tt-template-renderer [\n" +
-                        "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
-                        "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
-                        "]"),
-                TemplateCommentToken("@@tt-template-model [\n" +
-                        "    modelClassName=\"DtoEntityRenderModel\"\n" +
-                        "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
-                        "    modelName=\"model\"\n" +
-                        "]"),
+                TemplateCommentToken(
+                    "@@tt-template-renderer [\n" +
+                            "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
+                            "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
+                            "]"
+                ),
+                TemplateCommentToken(
+                    "@@tt-template-model [\n" +
+                            "    modelClassName=\"DtoEntityRenderModel\"\n" +
+                            "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
+                            "    modelName=\"model\"\n" +
+                            "]"
+                ),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
         @Test
@@ -355,17 +440,24 @@ class FileContentTokenizerTest {
                 |    
             """.trimMargin()
             val expected = listOf(
-                TemplateCommentToken("@@tt-template-renderer [\n" +
-                        "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
-                        "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
-                        "]"),
-                TemplateCommentToken("@@tt-template-model [\n" +
-                        "    modelClassName=\"DtoEntityRenderModel\"\n" +
-                        "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
-                        "    modelName=\"model\"\n" +
-                        "]"),
+                TemplateCommentToken(
+                    "@@tt-template-renderer [\n" +
+                            "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
+                            "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
+                            "]"
+                ),
+                TemplateCommentToken(
+                    "@@tt-template-model [\n" +
+                            "    modelClassName=\"DtoEntityRenderModel\"\n" +
+                            "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
+                            "    modelName=\"model\"\n" +
+                            "]"
+                ),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
     }
@@ -393,17 +485,24 @@ class FileContentTokenizerTest {
                 |*/
             """.trimMargin()
             val expected = listOf(
-                TemplateCommentToken("@@tt-template-renderer [\n" +
-                        "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
-                        "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
-                        "]"),
-                TemplateCommentToken("@@tt-template-model [\n" +
-                        "    modelClassName=\"DtoEntityRenderModel\"\n" +
-                        "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
-                        "    modelName=\"model\"\n" +
-                        "]"),
+                TemplateCommentToken(
+                    "@@tt-template-renderer [\n" +
+                            "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
+                            "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
+                            "]"
+                ),
+                TemplateCommentToken(
+                    "@@tt-template-model [\n" +
+                            "    modelClassName=\"DtoEntityRenderModel\"\n" +
+                            "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
+                            "    modelName=\"model\"\n" +
+                            "]"
+                ),
             )
-            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+            Assertions.assertEquals(
+                expected,
+                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+            )
         }
 
     }

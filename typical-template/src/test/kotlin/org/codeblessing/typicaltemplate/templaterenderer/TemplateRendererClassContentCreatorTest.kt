@@ -1,9 +1,9 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
-import org.codeblessing.typicaltemplate.contentparsing.ClassDescription
-import org.codeblessing.typicaltemplate.contentparsing.ModelDescription
-import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.ClassDescription
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.ModelDescription
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

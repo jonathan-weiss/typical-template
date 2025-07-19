@@ -2,7 +2,7 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
-import org.codeblessing.typicaltemplate.filemapping.ContentMapper
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -19,7 +19,7 @@ class TemplateRendererTest {
         )
 
 
-        val templates = ContentParser.parseContent(content = contentToParse, ContentMapper.KOTLIN_COMMENT_STYLES)
+        val templates = ContentParser.parseContent(content = contentToParse, KOTLIN_COMMENT_STYLES)
 
 
         val template = templates.single()

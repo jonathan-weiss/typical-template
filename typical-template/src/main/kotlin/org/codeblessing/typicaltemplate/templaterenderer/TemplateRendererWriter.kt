@@ -1,7 +1,7 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.TemplateRendererConfiguration
-import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createParentDirectories

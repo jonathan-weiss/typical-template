@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
-import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
 
 object TemplateRendererClassContentCreator {
 

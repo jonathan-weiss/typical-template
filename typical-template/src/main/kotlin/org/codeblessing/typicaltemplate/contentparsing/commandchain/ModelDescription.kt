@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 data class ModelDescription(
     val modelClassDescription: ClassDescription,

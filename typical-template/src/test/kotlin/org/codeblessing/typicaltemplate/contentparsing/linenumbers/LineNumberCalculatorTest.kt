@@ -1,31 +1,36 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.linenumbers
 
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.PlainContentToken
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.Token
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class LineNumberCalculatorTest {
 
-    val token1 = FileContentTokenizer.PlainContentToken(value =
-        """// line1
+    val token1 = PlainContentToken(
+        value =
+            """// line1
                // line2
                // line3
                // line4
             """
     )
 
-    val token2 = FileContentTokenizer.PlainContentToken(value =
-        """// line5
+    val token2 = PlainContentToken(
+        value =
+            """// line5
                // line6
             """
     )
 
-    val token3 = FileContentTokenizer.PlainContentToken(value =
-        """// line7
+    val token3 = PlainContentToken(
+        value =
+            """// line7
                // line8
                // line9
             """
     )
-    val listOfTokens = listOf<FileContentTokenizer.Token>(
+    val listOfTokens = listOf<Token>(
         token1,
         token2,
         token3,
@@ -57,7 +62,7 @@ class LineNumberCalculatorTest {
 
     @Test
     fun `calculate one-liner`() {
-        val oneLinerToken = FileContentTokenizer.PlainContentToken(value = "// one-line")
+        val oneLinerToken = PlainContentToken(value = "// one-line")
 
 
         val lineNumbers = LineNumberCalculator.calculateLineNumbers(token = oneLinerToken, allTokens = listOf(oneLinerToken))

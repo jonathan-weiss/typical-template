@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing
+package org.codeblessing.typicaltemplate.contentparsing.linenumbers
 
 data class LineNumbers(
     val startLineNumber: Int,

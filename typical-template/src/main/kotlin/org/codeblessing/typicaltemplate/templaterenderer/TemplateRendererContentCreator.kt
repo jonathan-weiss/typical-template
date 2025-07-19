@@ -2,10 +2,10 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.contentparsing.CommandFragment
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.TemplateRenderer
-import org.codeblessing.typicaltemplate.contentparsing.TextFragment
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
 
 object TemplateRendererContentCreator {
 
