@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
-import org.codeblessing.typicaltemplate.CommandChainBuilder
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.FragmentsBuilder
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class CommandChainCreatorTest {
     @Test
     fun `valid template chain is accepted`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addText("here is text")
@@ -24,7 +24,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for no template definition command`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .build()
 
@@ -35,7 +35,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for multiple template definition commands`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addTemplateRendererCommand()
@@ -49,7 +49,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for multiple model commands with same model name`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addTemplateModel(modelName = "myModel")
@@ -63,7 +63,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws if first command is not template definition`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addReplaceValueByExpressionCommand()
             .addEndReplaceValueByExpressionCommand()
@@ -77,7 +77,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for unmatched closing command`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addReplaceValueByExpressionCommand()
@@ -92,7 +92,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for unclosed opening command`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addReplaceValueByExpressionCommand()
@@ -106,7 +106,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for else command not in if statement`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addIfCommand("model.isSerializable()")
@@ -122,7 +122,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for else if command not in if statement`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addIfCommand("model.isSerializable()")
@@ -138,7 +138,7 @@ class CommandChainCreatorTest {
 
     @Test
     fun `throws for invalid open and closing command mix`() {
-        val fragments = CommandChainBuilder.Companion.create()
+        val fragments = FragmentsBuilder.Companion.create()
             .addText("here is text")
             .addTemplateRendererCommand()
             .addIfCommand("model.isSerializable()")

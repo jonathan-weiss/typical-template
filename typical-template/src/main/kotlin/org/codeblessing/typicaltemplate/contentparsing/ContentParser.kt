@@ -4,13 +4,13 @@ import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.TypicalTemplateException
 import org.codeblessing.typicaltemplate.contentparsing.fragmenter.Fragmenter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainCreator
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateCommentToken
 
 object ContentParser {
 
-    fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TemplateRenderer> {
+    fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TemplateRendererDescription> {
         try {
             // TODO Tokenizer darf keine Zeilen/Zeichen verlieren, alles muss drin sein
             // TODO Tokenizer muss mehrere Befehle unterstützen

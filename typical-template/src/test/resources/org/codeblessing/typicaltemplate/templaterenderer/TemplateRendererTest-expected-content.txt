@@ -5,14 +5,18 @@ package examples
 
 import examples.DtoModel
 
+import examples.DtoModel
+
 /**
  * Generate the content for the template EntityDto filled up
  * with the content of the passed models.
  */
 object EntityDto {
 
-    fun renderTemplate(myModel: DtoModel): String {
+    fun renderTemplate(myModel: DtoModel, mySecondModel: DtoModel): String {
         return """
+          |
+          |
           |
           |
           |
@@ -21,6 +25,12 @@ object EntityDto {
           |  val ${myModel.entityField}: String,
           |  val lastname: String,
           |) {
+          |
+          |
+          |    fun get${myModel.entityCapitalized}(): ${myModel.entityCapitalized}Dto {
+          |        return this;
+          |    }
+          |
           |${ if(myModel.isGenerateToString()) { """
               |  fun toString(): String {
               |    return "${myModel.entityCapitalized}[${super.toString()}]"
@@ -28,6 +38,89 @@ object EntityDto {
               |
           """ } else { """
           """ } }
+          |
+          |
+          |  // This author and Author should not be replaced.
+          |
+          |  // test for nested replace expressions
+          |
+          |
+          |
+          |
+          |      // should use 'Capitalized' version
+          |      fun get${myModel.entityNameCapitalized}(): ${myModel.entityNameCapitalized} {
+          |          return ${myModel.entityNameDecapitalized}
+          |      }
+          |
+          |
+          |
+          |
+          |
+          |  // test the if..else..end-if statement
+          |${ if(myModel.isSerializable()) { """
+              |        fun isSerialize(): Boolean = true
+              |/* else-of-if-condition */
+              |        fun isSerialize(): Boolean = false
+              |
+          """ } else { """
+          """ } }
+          |
+          |  // test the if..else-if..end-if statement
+          |
+          |  val visibility: String =
+          |${ if(myModel.isPrivate()) { """
+              |        "private"
+              |
+          """ } else if(myModel.isProtected()) { """
+              |        "protected"
+              |
+          """ } else if(myModel.isPublic()) { """
+              |        "public"
+              |
+          """ } else { """
+          """ } }
+          |
+          |
+          |  // test the if..else-if..else..end-if statement
+          |  val mainCharacteristic: String =
+          |${ if(myModel.isEnum()) { """
+              |        "enum-class"
+              |
+          """ } else if(myModel.isDataClass()) { """
+              |        "data-class"
+              |/* else-of-if-condition */
+              |        "regular-class"
+              |
+          """ } else { """
+          """ } }
+          |
+          |  // test the foreach..end-foreach statement
+          |${ myModel.myFieldList.joinToString("") { field ->  """
+              |        println("field: $field")
+              |
+          """ } }
+          |
+          |  // test the ignore-text statement
+          |
+          |
+          |
+          |  // test the ignore-text statement with nesting
+          |${ if(myModel.isIgnored()) { """
+          """ } else if(myModel.isIgnoredToo()()) { """
+          """ } else { """
+          """ } }
+          |  // end of test the ignore-text statement with nesting
+          |
+          |  // test the print-text command
+          |
+          |This text is to print
+          |
+          |
+          |and this text, too
+          |
+          |
+          |
+          |  // end of test the print-text command
           |
           |}
         """.trimMargin(marginPrefix = "|")

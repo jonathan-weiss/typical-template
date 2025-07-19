@@ -2,10 +2,10 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragment
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
-import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.PlainTextChainItem
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 
 object TemplateRendererContentCreator {
 
@@ -13,32 +13,32 @@ object TemplateRendererContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createMultilineStringTemplateContent(templateRenderer: TemplateRenderer): String {
-        val ctx = TemplateCreationContext(templateRenderer)
+    fun createMultilineStringTemplateContent(templateRendererDescription: TemplateRendererDescription): String {
+        val ctx = TemplateCreationContext(templateRendererDescription)
         val sb = StringBuilder("|")
-        templateRenderer.templateFragments.forEach { templateFragment ->
-            when (templateFragment) {
-                is TextFragment -> sb.append(rawContent(
+        templateRendererDescription.templateChain.forEach { chainItem ->
+            when (chainItem) {
+                is PlainTextChainItem -> sb.append(rawContent(
                     ctx = ctx,
-                    textFragment = templateFragment,
+                    plainTextItem = chainItem,
                 ))
-                is CommandFragment -> sb.append(commandContent(
+                is CommandChainItem -> sb.append(commandContent(
                     ctx = ctx,
-                    command = templateFragment,
+                    command = chainItem,
                 ))
             }
         }
         return sb.toString()
     }
 
-    private fun rawContent(ctx: TemplateCreationContext, textFragment: TextFragment): String {
+    private fun rawContent(ctx: TemplateCreationContext, plainTextItem: PlainTextChainItem): String {
         if(ctx.nestingStack.isInIgnoreMode()) {
             return NO_CONTENT_TO_WRITE
         }
-        return ctx.nestingStack.replaceInString(textFragment.text).addMargin(ctx)
+        return ctx.nestingStack.replaceInString(plainTextItem.text).addMargin(ctx)
     }
 
-    private fun commandContent(ctx: TemplateCreationContext, command: CommandFragment): String {
+    private fun commandContent(ctx: TemplateCreationContext, command: CommandChainItem): String {
         return when (command.keywordCommand.commandKey) {
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.TEMPLATE_MODEL -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
@@ -207,7 +207,7 @@ object TemplateRendererContentCreator {
     }
 
     private data class TemplateCreationContext(
-        val templateRenderer: TemplateRenderer,
+        val templateRendererDescription: TemplateRendererDescription,
         val identLevel: IdentLevel = IdentLevel(),
         val nestingStack: CommandNestingContextStack = CommandNestingContextStack()
     )

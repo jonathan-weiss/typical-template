@@ -1,21 +1,21 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRenderer
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 
 object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun wrapInKotlinTemplateClassContent(templateRenderer: TemplateRenderer, sourceContent: String): String {
-        val templateRendererPackageName = templateRenderer.templateRendererClass.classPackageName
-        val templateRendererClassName = templateRenderer.templateRendererClass.className
+    fun wrapInKotlinTemplateClassContent(templateRendererDescription: TemplateRendererDescription, sourceContent: String): String {
+        val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
+        val templateRendererClassName = templateRendererDescription.templateRendererClass.className
 
         val modelImports =
-            templateRenderer.modelClasses
+            templateRendererDescription.modelClasses
                 .joinToString("\n") { "import ${it.modelClassDescription.fullQualifiedName}\n" }
 
         val modelFields =
-            templateRenderer.modelClasses
+            templateRendererDescription.modelClasses
                 .joinToString(", ") { "${it.modelName}: ${it.modelClassDescription.className}" }
 
         return """
