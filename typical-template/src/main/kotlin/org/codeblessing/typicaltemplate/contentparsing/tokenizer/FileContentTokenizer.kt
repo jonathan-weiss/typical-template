@@ -4,33 +4,25 @@ import org.codeblessing.typicaltemplate.CommentStyle
 
 object FileContentTokenizer {
 
-    const val IGNORE_LINE_BEFORE_MARKER = "@@<#"
-    const val IGNORE_LINE_AFTER_MARKER = "@@>#"
     const val TT_COMMAND_MARKER = "@@tt-"
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
-    const val ALL_LINE_BREAKS_OR_BEGIN_OF_FILE = "$ALL_LINE_BREAKS|^"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
     fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
         val ttCommandMarkerEscaped = Regex.escape(TT_COMMAND_MARKER)
-        val ignoreLineBeforeMarkerEscaped = Regex.escape(IGNORE_LINE_BEFORE_MARKER)
-        val ignoreLineAfterMarkerEscaped = Regex.escape(IGNORE_LINE_AFTER_MARKER)
         val commentPatterns = supportedCommentStyles.flatMap { style ->
             val startOfCommentEscaped = Regex.escape(style.startOfComment)
             val endOfCommentEscaped = Regex.escape(style.endOfComment)
 
             val startOfCommentRegexes = listOf(
-                "(?:$ALL_LINE_BREAKS_OR_BEGIN_OF_FILE)[^$ALL_LINE_BREAKS]*?$startOfCommentEscaped\\s*$ignoreLineBeforeMarkerEscaped\\s*",
                 "$startOfCommentEscaped\\s*",
             )
             val endOfCommentRegexes = if(style.isEndOfCommentEqualsEndOfLine)
                     listOf(
-                        "\\s*$ignoreLineAfterMarkerEscaped\\s*(?:$ALL_LINE_BREAKS_OR_END_OF_FILE)()",
                         "\\s*($ALL_LINE_BREAKS_OR_END_OF_FILE)",
                     )
                 else
                     listOf(
-                        "\\s*$ignoreLineAfterMarkerEscaped\\s*${endOfCommentEscaped}()(?:.*?(?:$ALL_LINE_BREAKS_OR_END_OF_FILE))",
                         "\\s*${endOfCommentEscaped}()",
                     )
 
