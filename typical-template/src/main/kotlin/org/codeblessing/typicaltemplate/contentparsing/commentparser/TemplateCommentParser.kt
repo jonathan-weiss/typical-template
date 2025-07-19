@@ -20,7 +20,7 @@ object TemplateCommentParser {
         if(!multiCommandValidationPattern.matches(comment)) {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
-                        "Content of comment must be (without the < and > characters) one or many commands of this structure: " +
+                        "Content of comment must be one or many commands of this structure (without the < and > characters): " +
                         "@@tt-<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
             )
         }
