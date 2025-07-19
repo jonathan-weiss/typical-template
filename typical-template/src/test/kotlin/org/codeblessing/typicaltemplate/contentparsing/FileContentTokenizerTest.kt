@@ -346,6 +346,27 @@ class FileContentTokenizerTest {
             assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
         }
 
+        @Test
+        fun `tokenize correctly handles multiple block comments on the same line`() {
+            val input = """
+                |
+                |    val productCode: String/* @@tt-if-condition[conditionExpression="field.isNullable"] *//* @@tt-print-text[text="?"] *//* @@tt-end-if-condition */,
+                |    
+            """.trimMargin()
+            val expected = listOf(
+                TemplateCommentToken("@@tt-template-renderer [\n" +
+                        "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
+                        "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
+                        "]"),
+                TemplateCommentToken("@@tt-template-model [\n" +
+                        "    modelClassName=\"DtoEntityRenderModel\"\n" +
+                        "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
+                        "    modelName=\"model\"\n" +
+                        "]"),
+            )
+            assertEquals(expected, FileContentTokenizer.tokenizeContent(input, KOTLIN_COMMENT_STYLES))
+        }
+
     }
 
 
