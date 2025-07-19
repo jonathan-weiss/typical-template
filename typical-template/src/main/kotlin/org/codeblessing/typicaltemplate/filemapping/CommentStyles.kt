@@ -1,24 +1,27 @@
 package org.codeblessing.typicaltemplate.filemapping
 
 import org.codeblessing.typicaltemplate.CommentStyle
+import org.codeblessing.typicaltemplate.CommentType
 
 object CommentStyles {
     val HTML_COMMENT_STYLES = listOf(
         CommentStyle(
             startOfComment = "<!--",
-            endOfComment = "-->"
+            endOfComment = "-->",
+            commentType = CommentType.BLOCK_COMMENT,
         ),
     )
 
     val KOTLIN_COMMENT_STYLES = listOf(
         CommentStyle(
             startOfComment = "/*",
-            endOfComment = "*/"
+            endOfComment = "*/",
+            commentType = CommentType.BLOCK_COMMENT,
         ),
         CommentStyle(
             startOfComment = "//",
-            endOfComment = "",
-            isEndOfCommentEqualsEndOfLine = true
+            endOfComment = null,
+            commentType = CommentType.LINE_COMMENT,
         ),
     )
 

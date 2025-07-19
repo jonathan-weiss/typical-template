@@ -1,34 +1,23 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
 import org.codeblessing.typicaltemplate.CommentStyle
+import org.codeblessing.typicaltemplate.CommentType
 
 object FileContentTokenizer {
 
-    const val TT_COMMAND_MARKER = "@@tt-"
+    const val TT_COMMAND_MARKER = "@@tt"
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
     fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
         val ttCommandMarkerEscaped = Regex.escape(TT_COMMAND_MARKER)
-        val commentPatterns = supportedCommentStyles.flatMap { style ->
-            val startOfCommentEscaped = Regex.escape(style.startOfComment)
-            val endOfCommentEscaped = Regex.escape(style.endOfComment)
-
-            val startOfCommentRegexes = listOf(
-                "$startOfCommentEscaped\\s*",
-            )
-            val endOfCommentRegexes = if(style.isEndOfCommentEqualsEndOfLine)
-                    listOf(
-                        "\\s*($ALL_LINE_BREAKS_OR_END_OF_FILE)",
-                    )
-                else
-                    listOf(
-                        "\\s*${endOfCommentEscaped}()",
-                    )
-
-            cartesianProduct(startOfCommentRegexes, endOfCommentRegexes).map { (beforeRegex, afterRegex) ->
-                "$beforeRegex((?:$ttCommandMarkerEscaped).*?)$afterRegex"
+        val commentPatterns = supportedCommentStyles.map { style ->
+            val startOfCommentRegex = "${Regex.escape(style.startOfComment)}\\s*"
+            val endOfCommentRegex = when(style.commentType) {
+                CommentType.BLOCK_COMMENT -> "\\s*${Regex.escape(requireNotNull(style.endOfComment))}()"
+                CommentType.LINE_COMMENT -> "\\s*(${ALL_LINE_BREAKS_OR_END_OF_FILE})"
             }
+            "$startOfCommentRegex((?:$ttCommandMarkerEscaped).*?)$endOfCommentRegex"
         }
 
         val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
