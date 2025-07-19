@@ -19,7 +19,7 @@ package my.example.businessproject.dto
 data class ProductDto( // @@tt-end-replace-value-by-expression
 /* @@<# @@tt-foreach [ iteratorExpression="model.fields" loopVariable="field" ] @@># */
 /* @@<# @@tt-replace-value-by-expression [ searchValue="productCode" replaceByExpression="field.fieldName" ] [ searchValue="String" replaceByExpression="field.fieldTypeName" ] @@># */
-    val productCode: String/* @@tt-if-condition[conditionExpression="field.isNullable"] *//* @@tt-print-text[text="asdf"] *//* @@tt-end-if-condition */,
+    val productCode: String,
 /* @@<# @@tt-end-replace-value-by-expression @@># */
 /* @@<# @@tt-end-foreach @@># */
 /* @@<# @@tt-ignore-text @@># */
