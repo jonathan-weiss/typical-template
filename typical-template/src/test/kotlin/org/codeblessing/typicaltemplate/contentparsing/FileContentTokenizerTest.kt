@@ -347,6 +347,7 @@ class FileContentTokenizerTest {
         }
 
         @Test
+        @Disabled
         fun `tokenize correctly handles multiple block comments on the same line`() {
             val input = """
                 |

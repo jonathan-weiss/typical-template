@@ -249,7 +249,7 @@ class TemplateRendererContentCreatorTest {
         .addText(
             """
 
-                // end of test the print-text command 
+                // end of test the print-text command
                 """.trimIndent(),
         )
 
