@@ -16,7 +16,7 @@ class FileContentTokenizerTest {
             val expected = listOf(PlainContentToken(input))
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -26,7 +26,7 @@ class FileContentTokenizerTest {
             val expected = listOf(PlainContentToken(input))
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -38,7 +38,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
     }
@@ -54,7 +54,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -66,7 +66,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -80,7 +80,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -95,7 +95,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -110,7 +110,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -124,7 +124,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -134,7 +134,7 @@ class FileContentTokenizerTest {
             val expected = listOf(PlainContentToken("abc /*not closed"))
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -144,7 +144,7 @@ class FileContentTokenizerTest {
             val expected = listOf(PlainContentToken("abc /* @@tt{{-not-closed not closed"))
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -157,7 +157,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -172,7 +172,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -193,7 +193,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
     }
@@ -209,7 +209,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -221,7 +221,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -235,7 +235,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -249,7 +249,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -265,7 +265,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -279,7 +279,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -289,7 +289,7 @@ class FileContentTokenizerTest {
             val expected = listOf(PlainContentToken("abc //not closed"))
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -302,7 +302,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -317,7 +317,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -336,7 +336,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
     }
@@ -356,7 +356,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
@@ -371,7 +371,7 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
     }
@@ -416,9 +416,13 @@ class FileContentTokenizerTest {
             )
             Assertions.assertEquals(
                 expected,
-                FileContentTokenizer.tokenizeContent(input, CommentStyles.KOTLIN_COMMENT_STYLES)
+                 tokenizeContent(input)
             )
         }
 
+    }
+    
+    private fun tokenizeContent(content: String): List<Token> {
+        return FileContentTokenizer.tokenizeContent(content, CommentStyles.KOTLIN_COMMENT_STYLES).map { it.token }
     }
 }

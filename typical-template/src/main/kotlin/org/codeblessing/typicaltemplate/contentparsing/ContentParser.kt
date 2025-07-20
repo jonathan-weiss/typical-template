@@ -12,10 +12,9 @@ object ContentParser {
 
     fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TemplateRendererDescription> {
         try {
-            // TODO Tokenizer darf keine Zeilen/Zeichen verlieren, alles muss drin sein
             val tokens = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 
-            if(tokens.none { it is TemplateCommentToken }) {
+            if(tokens.map { it.token }.none { it is TemplateCommentToken }) {
                 // the file does not contain any typical template commands and can be ignored.
                 return emptyList()
             }

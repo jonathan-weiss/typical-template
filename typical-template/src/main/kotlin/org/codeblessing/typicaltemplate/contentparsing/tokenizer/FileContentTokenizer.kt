@@ -10,7 +10,7 @@ object FileContentTokenizer {
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
-    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<Token> {
+    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TokenWithMetadata> {
         val commentPatterns = supportedCommentStyles.map { style ->
             val startOfCommentRegex = Regex.escape(style.startOfComment)
             val endOfCommentRegex = when(style.commentType) {
@@ -25,7 +25,7 @@ object FileContentTokenizer {
 
         val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
         val regex = Regex(regexPattern, setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.MULTILINE))
-        val result = mutableListOf<Token>()
+        val result = mutableListOf<TokenWithMetadata>()
         var lastIndex = 0
         var leftoverContent = ""
         for (match in regex.findAll(content)) {
@@ -36,7 +36,7 @@ object FileContentTokenizer {
             result.addPlainContentToken(leftoverContent + contentBeforeCommand)
 
             val strippedCommand = match.groupValueSegment( offset = 0, numberOfGroupsPerExpression = 2)
-            result.add(TemplateCommentToken(value = strippedCommand))
+            result.add(TokenWithMetadata(token = TemplateCommentToken(value = strippedCommand), fullContent = match.value))
 
             leftoverContent = match.groupValueSegment(offset = 1, numberOfGroupsPerExpression = 2)
             lastIndex = match.range.last + 1
@@ -61,17 +61,9 @@ object FileContentTokenizer {
         return content
     }
 
-    private fun MutableList<Token>.addPlainContentToken(content: String) {
+    private fun MutableList<TokenWithMetadata>.addPlainContentToken(content: String) {
         if(content.isNotEmpty()) {
-            add(PlainContentToken(content))
-        }
-    }
-
-    private fun <E> cartesianProduct(list1: List<E>, list2: List<E>): List<Pair<E, E>> {
-        return list1.flatMap { item1 ->
-            list2.map { item2 ->
-                item1 to item2
-            }
+            add(TokenWithMetadata(token = PlainContentToken(content), fullContent = content))
         }
     }
 }
