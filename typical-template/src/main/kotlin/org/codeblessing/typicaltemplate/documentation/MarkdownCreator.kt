@@ -21,6 +21,8 @@ object MarkdownCreator {
         CommandKey.IGNORE_TEXT to "Ignores the text from the content and does not output it in the template renderer.",
         CommandKey.END_IGNORE_TEXT to "",
         CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
+        CommandKey.STRIP_LINE_AFTER_COMMENT to "slac (=strip line after comment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
+        CommandKey.STRIP_LINE_BEFORE_COMMENT to "slbc (=strip line before comment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
     )
 
     private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = mapOf(

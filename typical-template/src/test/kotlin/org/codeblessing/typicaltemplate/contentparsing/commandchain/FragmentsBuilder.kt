@@ -35,6 +35,16 @@ class FragmentsBuilder private constructor() {
         return commandFragments
     }
 
+    fun addStripLineBeforeCommentCommand(): FragmentsBuilder {
+        return this.createCommand(CommandKey.STRIP_LINE_BEFORE_COMMENT)
+            .addCommandToChain()
+    }
+
+    fun addStripLineAfterCommentCommand(): FragmentsBuilder {
+        return this.createCommand(CommandKey.STRIP_LINE_AFTER_COMMENT)
+            .addCommandToChain()
+    }
+
     fun addTemplateRendererCommand(
         templateRendererClassName: String = "MyTemplateClass",
         templateRendererPackageName: String = "org.example.template",

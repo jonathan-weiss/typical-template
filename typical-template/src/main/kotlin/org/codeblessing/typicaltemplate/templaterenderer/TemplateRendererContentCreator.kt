@@ -35,13 +35,16 @@ object TemplateRendererContentCreator {
         if(ctx.nestingStack.isInIgnoreMode()) {
             return NO_CONTENT_TO_WRITE
         }
-        return ctx.nestingStack.replaceInString(plainTextItem.text).addMargin(ctx)
+        return ctx.nestingStack.replaceInString(plainTextItem.textWithoutRemoveLines).addMargin(ctx)
     }
 
     private fun commandContent(ctx: TemplateCreationContext, command: CommandChainItem): String {
         return when (command.keywordCommand.commandKey) {
             CommandKey.TEMPLATE_RENDERER,
-            CommandKey.TEMPLATE_MODEL -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
+            CommandKey.TEMPLATE_MODEL,
+            CommandKey.STRIP_LINE_BEFORE_COMMENT,
+            CommandKey.STRIP_LINE_AFTER_COMMENT,
+                 -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
             CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, command.keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)
             CommandKey.IF_CONDITION -> processIfCondition(ctx, command.keywordCommand)

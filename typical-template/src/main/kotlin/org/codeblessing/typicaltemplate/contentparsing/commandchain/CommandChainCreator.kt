@@ -9,6 +9,8 @@ import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragmen
 import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TemplateFragment
 import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
+import org.codeblessing.typicaltemplate.utils.subListStartingAfterElement
+import org.codeblessing.typicaltemplate.utils.subListUntilElement
 
 object CommandChainCreator {
 
@@ -87,18 +89,49 @@ object CommandChainCreator {
 
     private fun adaptMutualInfluencedFragments(fragments: List<TemplateFragment>): List<ChainItem> {
         val templateChainItems = mutableListOf<ChainItem>()
-        // TODO link TextFragments and prev/next CommandFragments toghether
-        fragments.forEach { templateFragment ->
+        fragments.forEachIndexed { index, templateFragment ->
             when (templateFragment) {
                 is CommandFragment -> {
-                    templateChainItems.add(CommandChainItem(keywordCommand = templateFragment.keywordCommand))
+                    when (templateFragment.keywordCommand.commandKey) {
+                        CommandKey.STRIP_LINE_BEFORE_COMMENT,
+                        CommandKey.STRIP_LINE_AFTER_COMMENT,
+                             -> Unit
+                        else -> templateChainItems.add(CommandChainItem(keywordCommand = templateFragment.keywordCommand))
+                    }
                 }
                 is TextFragment -> {
-                    templateChainItems.add(PlainTextChainItem(text = templateFragment.text))
+                    templateChainItems.add(createPlainTextChainItem(templateFragment, index, fragments))
                 }
             }
         }
         return templateChainItems
+    }
+
+    private fun createPlainTextChainItem(
+        templateFragment: TextFragment,
+        index: Int,
+        fragments: List<TemplateFragment>
+    ): PlainTextChainItem {
+        val hasPrecedingStripLineAfterComment = fragments
+            .subList(0, index)
+            .reversed()
+            .hasAnyFollowingCommandBeforeNextText(CommandKey.STRIP_LINE_AFTER_COMMENT)
+
+        val hasFollowingStripLineBeforeComment = fragments
+            .subList(index + 1, fragments.size)
+            .hasAnyFollowingCommandBeforeNextText(CommandKey.STRIP_LINE_BEFORE_COMMENT)
+
+        return PlainTextChainItem(
+            text = templateFragment.text,
+            removeFirstLineIfWhitespaces = hasPrecedingStripLineAfterComment,
+            removeLastLineIfWhitespaces = hasFollowingStripLineBeforeComment,
+        )
+    }
+
+    private fun List<TemplateFragment>.hasAnyFollowingCommandBeforeNextText(commandKey: CommandKey): Boolean {
+        return this.takeWhile { it !is TextFragment }
+            .filterIsInstance<CommandFragment>()
+            .any { it.keywordCommand.commandKey == commandKey }
     }
 
     private fun assureNoDuplicateModelNames(

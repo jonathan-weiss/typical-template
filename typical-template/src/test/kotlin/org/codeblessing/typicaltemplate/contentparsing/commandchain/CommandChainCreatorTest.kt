@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -23,7 +24,7 @@ class CommandChainCreatorTest {
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
-            Assertions.assertEquals(1, templates.size)
+            assertEquals(1, templates.size)
 
         }
 
@@ -167,5 +168,81 @@ class CommandChainCreatorTest {
                 CommandChainCreator.validateAndInterpretFragments(fragments)
             }
         }
+    }
+
+
+    @Nested
+    inner class MutuallyInfluencedChainItems {
+
+        @Test
+        fun `do not markplain text item if no influencing commands are in the chain`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addText("here is text")
+                .build()
+
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            val template = templates.single()
+            assertEquals(1, template.templateChain.size)
+            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
+
+            assertEquals(false, plainTextChainItem.removeFirstLineIfWhitespaces)
+            assertEquals(false, plainTextChainItem.removeLastLineIfWhitespaces)
+        }
+        @Test
+        fun `mark previous plain text item to remove last line on directly following strip-line-before command`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addText("here is text")
+                .addStripLineBeforeCommentCommand()
+                .build()
+
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            val template = templates.single()
+            assertEquals(1, template.templateChain.size)
+            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
+
+            assertEquals(false, plainTextChainItem.removeFirstLineIfWhitespaces)
+            assertEquals(true, plainTextChainItem.removeLastLineIfWhitespaces)
+        }
+
+        @Test
+        fun `mark next plain text item to remove first line on directly preceding strip-line-after command`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addStripLineAfterCommentCommand()
+                .addText("here is text")
+                .build()
+
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            val template = templates.single()
+            assertEquals(1, template.templateChain.size)
+            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
+
+            assertEquals(true, plainTextChainItem.removeFirstLineIfWhitespaces)
+            assertEquals(false, plainTextChainItem.removeLastLineIfWhitespaces)
+        }
+
+        @Test
+        fun `remove commands from chain without effects on text if no text is available`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addStripLineBeforeCommentCommand()
+                .addStripLineAfterCommentCommand()
+                .build()
+
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            val template = templates.single()
+            assertEquals(0, template.templateChain.size)
+        }
+
     }
 }

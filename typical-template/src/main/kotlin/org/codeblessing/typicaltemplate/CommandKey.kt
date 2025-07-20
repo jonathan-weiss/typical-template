@@ -76,6 +76,14 @@ enum class CommandKey(
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEXT),
     ),
+    STRIP_LINE_BEFORE_COMMENT(
+        keyword = "slbc",
+        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+    ),
+    STRIP_LINE_AFTER_COMMENT(
+        keyword = "slac",
+        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+    ),
     ;
 
     companion object {
