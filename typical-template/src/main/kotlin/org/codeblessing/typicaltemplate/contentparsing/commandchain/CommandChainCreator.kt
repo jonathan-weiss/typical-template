@@ -23,13 +23,29 @@ object CommandChainCreator {
                 packageNameAttribute = TEMPLATE_RENDERER_PACKAGE_NAME
             )
 
-        val templateChainItems = mutableListOf<ChainItem>()
 
-        val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
         val remainingFragments = templateFragments
             .filterNot { it.isTemplateDefinitionCommand() }
             .filterNot { it.isModelDefinitionCommand() }
-        remainingFragments.forEach { templateFragment ->
+
+
+        validateNestingLevelOfFragments(remainingFragments)
+
+        val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
+
+        val templateRendererDescription = TemplateRendererDescription(
+            templateRendererClass = templateClass,
+            modelClasses = templateModels,
+            templateChain = templateChainItems
+        )
+        return listOf(templateRendererDescription)
+
+    }
+
+    private fun validateNestingLevelOfFragments(fragments: List<TemplateFragment>) {
+        val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
+
+        fragments.forEach { templateFragment ->
             when (templateFragment) {
                 is CommandFragment -> {
                     val commandKey = templateFragment.keywordCommand.commandKey
@@ -54,13 +70,8 @@ object CommandChainCreator {
                                     "inside the command '${commandKey.directlyNestedInsideCommandKey.keyword}'."
                         )
                     }
-
-                    templateChainItems.add(CommandChainItem(keywordCommand = templateFragment.keywordCommand))
                 }
-                is TextFragment -> {
-                    templateChainItems.add(PlainTextChainItem(text = templateFragment.text))
-
-                }
+                is TextFragment -> Unit
             }
         }
 
@@ -72,14 +83,22 @@ object CommandChainCreator {
                         "${openingCommandKeysStack.map { it.correspondingClosingCommandKey?.keyword }}."
             )
         }
+    }
 
-        val templateRendererDescription = TemplateRendererDescription(
-            templateRendererClass = templateClass,
-            modelClasses = templateModels,
-            templateChain = templateChainItems
-        )
-        return listOf(templateRendererDescription)
-
+    private fun adaptMutualInfluencedFragments(fragments: List<TemplateFragment>): List<ChainItem> {
+        val templateChainItems = mutableListOf<ChainItem>()
+        // TODO link TextFragments and prev/next CommandFragments toghether
+        fragments.forEach { templateFragment ->
+            when (templateFragment) {
+                is CommandFragment -> {
+                    templateChainItems.add(CommandChainItem(keywordCommand = templateFragment.keywordCommand))
+                }
+                is TextFragment -> {
+                    templateChainItems.add(PlainTextChainItem(text = templateFragment.text))
+                }
+            }
+        }
+        return templateChainItems
     }
 
     private fun assureNoDuplicateModelNames(
