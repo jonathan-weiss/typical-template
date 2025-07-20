@@ -1,156 +1,171 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.FragmentsBuilder
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class CommandChainCreatorTest {
-    @Test
-    fun `valid template chain is accepted`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addText("here is text")
-            .addReplaceValueByExpressionCommand()
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndReplaceValueByExpressionCommand()
-            .build()
+    
+    
+    @Nested
+    inner class GeneralValidation {
 
-        val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
-        Assertions.assertEquals(1, templates.size)
+        @Test
+        fun `valid template chain is accepted`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addText("here is text")
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addEndReplaceValueByExpressionCommand()
+                .build()
 
-    }
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            Assertions.assertEquals(1, templates.size)
 
-    @Test
-    fun `throws for no template definition command`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .build()
+        }
 
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
+
+        @Test
+        fun `throws for unmatched closing command`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addEndIfCommand()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `throws for unclosed opening command`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `throws for invalid open and closing command mix`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addIfCommand("model.isSerializable()")
+                .addText("only if serializable")
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addEndIfCommand() // replace is inside of if and must be closed first
+                .addEndReplaceValueByExpressionCommand()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
         }
     }
 
-    @Test
-    fun `throws for multiple template definition commands`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addTemplateRendererCommand()
-            .addTemplateModel()
-            .build()
+    @Nested
+    inner class TemplateRendererAndModelValidation {
 
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
+        @Test
+        fun `throws for no template definition command`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `throws for multiple template definition commands`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addTemplateRendererCommand()
+                .addTemplateModel()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `throws for multiple model commands with same model name`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addTemplateModel(modelName = "myModel")
+                .addTemplateModel(modelName = "myModel")
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `throws if first command is not template definition`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addReplaceValueByExpressionCommand()
+                .addEndReplaceValueByExpressionCommand()
+                .addTemplateRendererCommand()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
         }
     }
 
-    @Test
-    fun `throws for multiple model commands with same model name`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addTemplateModel(modelName = "myModel")
-            .addTemplateModel(modelName = "myModel")
-            .build()
+    @Nested
+    inner class NestedCommandsValidation {
 
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
+        @Test
+        fun `throws for else command not in if statement`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addIfCommand("model.isSerializable()")
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addEndIfCommand()
+                .addElseCommand()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
         }
-    }
 
-    @Test
-    fun `throws if first command is not template definition`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addReplaceValueByExpressionCommand()
-            .addEndReplaceValueByExpressionCommand()
-            .addTemplateRendererCommand()
-            .build()
+        @Test
+        fun `throws for else if command not in if statement`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addIfCommand("model.isSerializable()")
+                .addText("only if serializable")
+                .addEndIfCommand()
+                .addElseIfCommand("model.isEnum()")
+                .build()
 
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
-        }
-    }
-
-    @Test
-    fun `throws for unmatched closing command`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addReplaceValueByExpressionCommand()
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndIfCommand()
-            .build()
-
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
-        }
-    }
-
-    @Test
-    fun `throws for unclosed opening command`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addReplaceValueByExpressionCommand()
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .build()
-
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
-        }
-    }
-
-    @Test
-    fun `throws for else command not in if statement`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addIfCommand("model.isSerializable()")
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndIfCommand()
-            .addElseCommand()
-            .build()
-
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
-        }
-    }
-
-    @Test
-    fun `throws for else if command not in if statement`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addIfCommand("model.isSerializable()")
-            .addText("only if serializable")
-            .addEndIfCommand()
-            .addElseIfCommand("model.isEnum()")
-            .build()
-
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
-        }
-    }
-
-    @Test
-    fun `throws for invalid open and closing command mix`() {
-        val fragments = FragmentsBuilder.Companion.create()
-            .addText("here is text")
-            .addTemplateRendererCommand()
-            .addIfCommand("model.isSerializable()")
-            .addText("only if serializable")
-            .addReplaceValueByExpressionCommand()
-            .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-            .addEndIfCommand() // replace is inside of if and must be closed first
-            .addEndReplaceValueByExpressionCommand()
-            .build()
-
-        Assertions.assertThrows(TemplateParsingException::class.java) {
-            CommandChainCreator.validateAndInterpretFragments(fragments)
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
         }
     }
 }
