@@ -22,7 +22,7 @@ object FragmentFactory {
         lineNumbers: LineNumbers
     ): CommandFragment {
         val keyword = structuredComment.keyword
-        val commandKey = CommandKey.Companion.fromKeyword(keyword)
+        val commandKey = CommandKey.fromKeyword(keyword)
 
         if(commandKey == null) {
             throw TemplateParsingException(
