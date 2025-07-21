@@ -11,16 +11,17 @@ import kotlin.system.exitProcess
 private const val PRINT_CREATED_TEMPLATE_RENDERERS = true
 
 fun main(args: Array<String>) {
-    if(args.size != 2) {
+    if(args.size != 3) {
         println("Wrong arguments!")
-        println("Use <path to source templates> <path to target template renderers base dir>")
+        println("Use <path to kotlin source> <path to html source> <path to target template renderers base dir>")
         exitProcess(1)
     }
 
     println("Generating template renderer with typical template")
     val config = gatherTemplatingConfigurations(
-        pathToSourceTemplates = Paths.get(args.first()),
-        pathToTargetTemplateRenderersBaseDir = Paths.get(args.last())
+        pathToKotlinSourceTemplates = Paths.get(args[0]),
+        pathToHtmlSourceTemplates = Paths.get(args[1]),
+        pathToTargetTemplateRenderersBaseDir = Paths.get(args[2])
     )
     val createdTemplateRenderers = TypicalTemplateApi.runTypicalTemplate(config)
 
@@ -38,11 +39,19 @@ private fun printCreatedTemplateRenders(createdTemplateRenderers: Map<Templating
     }
 }
 
-private fun gatherTemplatingConfigurations(pathToSourceTemplates: Path, pathToTargetTemplateRenderersBaseDir: Path): List<TemplatingConfiguration> {
+private fun gatherTemplatingConfigurations(
+    pathToKotlinSourceTemplates: Path,
+    pathToHtmlSourceTemplates: Path,
+    pathToTargetTemplateRenderersBaseDir: Path,
+): List<TemplatingConfiguration> {
     val rootDirectoriesToSearch = listOf(
         FileSearchLocation(
-            rootDirectoryToSearch = pathToSourceTemplates,
+            rootDirectoryToSearch = pathToKotlinSourceTemplates,
             filenameMatchingPattern = Regex(".*\\.kt"),
+        ),
+        FileSearchLocation(
+            rootDirectoryToSearch = pathToHtmlSourceTemplates,
+            filenameMatchingPattern = Regex(".*\\.html"),
         ),
     )
 

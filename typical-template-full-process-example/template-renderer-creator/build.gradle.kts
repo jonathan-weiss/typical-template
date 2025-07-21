@@ -20,7 +20,8 @@ tasks.register<JavaExec>("createTypicalTemplateRenderers") {
     mainClass.set("org.codeblessing.typicaltemplate.example.TypicalTemplateRendererCreatorKt")
 
     args(
-        exampleBusinessProjectPath.resolve("src/main/kotlin").absolutePath, // First argument: Path to source the directory within the template files are searched
-        targetDirectoryForTemplateRenderer.absolutePath  // Second argument: Path to the base directory where the template renderers are written to
+        exampleBusinessProjectPath.resolve("src/main/kotlin").absolutePath, // First argument: Path to the directory within the kotlin template files are searched
+        exampleBusinessProjectPath.resolve("src/webapp").absolutePath, // Second argument: Path to the directory within the HTML template files are searched
+        targetDirectoryForTemplateRenderer.absolutePath  // Third argument: Path to the base directory where the template renderers are written to
     )
 }

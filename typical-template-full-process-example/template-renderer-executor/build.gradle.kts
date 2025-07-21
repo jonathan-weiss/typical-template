@@ -7,7 +7,8 @@ repositories {
 }
 
 val directoryForGeneratedTemplateRenderer = "src/typicaltemplate-generated/kotlin"
-val directoryForTemplateRendererGeneratedSource = "src/generated/kotlin"
+val directoryForTemplateRendererGeneratedKotlinSource = "src/generated/kotlin"
+val directoryForTemplateRendererGeneratedHtmlSource = "src/webapp-generated"
 
 val exampleBusinessProjectPath = project(":typical-template-full-process-example:example-business-project").projectDir
 kotlin {
@@ -25,7 +26,8 @@ tasks.register<JavaExec>("executeTypicalTemplateRenderers") {
     mainClass.set("org.codeblessing.typicaltemplate.example.TypicalTemplateRendererExecutorKt")
 
     args(
-        exampleBusinessProjectPath.resolve(directoryForTemplateRendererGeneratedSource)
+        exampleBusinessProjectPath.resolve(directoryForTemplateRendererGeneratedKotlinSource),
+        exampleBusinessProjectPath.resolve(directoryForTemplateRendererGeneratedHtmlSource)
     )
 }
 

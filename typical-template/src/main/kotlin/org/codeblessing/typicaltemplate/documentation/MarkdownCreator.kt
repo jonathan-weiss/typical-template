@@ -8,8 +8,10 @@ object MarkdownCreator {
 
     private const val COMMAND_PREFIX = "@@tt-"
 
-    private val commandKeyDocumentation: Map<CommandKey, String> = mapOf(
+    // linked map to preserve the order of the keys
+    private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
         CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
+        CommandKey.TEMPLATE_MODEL to "Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.",
         CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
         CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to "",
         CommandKey.IF_CONDITION to "Render the enclosed content only if the condition is true.",
@@ -21,39 +23,48 @@ object MarkdownCreator {
         CommandKey.IGNORE_TEXT to "Ignores the text from the content and does not output it in the template renderer.",
         CommandKey.END_IGNORE_TEXT to "",
         CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
-        CommandKey.STRIP_LINE_AFTER_COMMENT to "slac (=strip line after comment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
-        CommandKey.STRIP_LINE_BEFORE_COMMENT to "slbc (=strip line before comment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
+        CommandKey.STRIP_LINE_AFTER_COMMENT to "slac (=**s**trip **l**ine **a**fter **c**omment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
+        CommandKey.STRIP_LINE_BEFORE_COMMENT to "slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
     )
 
-    private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = mapOf(
+    // linked map to preserve the order of the keys
+    private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = linkedMapOf(
         CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to "The name of the template class that will generate this template.",
-        CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to "The name of the package where the class defined with '${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}' resides in.",
+        CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to "The name of the package where the class defined with ```${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}``` resides in.",
         CommandAttributeKey.TEMPLATE_MODEL_NAME to "The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.",
         CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
-        CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with '${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}' resides in.",
+        CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
         CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
-        CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute '${CommandAttributeKey.SEARCH_VALUE.keyAsString}' is replaced.",
+        CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
         CommandAttributeKey.CONDITION_EXPRESSION to "The condition returning a boolean value that is used for the if statement or else-if statement.",
         CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to "The condition returning a boolean value that is used for the if statement.",
-        CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from '${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}'. The variable holds the current instance of the loop iterable defined with '${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}'.",
+        CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
         CommandAttributeKey.TEXT to "Text that is to print as-is into the template renderer.",
     )
 
-    fun printMarkdownDocumentation() {
-        println("---- START MARKDOWN DOCUMENTATION ---")
+    private fun CommandKey.createMarkDownChapterLink(): String {
+        return "[$keyword](#${keyword.lowercase().replace(' ', '-')})"
+    }
 
+    fun printMarkdownDocumentation() {
         println("""
-            ### Keywords/Commands
+            # Keyword/Command reference
 
             The following keywords/commands are supported:
         """.trimIndent())
+        for ((commandKey, _) in commandKeyDocumentation) {
+            println("* ${commandKey.createMarkDownChapterLink()}")
+        }
+        println("")
+        println("")
+
 
         for ((commandKey, commandKeyDocumentation) in commandKeyDocumentation) {
             println("""
 
-                    #### ${COMMAND_PREFIX}${commandKey.keyword}
+                    ## ${commandKey.keyword}
                     
-                    Syntax: ${commandKey.commandSyntax()}
+                    Syntax: ```${commandKey.commandSyntax()}```
                 """.trimIndent()
             )
             if(commandKeyDocumentation.isNotBlank()) {
@@ -120,9 +131,9 @@ object MarkdownCreator {
         return if(!isOpeningCommand && !isClosingCommand) {
             "This command stands for itself and does not need to be closed by another command."
         } else if(isOpeningCommand) {
-            "This command must be closed using the ${COMMAND_PREFIX}${correspondingClosingCommandKey?.keyword} command."
+            "This command must be closed using the ${correspondingClosingCommandKey!!.createMarkDownChapterLink()} command."
         } else {
-            "This command is closing the ${COMMAND_PREFIX}${correspondingOpeningCommandKey?.keyword} command."
+            "This command is closing the ${correspondingOpeningCommandKey!!.createMarkDownChapterLink()} command."
         }
     }
 
@@ -140,7 +151,7 @@ object MarkdownCreator {
         if(directlyNestedInsideCommandKey == null) {
             "This command/keyword is NOT forced to reside as nested element in a certain parent element."
         } else {
-            "This command/keyword must reside as directly nested element in the parent element ${COMMAND_PREFIX}${directlyNestedInsideCommandKey.keyword}."
+            "This command/keyword must reside as directly nested element in the parent element ${directlyNestedInsideCommandKey.createMarkDownChapterLink()}."
         }
 
     private fun Boolean.yesOrNo(): String {
