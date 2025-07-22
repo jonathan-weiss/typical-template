@@ -5,10 +5,10 @@ The following keywords/commands are supported:
 * [template-model](#template-model)
 * [replace-value-by-expression](#replace-value-by-expression)
 * [end-replace-value-by-expression](#end-replace-value-by-expression)
-* [if-condition](#if-condition)
-* [else-if-condition](#else-if-condition)
-* [else-of-if-condition](#else-of-if-condition)
-* [end-if-condition](#end-if-condition)
+* [if](#if)
+* [else-if](#else-if)
+* [else](#else)
+* [end-if](#end-if)
 * [foreach](#foreach)
 * [end-foreach](#end-foreach)
 * [ignore-text](#ignore-text)
@@ -95,14 +95,14 @@ Varia:
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-## if-condition
+## if
 
-Syntax: ```@if-condition [ conditionExpression="..." ] .... @end-if-condition```
+Syntax: ```@if [ conditionExpression="..." ] .... @end-if```
 
 Render the enclosed content only if the condition is true.
 
 Varia:
-* This command must be closed using the [end-if-condition](#end-if-condition) command.
+* This command must be closed using the [end-if](#end-if) command.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -112,16 +112,16 @@ Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 
-## else-if-condition
+## else-if
 
-Syntax: ```@else-if-condition [ conditionExpression="..." ]```
+Syntax: ```@else-if [ conditionExpression="..." ]```
 
 Render the enclosed content only if the condition inside a previously defined if block is true.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command/keyword must have exactly one group of attributes.
-* This command/keyword must reside as directly nested element in the parent element [if-condition](#if-condition).
+* This command/keyword must reside as directly nested element in the parent element [if](#if).
 
 Attributes:
 * *conditionExpression*: The condition returning a boolean value that is used for the if statement or else-if statement.
@@ -129,23 +129,23 @@ Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 
-## else-of-if-condition
+## else
 
-Syntax: ```@else-of-if-condition```
+Syntax: ```@else```
 
 Render the enclosed content only if not any of the if/else-if clauses evaluates to true.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command/keyword does not support groups and has no attributes.
-* This command/keyword must reside as directly nested element in the parent element [if-condition](#if-condition).
+* This command/keyword must reside as directly nested element in the parent element [if](#if).
 
-## end-if-condition
+## end-if
 
-Syntax: ```@end-if-condition```
+Syntax: ```@end-if```
 
 Varia:
-* This command is closing the [if-condition](#if-condition) command.
+* This command is closing the [if](#if) command.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 

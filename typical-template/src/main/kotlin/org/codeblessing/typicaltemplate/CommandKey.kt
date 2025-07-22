@@ -34,24 +34,24 @@ enum class CommandKey(
         correspondingOpeningCommandKey = REPLACE_VALUE_BY_EXPRESSION,
     ),
     IF_CONDITION(
-        keyword = "if-condition",
+        keyword = "if",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
     ),
     ELSE_IF_CONDITION(
-        keyword = "else-if-condition",
+        keyword = "else-if",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
         directlyNestedInsideCommandKey = IF_CONDITION,
     ),
     ELSE_CLAUSE(
-        keyword = "else-of-if-condition",
+        keyword = "else",
         directlyNestedInsideCommandKey = IF_CONDITION,
     ),
     END_IF_CONDITION(
-        keyword = "end-if-condition",
+        keyword = "end-if",
         correspondingOpeningCommandKey = IF_CONDITION,
     ),
     FOREACH(

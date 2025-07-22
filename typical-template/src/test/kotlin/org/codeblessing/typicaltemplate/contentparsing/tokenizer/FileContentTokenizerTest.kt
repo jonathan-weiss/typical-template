@@ -180,15 +180,15 @@ class FileContentTokenizerTest {
         fun `tokenize correctly handles multiple block comments on the same line`() {
             val input = """
                 |
-                |    val productCode: String/* @tt{{{if-condition[conditionExpression="field.isNullable"]}}}@ *//* @tt{{{print-text[text="?"]}}}@ *//* @tt{{{end-if-condition}}}@ */,
+                |    val productCode: String/* @tt{{{if[conditionExpression="field.isNullable"]}}}@ *//* @tt{{{print-text[text="?"]}}}@ *//* @tt{{{end-if}}}@ */,
                 |    
             """.trimMargin()
 
             val expected = listOf(
                 PlainContentToken(value="\n    val productCode: String"),
-                TemplateCommentToken(value="if-condition[conditionExpression=\"field.isNullable\"]"),
+                TemplateCommentToken(value="if[conditionExpression=\"field.isNullable\"]"),
                 TemplateCommentToken(value="print-text[text=\"?\"]"),
-                TemplateCommentToken(value="end-if-condition"),
+                TemplateCommentToken(value="end-if"),
                 PlainContentToken(value=",\n    "),
             )
             Assertions.assertEquals(

@@ -30,11 +30,11 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
         return this;
     }
 
-/* @tt{{{ @if-condition [ conditionExpression="myModel.isGenerateToString()" ]}}}@ */
+/* @tt{{{ @if [ conditionExpression="myModel.isGenerateToString()" ]}}}@ */
   fun toString(): String {
     return "Author[${super.toString()}]"
   }
-/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-if}}}@ */
 /* @tt{{{ @end-replace-value-by-expression}}}@ */
 
   // This author and Author should not be replaced.
@@ -58,33 +58,33 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
 
 
   // test the if..else..end-if statement
-/* @tt{{{ @if-condition [ conditionExpression="myModel.isSerializable()" ]}}}@ */
+/* @tt{{{ @if [ conditionExpression="myModel.isSerializable()" ]}}}@ */
         fun isSerialize(): Boolean = true
-/* @tt{{{ @else-of-if-condition }}}@ */
+/* @tt{{{ @else }}}@ */
         fun isSerialize(): Boolean = false
-/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-if}}}@ */
 
   // test the if..else-if..end-if statement
 
   val visibility: String =
-/* @tt{{{ @if-condition [ conditionExpression="myModel.isPrivate()" ]}}}@ */
+/* @tt{{{ @if [ conditionExpression="myModel.isPrivate()" ]}}}@ */
         "private"
-/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isProtected()" ]}}}@ */
+/* @tt{{{ @else-if [ conditionExpression="myModel.isProtected()" ]}}}@ */
         "protected"
-/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isPublic()" ]}}}@ */
+/* @tt{{{ @else-if [ conditionExpression="myModel.isPublic()" ]}}}@ */
         "public"
-/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-if}}}@ */
 
 
   // test the if..else-if..else..end-if statement
   val mainCharacteristic: String =
-/* @tt{{{ @if-condition [ conditionExpression="myModel.isEnum()" ]}}}@ */
+/* @tt{{{ @if [ conditionExpression="myModel.isEnum()" ]}}}@ */
         "enum-class"
-/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isDataClass()" ]}}}@ */
+/* @tt{{{ @else-if [ conditionExpression="myModel.isDataClass()" ]}}}@ */
         "data-class"
-/* @tt{{{ @else-of-if-condition }}}@ */
+/* @tt{{{ @else }}}@ */
         "regular-class"
-/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-if}}}@ */
 
   // test the foreach..end-foreach statement
 /* @tt{{{ @foreach [ iteratorExpression="myModel.myFieldList" loopVariable="field" ]}}}@ */
@@ -99,13 +99,13 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
 
   // test the ignore-text statement with nesting
 /* @tt{{{ @ignore-text}}}@ */
-/* @tt{{{ @if-condition [ conditionExpression="myModel.isIgnored()" ]}}}@ */
+/* @tt{{{ @if [ conditionExpression="myModel.isIgnored()" ]}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isIgnoredToo()()" ]}}}@ */
+/* @tt{{{ @else-if [ conditionExpression="myModel.isIgnoredToo()()" ]}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @else-of-if-condition}}}@ */
+/* @tt{{{ @else}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-if}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
 /* @tt{{{ @end-ignore-text}}}@ */
   // end of test the ignore-text statement with nesting
