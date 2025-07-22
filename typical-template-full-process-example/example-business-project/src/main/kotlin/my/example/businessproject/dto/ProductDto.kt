@@ -13,22 +13,18 @@ package my.example.businessproject.dto
   ]
   @replace-value-by-expression
     [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ]
+    [ searchValue="Product" replaceByExpression="model.entityName" ]
     [ searchValue="productCode" replaceByExpression="field.fieldName" ]
-    [ searchValue="String" replaceByExpression="field.fieldTypeName" ]
+    [ searchValue="String" replaceByExpression="field.fieldTypeNameWithNullability" ]
   @slac }}}@ */
 
+/**
+ * The Product DTO (Data Transfer Object) class.
+ */
 data class ProductDto(
-/* @tt{{{ @slbc
-  @foreach [ iteratorExpression="model.fields" loopVariable="field" ]
-}}}@ */
+/* @tt{{{   @foreach [ iteratorExpression="model.fields" loopVariable="field" ] }}}@  */
     val productCode: String,
-/* @tt{{{ @slbc
-  @end-foreach
-  @ignore-text
-  @slac }}}@ */
+/* @tt{{{ @slbc  @end-foreach  @ignore-text  @slac }}}@ */
     val productName: String,
-/* @tt{{{ @slbc
-  @end-ignore-text
-  @end-replace-value-by-expression
-  @slac }}}@ */
+/* @tt{{{ @slbc  @end-ignore-text  @end-replace-value-by-expression }}}@ */
 )

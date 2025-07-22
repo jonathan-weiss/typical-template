@@ -91,12 +91,12 @@ private fun createDtoEntity(entityName: String): DtoEntityRenderModel {
             createDtoField("${entityNameDecapitalized}Key"),
             createDtoField("${entityNameDecapitalized}Ean", type = "Int"),
             createDtoField("${entityNameDecapitalized}Text"),
-            createDtoField("${entityNameDecapitalized}Description"),
+            createDtoField("${entityNameDecapitalized}Description", isNullable = true),
         )
     )
 }
 
-private fun createDtoField(fieldName: String, type: String = "String", isNullable: Boolean = true): DtoFieldRenderModel {
+private fun createDtoField(fieldName: String, type: String = "String", isNullable: Boolean = false): DtoFieldRenderModel {
     return DtoFieldRenderModel(
         fieldName = fieldName,
         fieldTypeName = type,
