@@ -1,6 +1,6 @@
 package my.example.businessproject.dto
 
-/* @tt{{{
+/* @tt{{{ @slbc
 
   @template-renderer [
       templateRendererClassName="EntityDtoTemplateRenderer"
@@ -11,33 +11,24 @@ package my.example.businessproject.dto
       modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
       modelName="model"
   ]
-  @slbc @slac
-}}}@ */
+  @replace-value-by-expression
+    [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ]
+    [ searchValue="productCode" replaceByExpression="field.fieldName" ]
+    [ searchValue="String" replaceByExpression="field.fieldTypeName" ]
+  @slac }}}@ */
 
-
-/* @tt{{{
-  @slbc
-  @replace-value-by-expression [ searchValue="ProductDto" replaceByExpression="model.kotlinDtoClassName" ]
-  @slac
-}}}@ */
-data class ProductDto( // @tt{{{ @end-replace-value-by-expression }}}@
-/* @tt{{{
-  @slbc
+data class ProductDto(
+/* @tt{{{ @slbc
   @foreach [ iteratorExpression="model.fields" loopVariable="field" ]
-  @replace-value-by-expression [ searchValue="productCode" replaceByExpression="field.fieldName" ] [ searchValue="String" replaceByExpression="field.fieldTypeName" ]
 }}}@ */
     val productCode: String,
-/* @tt{{{
-  @slbc
-  @end-replace-value-by-expression
+/* @tt{{{ @slbc
   @end-foreach
   @ignore-text
-  @slac
-}}}@ */
+  @slac }}}@ */
     val productName: String,
-/* @tt{{{
-  @slbc
+/* @tt{{{ @slbc
   @end-ignore-text
-  @slac
-}}}@ */
+  @end-replace-value-by-expression
+  @slac }}}@ */
 )
