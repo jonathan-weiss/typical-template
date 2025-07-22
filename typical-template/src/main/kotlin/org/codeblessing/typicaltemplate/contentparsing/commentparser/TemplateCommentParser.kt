@@ -11,7 +11,7 @@ object TemplateCommentParser {
     private val attributePairsGroupingPattern = Regex("""(${attributeKeyPattern})="($attributeValuePattern)"""")
     private val keywordPattern = Regex("""[a-z][a-z\\-]+""")
 
-    private val singleCommandKeywordAndAttributesGroupingPattern = Regex("""\s*@@tt-(${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)""", RegexOption.MULTILINE)
+    private val singleCommandKeywordAndAttributesGroupingPattern = Regex("""\s*@(${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)""", RegexOption.MULTILINE)
     private val bracketsGroupingPattern = Regex("""\[((?:\s*$attributePairPattern\s*)*)]\s*""", RegexOption.MULTILINE)
 
     private val multiCommandValidationPattern = Regex("""\s*(${singleCommandKeywordAndAttributesGroupingPattern.pattern}\s*)+\s*""", RegexOption.MULTILINE)
@@ -21,7 +21,7 @@ object TemplateCommentParser {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
                         "Content of comment must be one or many commands of this structure (without the < and > characters): " +
-                        "@@tt-<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
+                        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
             )
         }
 

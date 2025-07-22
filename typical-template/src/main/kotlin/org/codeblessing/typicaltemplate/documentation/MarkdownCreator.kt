@@ -6,7 +6,7 @@ import org.codeblessing.typicaltemplate.CommandKey
 
 object MarkdownCreator {
 
-    private const val COMMAND_PREFIX = "@@tt-"
+    private const val COMMAND_PREFIX = "@"
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(

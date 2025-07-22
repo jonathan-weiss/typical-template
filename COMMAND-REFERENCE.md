@@ -21,7 +21,7 @@ The following keywords/commands are supported:
 
 ## template-renderer
 
-Syntax: ```@@tt-template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." ]```
+Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." ]```
 
 Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.
 
@@ -42,7 +42,7 @@ Attributes:
 
 ## template-model
 
-Syntax: ```@@tt-template-model [ modelClassName="..." modelName="..." modelPackageName="..." ][ ... ]```
+Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." ][ ... ]```
 
 Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.
 
@@ -67,7 +67,7 @@ Attributes:
 
 ## replace-value-by-expression
 
-Syntax: ```@@tt-replace-value-by-expression [ searchValue="..." replaceByExpression="..." ][ ... ] .... @@tt-end-replace-value-by-expression```
+Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ][ ... ] .... @end-replace-value-by-expression```
 
 Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.
 
@@ -88,7 +88,7 @@ Attributes:
 
 ## end-replace-value-by-expression
 
-Syntax: ```@@tt-end-replace-value-by-expression```
+Syntax: ```@end-replace-value-by-expression```
 
 Varia:
 * This command is closing the [replace-value-by-expression](#replace-value-by-expression) command.
@@ -97,7 +97,7 @@ Varia:
 
 ## if-condition
 
-Syntax: ```@@tt-if-condition [ conditionExpression="..." ] .... @@tt-end-if-condition```
+Syntax: ```@if-condition [ conditionExpression="..." ] .... @end-if-condition```
 
 Render the enclosed content only if the condition is true.
 
@@ -114,7 +114,7 @@ Attributes:
 
 ## else-if-condition
 
-Syntax: ```@@tt-else-if-condition [ conditionExpression="..." ]```
+Syntax: ```@else-if-condition [ conditionExpression="..." ]```
 
 Render the enclosed content only if the condition inside a previously defined if block is true.
 
@@ -131,7 +131,7 @@ Attributes:
 
 ## else-of-if-condition
 
-Syntax: ```@@tt-else-of-if-condition```
+Syntax: ```@else-of-if-condition```
 
 Render the enclosed content only if not any of the if/else-if clauses evaluates to true.
 
@@ -142,7 +142,7 @@ Varia:
 
 ## end-if-condition
 
-Syntax: ```@@tt-end-if-condition```
+Syntax: ```@end-if-condition```
 
 Varia:
 * This command is closing the [if-condition](#if-condition) command.
@@ -151,7 +151,7 @@ Varia:
 
 ## foreach
 
-Syntax: ```@@tt-foreach [ iteratorExpression="..." loopVariable="..." ] .... @@tt-end-foreach```
+Syntax: ```@foreach [ iteratorExpression="..." loopVariable="..." ] .... @end-foreach```
 
 Iterates/Loops over a collection of items (=iterable). In each loop, the current item is hold in a loop variable.
 
@@ -172,7 +172,7 @@ Attributes:
 
 ## end-foreach
 
-Syntax: ```@@tt-end-foreach```
+Syntax: ```@end-foreach```
 
 Varia:
 * This command is closing the [foreach](#foreach) command.
@@ -181,7 +181,7 @@ Varia:
 
 ## ignore-text
 
-Syntax: ```@@tt-ignore-text .... @@tt-end-ignore-text```
+Syntax: ```@ignore-text .... @end-ignore-text```
 
 Ignores the text from the content and does not output it in the template renderer.
 
@@ -192,7 +192,7 @@ Varia:
 
 ## end-ignore-text
 
-Syntax: ```@@tt-end-ignore-text```
+Syntax: ```@end-ignore-text```
 
 Varia:
 * This command is closing the [ignore-text](#ignore-text) command.
@@ -201,7 +201,7 @@ Varia:
 
 ## print-text
 
-Syntax: ```@@tt-print-text [ text="..." ]```
+Syntax: ```@print-text [ text="..." ]```
 
 Print text as output of the template renderer.
 
@@ -218,7 +218,7 @@ Attributes:
 
 ## slac
 
-Syntax: ```@@tt-slac```
+Syntax: ```@slac```
 
 slac (=**s**trip **l**ine **a**fter **c**omment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.
 
@@ -229,7 +229,7 @@ Varia:
 
 ## slbc
 
-Syntax: ```@@tt-slbc```
+Syntax: ```@slbc```
 
 slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.
 

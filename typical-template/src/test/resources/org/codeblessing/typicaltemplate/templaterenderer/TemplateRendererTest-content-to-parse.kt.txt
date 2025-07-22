@@ -1,27 +1,27 @@
 /* @tt{{{
-   @@tt-template-renderer [
+   @template-renderer [
     templateRendererClassName="EntityDto"
     templateRendererPackageName="examples"
    ]
-   @@tt-template-model [
+   @template-model [
     modelClassName="DtoModel"
     modelPackageName="examples"
     modelName="myModel"
    ]
 
 
-   @@tt-template-model [
+   @template-model [
     modelClassName="DtoModel"
     modelPackageName="examples"
     modelName="mySecondModel"
    ]
 }}}@ */
 
-/* @tt{{{ @@tt-replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityCapitalized"]
+/* @tt{{{ @replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityCapitalized"]
                                     [searchValue="author" replaceByExpression="myModel"]
 }}}@ */
-data class AuthorDto(// @tt{{{ @@tt-replace-value-by-expression [ searchValue="firstname" replaceByExpression="myModel.entityField" ] }}}@
-  val firstname: String,// @tt{{{ @@tt-end-replace-value-by-expression }}}@
+data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="firstname" replaceByExpression="myModel.entityField" ] }}}@
+  val firstname: String,// @tt{{{ @end-replace-value-by-expression }}}@
   val lastname: String,
 ) {
 
@@ -30,21 +30,21 @@ data class AuthorDto(// @tt{{{ @@tt-replace-value-by-expression [ searchValue="f
         return this;
     }
 
-/* @tt{{{ @@tt-if-condition [ conditionExpression="myModel.isGenerateToString()" ]}}}@ */
+/* @tt{{{ @if-condition [ conditionExpression="myModel.isGenerateToString()" ]}}}@ */
   fun toString(): String {
     return "Author[${super.toString()}]"
   }
-/* @tt{{{ @@tt-end-if-condition}}}@ */
-/* @tt{{{ @@tt-end-replace-value-by-expression}}}@ */
+/* @tt{{{ @end-if-condition}}}@ */
+/* @tt{{{ @end-replace-value-by-expression}}}@ */
 
   // This author and Author should not be replaced.
 
   // test for nested replace expressions
-/* @tt{{{ @@tt-replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityName"]
+/* @tt{{{ @replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityName"]
                                     [searchValue="author" replaceByExpression="myModel.entityNameDecapitalized"]
 }}}@ */
 
-/* @tt{{{ @@tt-replace-value-by-expression [
+/* @tt{{{ @replace-value-by-expression [
        searchValue="Author" replaceByExpression="myModel.entityNameCapitalized"
 ]}}}@ */
 
@@ -53,67 +53,67 @@ data class AuthorDto(// @tt{{{ @@tt-replace-value-by-expression [ searchValue="f
           return author
       }
 
-/* @tt{{{ @@tt-end-replace-value-by-expression}}}@ */
-/* @tt{{{ @@tt-end-replace-value-by-expression}}}@ */
+/* @tt{{{ @end-replace-value-by-expression}}}@ */
+/* @tt{{{ @end-replace-value-by-expression}}}@ */
 
 
   // test the if..else..end-if statement
-/* @tt{{{ @@tt-if-condition [ conditionExpression="myModel.isSerializable()" ]}}}@ */
+/* @tt{{{ @if-condition [ conditionExpression="myModel.isSerializable()" ]}}}@ */
         fun isSerialize(): Boolean = true
-/* @tt{{{ @@tt-else-of-if-condition }}}@ */
+/* @tt{{{ @else-of-if-condition }}}@ */
         fun isSerialize(): Boolean = false
-/* @tt{{{ @@tt-end-if-condition}}}@ */
+/* @tt{{{ @end-if-condition}}}@ */
 
   // test the if..else-if..end-if statement
 
   val visibility: String =
-/* @tt{{{ @@tt-if-condition [ conditionExpression="myModel.isPrivate()" ]}}}@ */
+/* @tt{{{ @if-condition [ conditionExpression="myModel.isPrivate()" ]}}}@ */
         "private"
-/* @tt{{{ @@tt-else-if-condition [ conditionExpression="myModel.isProtected()" ]}}}@ */
+/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isProtected()" ]}}}@ */
         "protected"
-/* @tt{{{ @@tt-else-if-condition [ conditionExpression="myModel.isPublic()" ]}}}@ */
+/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isPublic()" ]}}}@ */
         "public"
-/* @tt{{{ @@tt-end-if-condition}}}@ */
+/* @tt{{{ @end-if-condition}}}@ */
 
 
   // test the if..else-if..else..end-if statement
   val mainCharacteristic: String =
-/* @tt{{{ @@tt-if-condition [ conditionExpression="myModel.isEnum()" ]}}}@ */
+/* @tt{{{ @if-condition [ conditionExpression="myModel.isEnum()" ]}}}@ */
         "enum-class"
-/* @tt{{{ @@tt-else-if-condition [ conditionExpression="myModel.isDataClass()" ]}}}@ */
+/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isDataClass()" ]}}}@ */
         "data-class"
-/* @tt{{{ @@tt-else-of-if-condition }}}@ */
+/* @tt{{{ @else-of-if-condition }}}@ */
         "regular-class"
-/* @tt{{{ @@tt-end-if-condition}}}@ */
+/* @tt{{{ @end-if-condition}}}@ */
 
   // test the foreach..end-foreach statement
-/* @tt{{{ @@tt-foreach [ iteratorExpression="myModel.myFieldList" loopVariable="field" ]}}}@ */
+/* @tt{{{ @foreach [ iteratorExpression="myModel.myFieldList" loopVariable="field" ]}}}@ */
         println("field: $field")
-/* @tt{{{ @@tt-end-foreach}}}@ */
+/* @tt{{{ @end-foreach}}}@ */
 
   // test the ignore-text statement
 
-/* @tt{{{ @@tt-ignore-text}}}@ */
+/* @tt{{{ @ignore-text}}}@ */
 // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @@tt-end-ignore-text}}}@ */
+/* @tt{{{ @end-ignore-text}}}@ */
 
   // test the ignore-text statement with nesting
-/* @tt{{{ @@tt-ignore-text}}}@ */
-/* @tt{{{ @@tt-if-condition [ conditionExpression="myModel.isIgnored()" ]}}}@ */
+/* @tt{{{ @ignore-text}}}@ */
+/* @tt{{{ @if-condition [ conditionExpression="myModel.isIgnored()" ]}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @@tt-else-if-condition [ conditionExpression="myModel.isIgnoredToo()()" ]}}}@ */
+/* @tt{{{ @else-if-condition [ conditionExpression="myModel.isIgnoredToo()()" ]}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @@tt-else-of-if-condition}}}@ */
+/* @tt{{{ @else-of-if-condition}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @@tt-end-if-condition}}}@ */
+/* @tt{{{ @end-if-condition}}}@ */
   // THIS TEXT SHOULD NOT BE ON THE OUTPUT!!!
-/* @tt{{{ @@tt-end-ignore-text}}}@ */
+/* @tt{{{ @end-ignore-text}}}@ */
   // end of test the ignore-text statement with nesting
 
   // test the print-text command
 
-/* @tt{{{ @@tt-print-text [ text="This text is to print" ]}}}@ */
-/* @tt{{{ @@tt-print-text [ text="
+/* @tt{{{ @print-text [ text="This text is to print" ]}}}@ */
+/* @tt{{{ @print-text [ text="
 
 and this text, too
 
