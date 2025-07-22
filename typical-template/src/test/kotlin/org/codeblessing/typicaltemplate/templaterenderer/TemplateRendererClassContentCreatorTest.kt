@@ -27,10 +27,10 @@ class TemplateRendererClassContentCreatorTest {
             ),
             templateChain = emptyList()
         )
-        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinTemplateClassContent(templateRendererDescription, "| hello world")
+        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, "| hello world")
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
-            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateClassContentCreatorTest-expected-content.txt"
+            classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererClassContentCreatorTest-expected-content.txt"
         )
         assertEquals(expectedContent, kotlinClassContent)
     }

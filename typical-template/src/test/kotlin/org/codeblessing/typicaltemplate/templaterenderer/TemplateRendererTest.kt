@@ -3,7 +3,6 @@ package org.codeblessing.typicaltemplate.templaterenderer
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -26,11 +25,11 @@ class TemplateRendererTest {
 
         val template = templates.single()
         val templateSourceContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(template)
-        val kotlinTemplateClassContent = TemplateRendererClassContentCreator.wrapInKotlinTemplateClassContent(template, templateSourceContent)
+        val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(template, templateSourceContent)
 
         println("--- Kotlin Template ------------------")
-        println(kotlinTemplateClassContent)
+        println(kotlinTemplateRendererClassContent)
         println("--------------------------------------")
-        assertEquals(expectedContent, kotlinTemplateClassContent)
+        assertEquals(expectedContent, kotlinTemplateRendererClassContent)
     }
 }

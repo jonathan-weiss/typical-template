@@ -6,7 +6,7 @@ object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun wrapInKotlinTemplateClassContent(templateRendererDescription: TemplateRendererDescription, sourceContent: String): String {
+    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, sourceContent: String): String {
         val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
         val templateRendererClassName = templateRendererDescription.templateRendererClass.className
 

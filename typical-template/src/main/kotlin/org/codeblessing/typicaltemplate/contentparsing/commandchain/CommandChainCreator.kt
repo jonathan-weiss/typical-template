@@ -9,8 +9,6 @@ import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragmen
 import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TemplateFragment
 import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
-import org.codeblessing.typicaltemplate.utils.subListStartingAfterElement
-import org.codeblessing.typicaltemplate.utils.subListUntilElement
 
 object CommandChainCreator {
 
@@ -19,7 +17,7 @@ object CommandChainCreator {
     fun validateAndInterpretFragments(templateFragments: List<TemplateFragment>): List<TemplateRendererDescription> {
         val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
         val templateModels = assureNoDuplicateModelNames(templateFragments)
-        val templateClass = templateRendererKeywordCommand
+        val templateRendererClassDescription = templateRendererKeywordCommand
             .toClassDescription(
                 classNameAttribute = TEMPLATE_RENDERER_CLASS_NAME,
                 packageNameAttribute = TEMPLATE_RENDERER_PACKAGE_NAME
@@ -36,7 +34,7 @@ object CommandChainCreator {
         val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
 
         val templateRendererDescription = TemplateRendererDescription(
-            templateRendererClass = templateClass,
+            templateRendererClass = templateRendererClassDescription,
             modelClasses = templateModels,
             templateChain = templateChainItems
         )

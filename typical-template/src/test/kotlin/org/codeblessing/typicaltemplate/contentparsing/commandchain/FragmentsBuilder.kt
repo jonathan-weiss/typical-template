@@ -46,7 +46,7 @@ class FragmentsBuilder private constructor() {
     }
 
     fun addTemplateRendererCommand(
-        templateRendererClassName: String = "MyTemplateClass",
+        templateRendererClassName: String = "MyTemplateRendererClass",
         templateRendererPackageName: String = "org.example.template",
     ): FragmentsBuilder {
         return this.createCommand(CommandKey.TEMPLATE_RENDERER)

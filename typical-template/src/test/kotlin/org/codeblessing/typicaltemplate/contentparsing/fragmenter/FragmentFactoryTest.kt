@@ -60,7 +60,7 @@ class FragmentFactoryTest {
     fun `throws for too few attribute groups`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template
+                        @template-renderer
             """.trimIndent()
         )
 
@@ -74,16 +74,12 @@ class FragmentFactoryTest {
     fun `throws for too many attribute groups`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassName="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ][
-                            templateClassName="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
@@ -97,11 +93,9 @@ class FragmentFactoryTest {
     fun `throws for unknown attribute key`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassNameUnknown="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererClassNameUnknown="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
@@ -115,11 +109,9 @@ class FragmentFactoryTest {
     fun `throws for unallowed attribute key`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassName="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                             replacement="foo"
                         ]
             """.trimIndent()
@@ -135,11 +127,9 @@ class FragmentFactoryTest {
     fun `throws for unallowed attribute value`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassName="MyTemplate"
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
@@ -153,11 +143,9 @@ class FragmentFactoryTest {
     fun `throws for blank attribute value when not allowed`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassName=""
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererClassName=""
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
@@ -171,10 +159,8 @@ class FragmentFactoryTest {
     fun `throws for missing required attribute`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template [
-                            templateClassPackageName="org.codeblessing.typicaltemplate.examples"
-                            templateModelClassName="MyTemplateModel"
-                            templateModelClassPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-renderer [
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )

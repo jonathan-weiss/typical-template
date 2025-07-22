@@ -13,28 +13,28 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles basic command without brackets`() {
-            val input = "@template"
+            val input = "@my-keyword"
             val comment = parseCommentExpectingSingeResult(input)
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertTrue(comment.brackets.isEmpty())
         }
 
         @Test
         fun `parseComment handles command with single bracket containing key-value`() {
-            val input = """@template[foo="bar"]"""
+            val input = """@my-keyword[foo="bar"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(1, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles command with single bracket containing multiple key-value`() {
-            val input = """@template[foo="bar" far="baz"]"""
+            val input = """@my-keyword[foo="bar" far="baz"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(1, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("baz", comment.brackets[0]["far"])
@@ -42,10 +42,10 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles command with multiple brackets`() {
-            val input = """@template[foo="bar"][fox="bar2"]"""
+            val input = """@my-keyword[foo="bar"][fox="bar2"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("bar2", comment.brackets[1]["fox"])
@@ -53,10 +53,10 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles command with multiple brackets containing multiple key-value pairs`() {
-            val input = """@template[foo="bar" far="baz"][fox="bar2" far="baz"]"""
+            val input = """@my-keyword[foo="bar" far="baz"][fox="bar2" far="baz"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("baz", comment.brackets[0]["far"])
@@ -66,55 +66,55 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles whitespace before at-sign`() {
-            val input = """   @template[foo="bar"]"""
+            val input = """   @my-keyword[foo="bar"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("bar", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles whitespace after keyword`() {
-            val input = """@template  [foo="bar"]"""
+            val input = """@my-keyword  [foo="bar"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("bar", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles whitespace after command`() {
-            val input = """@template[foo="bar"]   """
+            val input = """@my-keyword[foo="bar"]   """
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("bar", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles special characters in value`() {
-            val input = """@template[foo="ba,  $#@+^d\*pi&/-vr"]   """
+            val input = """@my-keyword[foo="ba,  $#@+^d\*pi&/-vr"]   """
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("""ba,  $#@+^d\*pi&/-vr""", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles opening bracket in value`() {
-            val input = """@template[foo="ba[r"]   """
+            val input = """@my-keyword[foo="ba[r"]   """
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("ba[r", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles closing bracket in value`() {
-            val input = """@template[foo="ba]r"]   """
+            val input = """@my-keyword[foo="ba]r"]   """
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("ba]r", comment.brackets[0]["foo"])
         }
 
@@ -122,21 +122,21 @@ class TemplateCommentParserTest {
         fun `parseComment handles line breaks`() {
             val input = """
              
-             @template[foo="bar"]
+             @my-keyword[foo="bar"]
              
              """.trimIndent()
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals("bar", comment.brackets[0]["foo"])
         }
 
         @Test
         fun `parseComment handles whitespace in brackets`() {
-            val input = """@template [ foo="bar" ][ fox="bar2" ]"""
+            val input = """@my-keyword [ foo="bar" ][ fox="bar2" ]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("bar2", comment.brackets[1]["fox"])
@@ -144,10 +144,10 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles whitespace in brackets with multiple key-value pairs`() {
-            val input = """@template [ foo="bar"   far="baz"  ][ fox="bar2" ]"""
+            val input = """@my-keyword [ foo="bar"   far="baz"  ][ fox="bar2" ]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("bar2", comment.brackets[1]["fox"])
@@ -155,10 +155,10 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment handles whitespace between brackets`() {
-            val input = """@template [foo="bar"] [fox="bar2"]"""
+            val input = """@my-keyword [foo="bar"] [fox="bar2"]"""
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("bar2", comment.brackets[1]["fox"])
@@ -169,12 +169,12 @@ class TemplateCommentParserTest {
             val input = """  
               
               
-              @template  [  foo="bar"  ]  [  fox="bar2 bar2"  ]  
+              @my-keyword  [  foo="bar"  ]  [  fox="bar2 bar2"  ]  
                 
                 """.trimIndent()
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("bar2 bar2", comment.brackets[1]["fox"])
@@ -185,7 +185,7 @@ class TemplateCommentParserTest {
             val input = """  
               
               
-              @template  [  
+              @my-keyword  [  
                 foo="bar"
                 fee="gain"
                 fox="trot"  
@@ -198,7 +198,7 @@ class TemplateCommentParserTest {
                 """.trimIndent()
             val comment = parseCommentExpectingSingeResult(input)
 
-            assertEquals("template", comment.keyword)
+            assertEquals("my-keyword", comment.keyword)
             assertEquals(2, comment.brackets.size)
             assertEquals("bar", comment.brackets[0]["foo"])
             assertEquals("gain", comment.brackets[0]["fee"])
@@ -218,7 +218,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception with empty brackets`() {
-            val input = """@template[]"""
+            val input = """@my-keyword[]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -226,7 +226,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception with multiple empty brackets`() {
-            val input = """@template[][foo="bar"][]"""
+            val input = """@my-keyword[][foo="bar"][]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -234,7 +234,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for duplicate keys`() {
-            val input = """@template[foo="bar" foo="bar2"]"""
+            val input = """@my-keyword[foo="bar" foo="bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -242,7 +242,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for whitespaces between key and equal sign`() {
-            val input = """@template[foo  ="bar"][fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo  ="bar"][fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -250,7 +250,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for whitespaces between equal sign and value`() {
-            val input = """@template[foo=  "bar"][fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo=  "bar"][fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -258,7 +258,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for whitespaces between key and value`() {
-            val input = """@template[foo  =  "bar"][fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo  =  "bar"][fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -266,7 +266,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for key-value pairs with comma as separator`() {
-            val input = """@template[foo="bar",far="baz"]"""
+            val input = """@my-keyword[foo="bar",far="baz"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -274,7 +274,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for key-value pairs missing a space as separator`() {
-            val input = """@template[foo="bar"far="baz"]"""
+            val input = """@my-keyword[foo="bar"far="baz"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -282,7 +282,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for unquoted values`() {
-            val input = """@template[foo=bar]"""
+            val input = """@my-keyword[foo=bar]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -290,7 +290,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for value with quote character`() {
-            val input = """@template[foo="ba"r"]"""
+            val input = """@my-keyword[foo="ba"r"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -298,7 +298,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for key-value pairs with missing quote at start`() {
-            val input = """@template[foo=bar"][fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo=bar"][fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -306,7 +306,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for key-value pairs with missing quote at the end`() {
-            val input = """@template[foo="bar][fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo="bar][fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -314,7 +314,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for missing closing bracket`() {
-            val input = """@template[foo="bar"[fox="bar2 bar2"]"""
+            val input = """@my-keyword[foo="bar"[fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -322,7 +322,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for missing opening bracket`() {
-            val input = """@template [foo="bar"]fox="bar2 bar2"]"""
+            val input = """@my-keyword [foo="bar"]fox="bar2 bar2"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
@@ -330,7 +330,7 @@ class TemplateCommentParserTest {
 
         @Test
         fun `parseComment throws exception for attribute key with special characters`() {
-            val input = """@template [foo*="bar"]"""
+            val input = """@my-keyword [foo*="bar"]"""
             assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(input)
             }
