@@ -1,6 +1,6 @@
 <html lang="en">
 
-<!-- @@tt{{
+<!-- @tt{{{
 
   @@tt-template-renderer [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
   @@tt-template-model [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
@@ -8,22 +8,22 @@
     [ searchValue="News" replaceByExpression="listPageModel.pageTitle" ]
     [ searchValue="news" replaceByExpression="listPageModel.pageTitle.lowercase()" ]
 
-}}tt@@ -->
+}}}@ -->
 
 <head><title>News</title></head>
 <body>
 <p>Here are the news:</p>
-<ul><!-- @@tt{{
+<ul><!-- @tt{{{
 
   @@tt-foreach [iteratorExpression="listPageModel.allListEntries" loopVariable="pageArticleTitle"]
   @@tt-replace-value-by-expression [ searchValue="How to make your garden ready in the spring" replaceByExpression="pageArticleTitle" ]
 
-}}tt@@ -->
-    <li>How to make your garden ready in the spring</li><!-- @@tt{{ @@tt-end-replace-value-by-expression @@tt-end-foreach @@tt-ignore-text }}tt@@ -->
+}}}@ -->
+    <li>How to make your garden ready in the spring</li><!-- @tt{{{ @@tt-end-replace-value-by-expression @@tt-end-foreach @@tt-ignore-text }}}@ -->
     <li>Five keys to become rich in one year</li>
-    <li>What's up with Prince Charles?</li><!-- @@tt{{ @@tt-end-ignore-text }}tt@@ -->
+    <li>What's up with Prince Charles?</li><!-- @tt{{{ @@tt-end-ignore-text }}}@ -->
 </ul>
 
 </body>
-<!-- @@tt{{ @@tt-end-replace-value-by-expression }}tt@@ -->
+<!-- @tt{{{ @@tt-end-replace-value-by-expression }}}@ -->
 </html>

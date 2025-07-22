@@ -5,8 +5,8 @@ import org.codeblessing.typicaltemplate.CommentType
 
 object FileContentTokenizer {
 
-    const val TT_COMMAND_LIST_START = "@@tt{{"
-    const val TT_COMMAND_LIST_END = "}}tt@@"
+    const val TT_COMMAND_LIST_START = "@tt{{{"
+    const val TT_COMMAND_LIST_END = "}}}@"
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 

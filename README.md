@@ -16,7 +16,7 @@ Here is an example of a real source code (here it is HTML) enriched with typical
 ```html
 <html lang="en">
 
-<!-- @@tt{{
+<!-- @tt{{{
 
   @@tt-template-renderer [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
   @@tt-template-model [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
@@ -24,24 +24,24 @@ Here is an example of a real source code (here it is HTML) enriched with typical
     [ searchValue="News" replaceByExpression="listPageModel.pageTitle" ]
     [ searchValue="news" replaceByExpression="listPageModel.pageTitle.lowercase()" ]
 
-}}tt@@ -->
+}}}@ -->
 
 <head><title>News</title></head>
 <body>
 <p>Here are the news:</p>
-<ul><!-- @@tt{{
+<ul><!-- @tt{{{
 
   @@tt-foreach [iteratorExpression="listPageModel.allListEntries" loopVariable="pageArticleTitle"]
   @@tt-replace-value-by-expression [ searchValue="How to make your garden ready in the spring" replaceByExpression="pageArticleTitle" ]
 
-}}tt@@ -->
-    <li>How to make your garden ready in the spring</li><!-- @@tt{{ @@tt-end-replace-value-by-expression @@tt-end-foreach @@tt-ignore-text }}tt@@ -->
+}}}@ -->
+    <li>How to make your garden ready in the spring</li><!-- @tt{{{ @@tt-end-replace-value-by-expression @@tt-end-foreach @@tt-ignore-text }}}@ -->
     <li>Five keys to become rich in one year</li>
-    <li>What's up with Prince Charles?</li><!-- @@tt{{ @@tt-end-ignore-text }}tt@@ -->
+    <li>What's up with Prince Charles?</li><!-- @tt{{{ @@tt-end-ignore-text }}}@ -->
 </ul>
 
 </body>
-<!-- @@tt{{ @@tt-end-replace-value-by-expression }}tt@@ -->
+<!-- @tt{{{ @@tt-end-replace-value-by-expression }}}@ -->
 </html>
 
 ```
@@ -87,7 +87,7 @@ object HtmlListPageRenderer {
 
 Write block comments (e.g. `/* ... */`, `<!-- ... -->`) or line comments (e.g. `// ...`) in your source file.
 Of course, the comment style depends on the language of the source file.
-All comments containing the magic brackets ```@@tt{{``` ... ```}}tt@@``` will be considered as syntax 
+All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax 
 for typical template.
 Inside the magic brackets, write one or many typical-template commands (see [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)).
 

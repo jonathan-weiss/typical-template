@@ -1,12 +1,12 @@
-<!-- @@tt{{ @@tt-template-renderer [
+<!-- @tt{{{ @@tt-template-renderer [
     templateRendererClassName="AddressForm"
     templateRendererPackageName="examples"
-] }}tt@@ -->
-<!-- @@tt{{ @@tt-template-model [
+] }}}@ -->
+<!-- @tt{{{ @@tt-template-model [
     modelClassName="MyAddressFormModel"
     modelPackageName="examples"
     modelName="model"
-] }}tt@@ -->
+] }}}@ -->
 <form [formGroup]="addressForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="shipping-card">
         <mat-card-header>
