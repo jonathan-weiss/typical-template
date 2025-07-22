@@ -170,8 +170,10 @@ object CommandChainCreator {
         }
 
         val fragment = templateFragments
-            .filterIsInstance<CommandFragment>()
-            .first()
+            .filterIsInstance<CommandFragment>().first {
+                it.keywordCommand.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT
+                        && it.keywordCommand.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT
+            }
 
         if(!fragment.isTemplateDefinitionCommand()) {
             throw TemplateParsingException(
