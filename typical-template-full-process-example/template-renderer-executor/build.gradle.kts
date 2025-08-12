@@ -12,11 +12,6 @@ kotlin {
     sourceSets["main"].kotlin.srcDir(directoryForGeneratedTemplateRenderer)
 }
 
-dependencies {
-    implementation(project(":typical-template-api"))
-    runtimeOnly(project(":typical-template"))
-}
-
 tasks.register<JavaExec>("executeTypicalTemplateRenderers") {
     dependsOn(":typical-template-full-process-example:template-renderer-creator:createTypicalTemplateRenderers")
     classpath = sourceSets.main.get().runtimeClasspath
