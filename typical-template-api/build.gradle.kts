@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-}
-
-repositories {
-    mavenCentral()
+    `typical-template-publishing`
+    `maven-dependency-repository`
 }

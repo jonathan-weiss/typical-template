@@ -1,9 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-}
-
-repositories {
-    mavenCentral()
+    `maven-dependency-repository`
 }
 
 val directoryForTemplateRendererGeneratedSource = "src/generated/kotlin"
