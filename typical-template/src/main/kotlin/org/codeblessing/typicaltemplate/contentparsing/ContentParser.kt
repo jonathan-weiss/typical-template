@@ -11,6 +11,9 @@ import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateComment
 object ContentParser {
 
     fun parseContent(content: String, supportedCommentStyles: List<CommentStyle>): List<TemplateRendererDescription> {
+        if(supportedCommentStyles.isEmpty()) {
+            return emptyList()
+        }
         try {
             val tokens = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 

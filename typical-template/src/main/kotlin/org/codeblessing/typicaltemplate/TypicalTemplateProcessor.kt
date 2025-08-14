@@ -5,6 +5,7 @@ import org.codeblessing.typicaltemplate.filemapping.ContentMapper
 import org.codeblessing.typicaltemplate.filesearch.FileTraversal
 import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererWriter
 import java.nio.file.Path
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.readText
 
 class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
@@ -19,7 +20,11 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
 
             foundFiles.map { file ->
                 val supportedCommentStyles = ContentMapper.mapContent(file)
-                val templates = ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
+                val templates = try {
+                    ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
+                } catch (e: Exception) {
+                    throw RuntimeException("Error parsing template content of file ${file.absolutePathString()}", e)
+                }
 
                 templates.forEach { template ->
                     val templatePath = TemplateRendererWriter.writeTemplate(template, templatingConfiguration.templateRendererConfiguration)
