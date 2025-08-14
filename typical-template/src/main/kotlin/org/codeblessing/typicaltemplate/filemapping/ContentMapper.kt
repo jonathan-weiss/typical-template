@@ -3,8 +3,12 @@ package org.codeblessing.typicaltemplate.filemapping
 import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.filemapping.CommentStyles.HTML_COMMENT_STYLES
 import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles.SCSS_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.filemapping.CommentStyles.TYPESCRIPT_COMMENT_STYLES
 import org.codeblessing.typicaltemplate.filemapping.FileEndings.HTML_FILENAME_REGEX
 import org.codeblessing.typicaltemplate.filemapping.FileEndings.KOTLIN_FILENAME_REGEX
+import org.codeblessing.typicaltemplate.filemapping.FileEndings.SCSS_FILENAME_REGEX
+import org.codeblessing.typicaltemplate.filemapping.FileEndings.TYPESCRIPT_FILENAME_REGEX
 import java.nio.file.Path
 import kotlin.io.path.name
 
@@ -16,6 +20,12 @@ object ContentMapper {
         }
         if(KOTLIN_FILENAME_REGEX.matches(file.name)) {
             return KOTLIN_COMMENT_STYLES
+        }
+        if(TYPESCRIPT_FILENAME_REGEX.matches(file.name)) {
+            return TYPESCRIPT_COMMENT_STYLES
+        }
+        if(SCSS_FILENAME_REGEX.matches(file.name)) {
+            return SCSS_COMMENT_STYLES
         }
         return emptyList()
     }

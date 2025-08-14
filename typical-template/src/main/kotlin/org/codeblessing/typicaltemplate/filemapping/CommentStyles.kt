@@ -25,4 +25,7 @@ object CommentStyles {
         ),
     )
 
+    val SCSS_COMMENT_STYLES = KOTLIN_COMMENT_STYLES
+    val TYPESCRIPT_COMMENT_STYLES = KOTLIN_COMMENT_STYLES
+
 }
