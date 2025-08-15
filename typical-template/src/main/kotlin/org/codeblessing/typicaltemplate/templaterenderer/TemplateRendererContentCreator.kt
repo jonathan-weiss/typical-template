@@ -35,7 +35,11 @@ object TemplateRendererContentCreator {
         if(ctx.nestingStack.isInIgnoreMode()) {
             return NO_CONTENT_TO_WRITE
         }
-        return ctx.nestingStack.replaceInString(plainTextItem.textWithoutRemoveLines).addMargin(ctx)
+        return ctx.nestingStack.replaceInString(plainTextItem.textWithoutRemoveLines.escapeKotlinSpecialCharacters()).addMargin(ctx)
+    }
+
+    private fun String.escapeKotlinSpecialCharacters(): String {
+        return this.replace("$", $$"${\"$\"}")
     }
 
     private fun commandContent(ctx: TemplateCreationContext, command: CommandChainItem): String {

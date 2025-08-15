@@ -25,6 +25,10 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
   val lastname: String,
 ) {
 
+    fun describeAuthorInstance(): String {
+      val instance = "$this"
+      return "Instance with lastname ${lastname} is $instance."
+    }
 
     fun getAuthor(): AuthorDto {
         return this;
