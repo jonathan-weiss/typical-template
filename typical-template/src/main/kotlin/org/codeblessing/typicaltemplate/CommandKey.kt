@@ -9,6 +9,7 @@ enum class CommandKey(
     val optionalAttributes: Set<CommandAttributeKey> = emptySet(),
     val correspondingOpeningCommandKey: CommandKey? = null,
     val directlyNestedInsideCommandKey: CommandKey? = null,
+    val isAutoclosingSupported: Boolean = false,
 
     ) {
     TEMPLATE_RENDERER(
@@ -28,6 +29,7 @@ enum class CommandKey(
         attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_EXPRESSION),
         optionalAttributes = setOf(),
+        isAutoclosingSupported = true,
     ),
     END_REPLACE_VALUE_BY_EXPRESSION(
         keyword = "end-replace-value-by-expression",
@@ -38,6 +40,7 @@ enum class CommandKey(
         attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_VALUE),
         optionalAttributes = setOf(),
+        isAutoclosingSupported = true,
     ),
     END_REPLACE_VALUE_BY_VALUE(
         keyword = "end-replace-value-by-value",
@@ -76,6 +79,7 @@ enum class CommandKey(
     ),
     IGNORE_TEXT(
         keyword = "ignore-text",
+        isAutoclosingSupported = true,
     ),
     END_IGNORE_TEXT(
         keyword = "end-ignore-text",
@@ -108,6 +112,15 @@ enum class CommandKey(
         get() = correspondingClosingCommandKey != null
     val isClosingCommand: Boolean
         get() = this.correspondingOpeningCommandKey != null
+    val isRequiredDirectlyNestedInOtherCommand: Boolean
+        get() = this.directlyNestedInsideCommandKey != null
+
+    val correspondingOpeningCommandKeyForAutoclose: CommandKey?
+        get() = correspondingOpeningCommandKey ?: directlyNestedInsideCommandKey
+
+    val isTriggerAutoclose: Boolean
+        get() = this.correspondingOpeningCommandKeyForAutoclose != null
+
 
     val allowedAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes
     val unallowedAttributes: Set<CommandAttributeKey> = CommandAttributeKey.entries.toMutableSet() - allowedAttributes

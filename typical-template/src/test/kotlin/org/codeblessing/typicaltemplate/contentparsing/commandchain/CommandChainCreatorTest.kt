@@ -28,6 +28,57 @@ class CommandChainCreatorTest {
 
         }
 
+        @Test
+        fun `valid template chain with nested commands is accepted`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addText("here is text")
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addIfCommand("myConditionExpression")
+                .addText("inside if statement")
+                .addReplaceValueByExpressionCommand()
+                .addText("replace expression inside if statement")
+                .addReplaceValueByExpressionCommand()
+                .addText("replace expression inside replace expression statement")
+                .addEndReplaceValueByExpressionCommand()
+                .addEndReplaceValueByExpressionCommand()
+                .addElseCommand()
+                .addText("inside else statement")
+                .addEndIfCommand()
+                .addEndReplaceValueByExpressionCommand()
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+        }
+
+        @Test
+        fun `valid template chain with nested commands that are autoclosed is accepted`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addText("here is text")
+                .addReplaceValueByExpressionCommand()
+                .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .addIfCommand("myConditionExpression")
+                .addText("inside if statement")
+                .addReplaceValueByExpressionCommand()
+                .addText("replace expression inside if statement")
+                .addReplaceValueByExpressionCommand()
+                .addText("replace expression inside replace expression statement")
+                // replace-value-by-expression command is autoclosed by else command
+                // replace-value-by-expression command is autoclosed by else command
+                .addElseCommand()
+                .addText("inside else statement")
+                .addEndIfCommand()
+                // replace-value-by-expression command is autoclosed by end of command chain
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+        }
 
         @Test
         fun `throws for unmatched closing command`() {
@@ -45,12 +96,25 @@ class CommandChainCreatorTest {
         }
 
         @Test
-        fun `throws for unclosed opening command`() {
+        fun `valid template chain for unclosed opening command that supports auto-closing`() {
             val fragments = FragmentsBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addReplaceValueByExpressionCommand()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+        }
+
+        @Test
+        fun `throws for unclosed opening command that do not supports auto-closing`() {
+            val fragments = FragmentsBuilder.create()
+                .addText("here is text")
+                .addTemplateRendererCommand()
+                .addIfCommand()
+                .addText("here is the content of the if command")
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -175,7 +239,7 @@ class CommandChainCreatorTest {
     inner class MutuallyInfluencedChainItems {
 
         @Test
-        fun `do not markplain text item if no influencing commands are in the chain`() {
+        fun `do not mark plain text item if no influencing commands are in the chain`() {
             val fragments = FragmentsBuilder.create()
                 .addTemplateRendererCommand()
                 .addText("here is text")

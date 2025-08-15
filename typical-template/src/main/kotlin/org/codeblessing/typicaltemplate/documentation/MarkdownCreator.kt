@@ -81,6 +81,7 @@ object MarkdownCreator {
                 
                     Varia: 
                     * ${commandKey.openingClosingDescription()}
+                    * ${commandKey.autoclosingDescription()}
                     * ${commandKey.groupSupportDescription()}
                     * ${commandKey.nestingDescription()}
                 """.trimIndent()
@@ -121,7 +122,6 @@ object MarkdownCreator {
                 sb.append("[ ... ]")
             }
 
-
             correspondingClosingCommandKey?.let { closingKey ->
                 sb.append(" .... ${COMMAND_PREFIX}${closingKey.keyword}")
             }
@@ -137,6 +137,17 @@ object MarkdownCreator {
             "This command must be closed using the ${correspondingClosingCommandKey!!.createMarkDownChapterLink()} command."
         } else {
             "This command is closing the ${correspondingOpeningCommandKey!!.createMarkDownChapterLink()} command."
+        }
+    }
+
+    private fun CommandKey.autoclosingDescription(): String {
+        val correspondingClosingCommand = this.correspondingClosingCommandKey
+        return if(isTriggerAutoclose) {
+            "This command triggers to close all nested commands that support auto-closing."
+        } else if(isAutoclosingSupported) {
+            "This command supports to be auto-closed. The corresponding ${correspondingClosingCommand!!.createMarkDownChapterLink()} command can be skipped."
+        } else {
+            "This command neither triggers an auto-closing of nested commands nor will it be auto-closed."
         }
     }
 

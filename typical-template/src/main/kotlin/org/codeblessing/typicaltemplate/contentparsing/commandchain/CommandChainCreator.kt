@@ -45,42 +45,78 @@ object CommandChainCreator {
     private fun validateNestingLevelOfFragments(fragments: List<TemplateFragment>) {
         val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
 
-        fragments.forEach { templateFragment ->
-            when (templateFragment) {
-                is CommandFragment -> {
-                    val commandKey = templateFragment.keywordCommand.commandKey
-                    if(commandKey.isOpeningCommand) {
-                        openingCommandKeysStack.add(commandKey)
-                    } else if(commandKey.isClosingCommand) {
-                        val correspondingOpeningCommand = openingCommandKeysStack.removeLastOrNull()
-                        if(correspondingOpeningCommand != commandKey.correspondingOpeningCommandKey) {
-                            throw TemplateParsingException(
-                                lineNumbers = templateFragment.lineNumbers,
-                                msg = "The template has a closing command '${commandKey.keyword}' " +
-                                        "without a corresponding opening command '${commandKey.correspondingOpeningCommandKey?.keyword}'" +
-                                        "before in the template."
-                            )
-                        }
-                    }
-                    if(commandKey.directlyNestedInsideCommandKey != null &&
-                        commandKey.directlyNestedInsideCommandKey != openingCommandKeysStack.lastOrNull()) {
-                        throw TemplateParsingException(
-                            lineNumbers = templateFragment.lineNumbers,
-                            msg = "The command '${commandKey.keyword}' must reside as directly nested command " +
-                                    "inside the command '${commandKey.directlyNestedInsideCommandKey.keyword}'."
-                        )
-                    }
-                }
-                is TextFragment -> Unit
+        fragments.filterIsInstance<CommandFragment>().forEach { commandFragment ->
+            val commandKey = commandFragment.keywordCommand.commandKey
+            if(commandKey.isTriggerAutoclose) {
+                autocloseNestedStackElements(commandKey, openingCommandKeysStack)
+            }
+            if(commandKey.isOpeningCommand) {
+                openingCommandKeysStack.add(commandKey)
+            } else if(commandKey.isClosingCommand) {
+                validateClosingCommand(commandFragment, openingCommandKeysStack)
+                openingCommandKeysStack.removeLast()
+            }
+            if(commandKey.isRequiredDirectlyNestedInOtherCommand) {
+                validateDirectlyNestedCommand(commandFragment, openingCommandKeysStack)
             }
         }
 
-        if(openingCommandKeysStack.isNotEmpty()) {
+        if(openingCommandKeysStack.filterNot { it.isAutoclosingSupported }.isNotEmpty()) {
             throw TemplateParsingException(
                 lineNumbers = EMPTY_LINE_NUMBERS,
                 msg = "The template has the following opening commands ${openingCommandKeysStack.map { it.keyword }} " +
                         "that needs to be closed using the following closing commands " +
                         "${openingCommandKeysStack.map { it.correspondingClosingCommandKey?.keyword }}."
+            )
+        }
+
+    }
+
+    private fun validateDirectlyNestedCommand(
+        commandFragment: CommandFragment,
+        openingCommandKeysStack: List<CommandKey>,
+    ) {
+        val commandKey = commandFragment.keywordCommand.commandKey
+        val requiredEnclosingCommandKey = requireNotNull(commandKey.directlyNestedInsideCommandKey)
+
+        if(openingCommandKeysStack.lastOrNull() != requiredEnclosingCommandKey) {
+            throw TemplateParsingException(
+                lineNumbers = commandFragment.lineNumbers,
+                msg = "The command '${commandKey.keyword}' must reside as directly nested command " +
+                        "inside the command '${requiredEnclosingCommandKey.keyword}'."
+            )
+        }
+    }
+
+    private fun autocloseNestedStackElements(
+        commandKey: CommandKey,
+        openingCommandKeysStack: MutableList<CommandKey>,
+    ) {
+        require(commandKey.isTriggerAutoclose)
+        val correspondingOpeningCommandKey = requireNotNull(commandKey.correspondingOpeningCommandKeyForAutoclose)
+        while (openingCommandKeysStack.isNotEmpty()) {
+            val lastCommandKey = openingCommandKeysStack.last()
+            if(lastCommandKey == correspondingOpeningCommandKey) {
+                return
+            }
+            // here we continue and the lastCommandKey is autoclosed
+            openingCommandKeysStack.removeLast()
+        }
+    }
+
+    private fun validateClosingCommand(
+        commandFragment: CommandFragment,
+        openingCommandKeysStack: List<CommandKey>,
+    ) {
+        val closingCommandKey = commandFragment.keywordCommand.commandKey
+        val correspondingOpeningCommandKey = requireNotNull(closingCommandKey.correspondingOpeningCommandKey)
+        val lastCommandKey = openingCommandKeysStack.lastOrNull()
+        if(lastCommandKey == null || lastCommandKey != correspondingOpeningCommandKey) {
+            throw TemplateParsingException(
+                lineNumbers = commandFragment.lineNumbers,
+                msg = "The template has a closing command '${closingCommandKey.keyword}' " +
+                        "without a corresponding opening command '${correspondingOpeningCommandKey.keyword}'" +
+                        "before in the template."
             )
         }
     }

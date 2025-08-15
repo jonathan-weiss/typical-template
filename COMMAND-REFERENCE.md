@@ -29,6 +29,7 @@ Defines in which template the content of the given file is put into. This comman
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -50,6 +51,7 @@ Defines model instances that are passed to the template renderer. You can access
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -75,6 +77,7 @@ Replaces a value by a kotlin expression in a multiline string.
 
 Varia:
 * This command must be closed using the [end-replace-value-by-expression](#end-replace-value-by-expression) command.
+* This command supports to be auto-closed. The corresponding [end-replace-value-by-expression](#end-replace-value-by-expression) command can be skipped.
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -94,6 +97,7 @@ Syntax: ```@end-replace-value-by-expression```
 
 Varia:
 * This command is closing the [replace-value-by-expression](#replace-value-by-expression) command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -105,6 +109,7 @@ Replaces a value by another value.
 
 Varia:
 * This command must be closed using the [end-replace-value-by-value](#end-replace-value-by-value) command.
+* This command supports to be auto-closed. The corresponding [end-replace-value-by-value](#end-replace-value-by-value) command can be skipped.
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -124,6 +129,7 @@ Syntax: ```@end-replace-value-by-value```
 
 Varia:
 * This command is closing the [replace-value-by-value](#replace-value-by-value) command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -135,6 +141,7 @@ Render the enclosed content only if the condition is true.
 
 Varia:
 * This command must be closed using the [end-if](#end-if) command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -152,6 +159,7 @@ Render the enclosed content only if the condition inside a previously defined if
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword must reside as directly nested element in the parent element [if](#if).
 
@@ -169,6 +177,7 @@ Render the enclosed content only if not any of the if/else-if clauses evaluates 
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword must reside as directly nested element in the parent element [if](#if).
 
@@ -178,6 +187,7 @@ Syntax: ```@end-if```
 
 Varia:
 * This command is closing the [if](#if) command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -189,6 +199,7 @@ Iterates/Loops over a collection of items (=iterable). In each loop, the current
 
 Varia:
 * This command must be closed using the [end-foreach](#end-foreach) command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -208,6 +219,7 @@ Syntax: ```@end-foreach```
 
 Varia:
 * This command is closing the [foreach](#foreach) command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -219,6 +231,7 @@ Ignores the text from the content and does not output it in the template rendere
 
 Varia:
 * This command must be closed using the [end-ignore-text](#end-ignore-text) command.
+* This command supports to be auto-closed. The corresponding [end-ignore-text](#end-ignore-text) command can be skipped.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -228,6 +241,7 @@ Syntax: ```@end-ignore-text```
 
 Varia:
 * This command is closing the [ignore-text](#ignore-text) command.
+* This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -239,6 +253,7 @@ Print text as output of the template renderer.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -256,6 +271,7 @@ slac (=**s**trip **l**ine **a**fter **c**omment) removes all characters and the 
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
@@ -267,5 +283,6 @@ slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
