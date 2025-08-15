@@ -28,6 +28,13 @@ object EntityDto {
           |        return this;
           |    }
           |
+          |
+          |
+          |    fun getOther${myModel.entityCapitalized}(): ${myModel.entityCapitalized}Dto {
+          |        return this;
+          |    }
+          |
+          |
           |${ if(myModel.isGenerateToString()) { """
               |  fun toString(): String {
               |    return "${myModel.entityCapitalized}[${super.toString()}]"

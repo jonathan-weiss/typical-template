@@ -33,6 +33,16 @@ enum class CommandKey(
         keyword = "end-replace-value-by-expression",
         correspondingOpeningCommandKey = REPLACE_VALUE_BY_EXPRESSION,
     ),
+    REPLACE_VALUE_BY_VALUE(
+        keyword = "replace-value-by-value",
+        attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
+        requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_VALUE),
+        optionalAttributes = setOf(),
+    ),
+    END_REPLACE_VALUE_BY_VALUE(
+        keyword = "end-replace-value-by-value",
+        correspondingOpeningCommandKey = REPLACE_VALUE_BY_VALUE,
+    ),
     IF_CONDITION(
         keyword = "if",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,

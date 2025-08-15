@@ -30,6 +30,14 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
         return this;
     }
 
+/* @tt{{{ @replace-value-by-value [searchValue="Another" replaceByValue="Other"] }}}@ */
+
+    fun getAnotherAuthor(): AuthorDto {
+        return this;
+    }
+
+// @tt{{{ @end-replace-value-by-value }}}@
+
 /* @tt{{{ @if [ conditionExpression="myModel.isGenerateToString()" ]}}}@ */
   fun toString(): String {
     return "Author[${super.toString()}]"

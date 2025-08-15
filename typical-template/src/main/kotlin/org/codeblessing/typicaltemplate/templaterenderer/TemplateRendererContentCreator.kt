@@ -47,6 +47,8 @@ object TemplateRendererContentCreator {
                  -> throw IllegalArgumentException("Command '${command.keywordCommand.commandKey}' not allowed here")
             CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, command.keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)
+            CommandKey.REPLACE_VALUE_BY_VALUE -> processReplaceValueByValue(ctx, command.keywordCommand)
+            CommandKey.END_REPLACE_VALUE_BY_VALUE -> processEndReplaceValueByValue(ctx)
             CommandKey.IF_CONDITION -> processIfCondition(ctx, command.keywordCommand)
             CommandKey.ELSE_IF_CONDITION -> processElseIfCondition(ctx, command.keywordCommand)
             CommandKey.ELSE_CLAUSE -> processElseCondition(ctx)
@@ -72,6 +74,21 @@ object TemplateRendererContentCreator {
     }
 
     private fun processEndReplaceValueByExpression(ctx: TemplateCreationContext): String {
+        ctx.nestingStack.popNestingContext()
+        return NO_CONTENT_TO_WRITE
+    }
+
+    private fun processReplaceValueByValue(ctx: TemplateCreationContext, command: KeywordCommand): String {
+        val replacements: Map<String, String> = command.attributeGroups.fold(emptyMap()) { resultMap, attributeGroup ->
+            val searchValue = attributeGroup.attribute(CommandAttributeKey.SEARCH_VALUE)
+            val replacementValue = attributeGroup.attribute(CommandAttributeKey.REPLACE_BY_VALUE)
+            resultMap + (searchValue to replacementValue)
+        }
+        ctx.nestingStack.pushNestingContext(CommandNestingContext(command, replacements))
+        return NO_CONTENT_TO_WRITE
+    }
+
+    private fun processEndReplaceValueByValue(ctx: TemplateCreationContext): String {
         ctx.nestingStack.popNestingContext()
         return NO_CONTENT_TO_WRITE
     }

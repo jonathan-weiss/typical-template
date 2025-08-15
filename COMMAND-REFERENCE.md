@@ -5,6 +5,8 @@ The following keywords/commands are supported:
 * [template-model](#template-model)
 * [replace-value-by-expression](#replace-value-by-expression)
 * [end-replace-value-by-expression](#end-replace-value-by-expression)
+* [replace-value-by-value](#replace-value-by-value)
+* [end-replace-value-by-value](#end-replace-value-by-value)
 * [if](#if)
 * [else-if](#else-if)
 * [else](#else)
@@ -69,7 +71,7 @@ Attributes:
 
 Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ][ ... ] .... @end-replace-value-by-expression```
 
-Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.
+Replaces a value by a kotlin expression in a multiline string.
 
 Varia:
 * This command must be closed using the [end-replace-value-by-expression](#end-replace-value-by-expression) command.
@@ -92,6 +94,36 @@ Syntax: ```@end-replace-value-by-expression```
 
 Varia:
 * This command is closing the [replace-value-by-expression](#replace-value-by-expression) command.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## replace-value-by-value
+
+Syntax: ```@replace-value-by-value [ searchValue="..." replaceByValue="..." ][ ... ] .... @end-replace-value-by-value```
+
+Replaces a value by another value.
+
+Varia:
+* This command must be closed using the [end-replace-value-by-value](#end-replace-value-by-value) command.
+* This command can have many groups of attributes
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+Attributes:
+* *searchValue*: The token that has to be searched in the enclosed block of content. The search is case-sensitive.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+* *replaceByValue*: The plain value the attribute ```searchValue``` is replaced.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+
+## end-replace-value-by-value
+
+Syntax: ```@end-replace-value-by-value```
+
+Varia:
+* This command is closing the [replace-value-by-value](#replace-value-by-value) command.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 

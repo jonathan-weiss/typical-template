@@ -7,6 +7,7 @@ enum class CommandAttributeKey(val keyAsString: String) {
     TEMPLATE_MODEL_PACKAGE_NAME("modelPackageName"),
     TEMPLATE_MODEL_NAME("modelName"),
     REPLACE_BY_EXPRESSION("replaceByExpression"),
+    REPLACE_BY_VALUE("replaceByValue"),
     SEARCH_VALUE("searchValue"),
     CONDITION_EXPRESSION("conditionExpression"),
     LOOP_ITERABLE_EXPRESSION("iteratorExpression"),
