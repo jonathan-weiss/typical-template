@@ -6,6 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.PlainTextChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import java.nio.file.Path
 
 object TemplateRendererContentCreator {
 
@@ -13,8 +14,8 @@ object TemplateRendererContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createMultilineStringTemplateContent(templateRendererDescription: TemplateRendererDescription): String {
-        val ctx = TemplateCreationContext(templateRendererDescription)
+    fun createMultilineStringTemplateContent(filepathString: String, templateRendererDescription: TemplateRendererDescription): KotlinTemplateContent {
+        val ctx = TemplateCreationContext(filepathWithModifications = filepathString, templateRendererDescription)
         val sb = StringBuilder("|")
         templateRendererDescription.templateChain.forEach { chainItem ->
             when (chainItem) {
@@ -28,7 +29,10 @@ object TemplateRendererContentCreator {
                 ))
             }
         }
-        return sb.toString()
+        return KotlinTemplateContent(
+            rendererCode = sb.toString(),
+            filepath = ctx.filepathWithModifications,
+        )
     }
 
     private fun rawContent(ctx: TemplateCreationContext, plainTextItem: PlainTextChainItem): String {
@@ -66,6 +70,7 @@ object TemplateRendererContentCreator {
             CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, command.keywordCommand)
             CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
             CommandKey.PRINT_TEXT -> processPrintText(ctx, command.keywordCommand)
+            CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS -> processProvideModifiedFilename(ctx)
         }
     }
 
@@ -183,6 +188,13 @@ object TemplateRendererContentCreator {
         return command.attribute(CommandAttributeKey.TEXT).addMargin(ctx)
     }
 
+    private fun processProvideModifiedFilename(
+        ctx: TemplateCreationContext,
+    ): String {
+        ctx.filepathWithModifications = ctx.nestingStack.replaceInString(ctx.filepathWithModifications.escapeKotlinSpecialCharacters())
+        return NO_CONTENT_TO_WRITE
+    }
+
     private fun processEndIgnoreText(
         ctx: TemplateCreationContext,
     ): String {
@@ -235,6 +247,7 @@ object TemplateRendererContentCreator {
     }
 
     private data class TemplateCreationContext(
+        var filepathWithModifications: String,
         val templateRendererDescription: TemplateRendererDescription,
         val identLevel: IdentLevel = IdentLevel(),
         val nestingStack: CommandNestingContextStack = CommandNestingContextStack()

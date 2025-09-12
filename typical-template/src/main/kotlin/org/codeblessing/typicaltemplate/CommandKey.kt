@@ -98,6 +98,10 @@ enum class CommandKey(
         keyword = "slac",
         attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
     ),
+    MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS(
+        keyword = "modify-provided-filename-by-replacements",
+        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+    ),
     ;
 
     companion object {

@@ -17,8 +17,10 @@
    ]
 }}}@ */
 
-/* @tt{{{ @replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityCapitalized"]
+/* @tt{{{
+       @replace-value-by-expression [searchValue="Author" replaceByExpression="myModel.entityCapitalized"]
                                     [searchValue="author" replaceByExpression="myModel"]
+       @modify-provided-filename-by-replacements
 }}}@ */
 data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="firstname" replaceByExpression="myModel.entityField" ] }}}@
   val firstname: String,// @tt{{{ @end-replace-value-by-expression }}}@

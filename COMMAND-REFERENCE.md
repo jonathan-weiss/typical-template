@@ -18,6 +18,7 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [slac](#slac)
 * [slbc](#slbc)
+* [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 
 
 
@@ -280,6 +281,18 @@ Varia:
 Syntax: ```@slbc```
 
 slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## modify-provided-filename-by-replacements
+
+Syntax: ```@modify-provided-filename-by-replacements```
+
+Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```replace-value-by-expression``` and ```replace-value-by-value```.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.

@@ -16,4 +16,8 @@ object TemplateTest {
           | hello world
         """.trimMargin(marginPrefix = "|")
     }
+
+    fun filePath(model: TemplateModel): String {
+      return "dum-dir/dum-sub-dir/dummy.txt"
+    }
 }

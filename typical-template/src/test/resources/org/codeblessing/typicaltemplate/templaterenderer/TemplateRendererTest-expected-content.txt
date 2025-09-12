@@ -133,4 +133,8 @@ object EntityDto {
           |}
         """.trimMargin(marginPrefix = "|")
     }
+
+    fun filePath(myModel: DtoModel, mySecondModel: DtoModel): String {
+      return "dummy-dir/${myModel}-subdir/dummy-${myModel.entityCapitalized}.txt"
+    }
 }

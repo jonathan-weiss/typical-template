@@ -1,12 +1,14 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import kotlin.io.path.absolutePathString
 
 object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, sourceContent: String): String {
+    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, kotlinTemplateContent: KotlinTemplateContent): String {
+        val sourceContent = kotlinTemplateContent.rendererCode
         val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
         val templateRendererClassName = templateRendererDescription.templateRendererClass.className
 
@@ -35,6 +37,10 @@ object $templateRendererClassName {
         return $MULTILINE_STRING_DELIMITER
 ${sourceContent.addIdentBeforeEachLine(ident = 10)}
         $MULTILINE_STRING_DELIMITER.trimMargin(marginPrefix = "|")
+    }
+
+    fun filePath(${modelFields}): String {
+      return "${kotlinTemplateContent.filepath}"
     }
 }
         """.trimIndent()

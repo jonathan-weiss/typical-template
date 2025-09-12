@@ -8,9 +8,13 @@ import kotlin.io.path.writeText
 
 object TemplateRendererWriter {
 
-    fun writeTemplate(templateRendererDescription: TemplateRendererDescription, templateRendererConfiguration: TemplateRendererConfiguration): Path {
-        val kotlinMultilineContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(templateRendererDescription)
-        val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinMultilineContent)
+    fun writeTemplate(
+        filepathString: String,
+        templateRendererDescription: TemplateRendererDescription,
+        templateRendererConfiguration: TemplateRendererConfiguration
+    ): Path {
+        val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepathString, templateRendererDescription)
+        val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateContent)
         val kotlinFilePath = templateRendererDescription.templateRendererClass.classFilePath(templateRendererConfiguration.templateRendererTargetSourceBasePath)
 
         kotlinFilePath.createParentDirectories()

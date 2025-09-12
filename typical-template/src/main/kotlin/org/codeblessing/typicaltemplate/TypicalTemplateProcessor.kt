@@ -6,7 +6,9 @@ import org.codeblessing.typicaltemplate.filesearch.FileTraversal
 import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererWriter
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.pathString
 import kotlin.io.path.readText
+import kotlin.io.path.relativeTo
 
 class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
 
@@ -18,7 +20,8 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
         templatingConfigurations.forEach { templatingConfiguration ->
             val foundFiles = FileTraversal.searchFiles(templatingConfiguration.fileSearchLocations)
 
-            foundFiles.map { file ->
+            foundFiles.map { foundFile ->
+                val file = foundFile.filePath
                 val supportedCommentStyles = ContentMapper.mapContent(file)
                 val templates = try {
                     ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
@@ -27,7 +30,8 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
                 }
 
                 templates.forEach { template ->
-                    val templatePath = TemplateRendererWriter.writeTemplate(template, templatingConfiguration.templateRendererConfiguration)
+                    val relativeFilePath = file.relativeTo(foundFile.rootDirectory).normalize().pathString
+                    val templatePath = TemplateRendererWriter.writeTemplate(relativeFilePath, template, templatingConfiguration.templateRendererConfiguration)
                     requireNotNull(createdTemplateFactories[templatingConfiguration]).add(templatePath)
                 }
             }

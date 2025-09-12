@@ -6,6 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.commandchain.ModelDescrip
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 class TemplateRendererClassContentCreatorTest {
 
@@ -27,7 +28,11 @@ class TemplateRendererClassContentCreatorTest {
             ),
             templateChain = emptyList()
         )
-        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, "| hello world")
+        val kotlinTemplateContent = KotlinTemplateContent(
+            rendererCode = "| hello world",
+            filepath = "dum-dir/dum-sub-dir/dummy.txt",
+        )
+        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateContent)
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
             classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererClassContentCreatorTest-expected-content.txt"
