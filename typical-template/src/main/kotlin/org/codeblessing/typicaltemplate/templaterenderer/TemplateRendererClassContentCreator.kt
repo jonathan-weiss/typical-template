@@ -14,10 +14,14 @@ object TemplateRendererClassContentCreator {
         val templateRendererInterfaceClassName = templateRendererDescription.templateRendererInterface?.className
         val templateRendererInterfacePackageName = templateRendererDescription.templateRendererInterface?.classPackageName
 
-        val extendsStatement = if(templateRendererInterfaceClassName != null) {
-            ": $templateRendererInterfaceClassName "
+        val extendsStatement: String
+        val overrideKeyword: String
+        if(templateRendererInterfaceClassName != null) {
+            extendsStatement = ": $templateRendererInterfaceClassName "
+            overrideKeyword = "override "
         } else {
-            ""
+            extendsStatement = ""
+            overrideKeyword = ""
         }
 
         val templateRendererInterfaceFqnOrNull = if(templateRendererDescription.templateRendererInterface != null
@@ -32,9 +36,7 @@ object TemplateRendererClassContentCreator {
         val allImports = listOfNotNull(
             templateRendererInterfaceFqnOrNull,
             *modelImports.toTypedArray(),
-        ).distinct()
-            .map { "import $it" }
-            .joinToString("\n")
+        ).distinct().joinToString("\n") { "import $it" }
 
 
         val modelFields =
@@ -55,13 +57,13 @@ $allImports
  */
 object $templateRendererClassName $extendsStatement{
 
-    fun renderTemplate(${modelFields}): String {
+    ${overrideKeyword}fun renderTemplate(${modelFields}): String {
         return $MULTILINE_STRING_DELIMITER
 ${sourceContent.addIdentBeforeEachLine(ident = 10)}
         $MULTILINE_STRING_DELIMITER.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(${modelFields}): String {
+    ${overrideKeyword}fun filePath(${modelFields}): String {
       return "${kotlinTemplateContent.filepath}"
     }
 }
