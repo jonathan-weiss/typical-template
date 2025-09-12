@@ -1,7 +1,6 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
-import kotlin.io.path.absolutePathString
 
 object TemplateRendererClassContentCreator {
 
@@ -12,9 +11,31 @@ object TemplateRendererClassContentCreator {
         val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
         val templateRendererClassName = templateRendererDescription.templateRendererClass.className
 
-        val modelImports =
-            templateRendererDescription.modelClasses
-                .joinToString("\n") { "import ${it.modelClassDescription.fullQualifiedName}\n" }
+        val templateRendererInterfaceClassName = templateRendererDescription.templateRendererInterface?.className
+        val templateRendererInterfacePackageName = templateRendererDescription.templateRendererInterface?.classPackageName
+
+        val extendsStatement = if(templateRendererInterfaceClassName != null) {
+            ": $templateRendererInterfaceClassName "
+        } else {
+            ""
+        }
+
+        val templateRendererInterfaceFqnOrNull = if(templateRendererDescription.templateRendererInterface != null
+            && templateRendererInterfacePackageName != templateRendererPackageName) {
+            templateRendererInterfacePackageName
+        } else {
+            null
+        }
+
+        val modelImports = templateRendererDescription.modelClasses.map { it.modelClassDescription.fullQualifiedName }
+
+        val allImports = listOfNotNull(
+            templateRendererInterfaceFqnOrNull,
+            *modelImports.toTypedArray(),
+        ).distinct()
+            .map { "import $it" }
+            .joinToString("\n")
+
 
         val modelFields =
             templateRendererDescription.modelClasses
@@ -26,12 +47,13 @@ object TemplateRendererClassContentCreator {
  */
 package $templateRendererPackageName
 
-$modelImports
+$allImports
+
 /**
  * Generate the content for the template $templateRendererClassName filled up
  * with the content of the passed models.
  */
-object $templateRendererClassName {
+object $templateRendererClassName $extendsStatement{
 
     fun renderTemplate(${modelFields}): String {
         return $MULTILINE_STRING_DELIMITER

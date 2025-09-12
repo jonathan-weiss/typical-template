@@ -24,7 +24,7 @@ The following keywords/commands are supported:
 
 ## template-renderer
 
-Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." ]```
+Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ]```
 
 Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.
 
@@ -40,6 +40,14 @@ Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 * *templateRendererPackageName*: The name of the package where the class defined with ```templateRendererClassName``` resides in.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+* *templateRendererInterfaceName*: The name of an optional interface class name that is added to the class defined with the ```templateRendererClassName```.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+* *templateRendererInterfacePackageName*: The name of the package where the interface defined with ```templateRendererInterfaceName``` resides in.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>

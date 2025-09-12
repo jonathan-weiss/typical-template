@@ -5,8 +5,6 @@ package examples
 
 import examples.DtoModel
 
-import examples.DtoModel
-
 /**
  * Generate the content for the template EntityDto filled up
  * with the content of the passed models.

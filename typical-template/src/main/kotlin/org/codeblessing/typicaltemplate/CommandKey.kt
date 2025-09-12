@@ -16,7 +16,7 @@ enum class CommandKey(
         keyword = "template-renderer",
         attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
-        optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
+        optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
     ),
     TEMPLATE_MODEL(
         keyword = "template-model",

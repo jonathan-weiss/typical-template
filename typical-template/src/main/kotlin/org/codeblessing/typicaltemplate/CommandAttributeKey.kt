@@ -3,6 +3,8 @@ package org.codeblessing.typicaltemplate
 enum class CommandAttributeKey(val keyAsString: String) {
     TEMPLATE_RENDERER_CLASS_NAME("templateRendererClassName"),
     TEMPLATE_RENDERER_PACKAGE_NAME("templateRendererPackageName"),
+    TEMPLATE_RENDERER_INTERFACE_NAME("templateRendererInterfaceName"),
+    TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME("templateRendererInterfacePackageName"),
     TEMPLATE_MODEL_CLASS_NAME("modelClassName"),
     TEMPLATE_MODEL_PACKAGE_NAME("modelPackageName"),
     TEMPLATE_MODEL_NAME("modelName"),

@@ -23,6 +23,11 @@ object CommandChainCreator {
                 packageNameAttribute = TEMPLATE_RENDERER_PACKAGE_NAME
             )
 
+        val templateRendererInterfaceDescription = templateRendererKeywordCommand
+            .toOptionalClassDescription(
+                classNameAttribute = TEMPLATE_RENDERER_INTERFACE_NAME,
+                packageNameAttribute = TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME
+            )
 
         val remainingFragments = templateFragments
             .filterNot { it.isTemplateDefinitionCommand() }
@@ -35,6 +40,7 @@ object CommandChainCreator {
 
         val templateRendererDescription = TemplateRendererDescription(
             templateRendererClass = templateRendererClassDescription,
+            templateRendererInterface = templateRendererInterfaceDescription,
             modelClasses = templateModels,
             templateChain = templateChainItems
         )
@@ -246,6 +252,19 @@ object CommandChainCreator {
             className = this.attribute(groupId, classNameAttribute),
             classPackageName = this.attributeOptional(groupId, packageNameAttribute) ?: DEFAULT_PACKAGE_NAME,
         )
+    }
+
+    private fun KeywordCommand.toOptionalClassDescription(
+        groupId: Int = 0,
+        classNameAttribute: CommandAttributeKey,
+        packageNameAttribute: CommandAttributeKey,
+    ): ClassDescription? {
+        return this.attributeOptional(groupId, classNameAttribute)?.let { className ->
+            ClassDescription(
+                className = className,
+                classPackageName = this.attributeOptional(groupId, packageNameAttribute) ?: DEFAULT_PACKAGE_NAME,
+            )
+        }
     }
 
     private fun TemplateFragment.isTemplateDefinitionCommand(): Boolean {
