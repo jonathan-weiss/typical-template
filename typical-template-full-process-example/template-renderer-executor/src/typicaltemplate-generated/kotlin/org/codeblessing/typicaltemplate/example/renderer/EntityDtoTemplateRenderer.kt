@@ -26,4 +26,8 @@ object EntityDtoTemplateRenderer {
           |
         """.trimMargin(marginPrefix = "|")
     }
+
+    fun filePath(model: DtoEntityRenderModel): String {
+      return "my/example/businessproject/dto/ProductDto.kt"
+    }
 }

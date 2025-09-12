@@ -31,4 +31,8 @@ object HtmlListPageRenderer {
           |
         """.trimMargin(marginPrefix = "|")
     }
+
+    fun filePath(listPageModel: HtmlListModel): String {
+      return "news.html"
+    }
 }
