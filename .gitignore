@@ -5,3 +5,4 @@ build
 **/build
 db/**
 tmp
+*.todo.*
