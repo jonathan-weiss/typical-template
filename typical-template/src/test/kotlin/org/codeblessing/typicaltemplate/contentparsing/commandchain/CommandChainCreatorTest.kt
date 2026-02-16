@@ -236,6 +236,185 @@ class CommandChainCreatorTest {
 
 
     @Nested
+    inner class NestedTemplateRendererValidation {
+
+        @Test
+        fun `single nested template-renderer produces two descriptions`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addText("inner content")
+                .addEndTemplateRendererCommand()
+                .addText("more outer content")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(2, templates.size)
+            assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
+            assertEquals("InnerRenderer", templates[1].templateRendererClass.className)
+        }
+
+        @Test
+        fun `nested template-renderer without end-template-renderer throws`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addText("inner content")
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `top-level end-template-renderer is optional`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
+        }
+
+        @Test
+        fun `top-level end-template-renderer is accepted when present`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .addEndTemplateRendererCommand()
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(1, templates.size)
+            assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
+        }
+
+        @Test
+        fun `nested template context is isolated from outer`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
+                .addText("outer content")
+                .addReplaceValueByExpressionCommand(searchValue = "outerSearch", fieldName = "outerModel.field")
+                .addText("text with outerSearch")
+                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addTemplateModel(modelName = "innerModel", modelClassName = "InnerModel")
+                .addText("inner content")
+                .addEndTemplateRendererCommand()
+                .addText("more outer text with outerSearch")
+                .addEndReplaceValueByExpressionCommand()
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(2, templates.size)
+            assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
+            assertEquals(1, templates[0].modelClasses.size)
+            assertEquals("outerModel", templates[0].modelClasses[0].modelName)
+            assertEquals("InnerRenderer", templates[1].templateRendererClass.className)
+            assertEquals(1, templates[1].modelClasses.size)
+            assertEquals("innerModel", templates[1].modelClasses[0].modelName)
+        }
+
+        @Test
+        fun `deeply nested template-renderers supported`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "Level0")
+                .addText("level 0 content")
+                .addTemplateRendererCommand(templateRendererClassName = "Level1")
+                .addText("level 1 content")
+                .addTemplateRendererCommand(templateRendererClassName = "Level2")
+                .addText("level 2 content")
+                .addEndTemplateRendererCommand()
+                .addText("more level 1 content")
+                .addEndTemplateRendererCommand()
+                .addText("more level 0 content")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(3, templates.size)
+            assertEquals("Level0", templates[0].templateRendererClass.className)
+            assertEquals("Level1", templates[1].templateRendererClass.className)
+            assertEquals("Level2", templates[2].templateRendererClass.className)
+        }
+
+        @Test
+        fun `multiple sibling nested template-renderers`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .addTemplateRendererCommand(templateRendererClassName = "Inner1")
+                .addText("inner 1 content")
+                .addEndTemplateRendererCommand()
+                .addText("between nested")
+                .addTemplateRendererCommand(templateRendererClassName = "Inner2")
+                .addText("inner 2 content")
+                .addEndTemplateRendererCommand()
+                .addText("more outer content")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(3, templates.size)
+            assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
+            assertEquals("Inner1", templates[1].templateRendererClass.className)
+            assertEquals("Inner2", templates[2].templateRendererClass.className)
+        }
+
+        @Test
+        fun `end-template-renderer without opener throws`() {
+            val fragments = FragmentsBuilder.create()
+                .addEndTemplateRendererCommand()
+                .addText("some content")
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `commands after top-level end-template-renderer throws`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addText("outer content")
+                .addEndTemplateRendererCommand()
+                .addReplaceValueByExpressionCommand()
+                .addText("this should not be allowed")
+                .addEndReplaceValueByExpressionCommand()
+                .build()
+
+            Assertions.assertThrows(TemplateParsingException::class.java) {
+                CommandChainCreator.validateAndInterpretFragments(fragments)
+            }
+        }
+
+        @Test
+        fun `nested renderer with its own model commands works`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
+                .addText("outer content")
+                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addTemplateModel(modelName = "innerModel1", modelClassName = "InnerModel1")
+                .addTemplateModel(modelName = "innerModel2", modelClassName = "InnerModel2")
+                .addText("inner content")
+                .addEndTemplateRendererCommand()
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            assertEquals(2, templates.size)
+            assertEquals("InnerRenderer", templates[1].templateRendererClass.className)
+            assertEquals(2, templates[1].modelClasses.size)
+            assertEquals("innerModel1", templates[1].modelClasses[0].modelName)
+            assertEquals("innerModel2", templates[1].modelClasses[1].modelName)
+        }
+    }
+
+    @Nested
     inner class MutuallyInfluencedChainItems {
 
         @Test

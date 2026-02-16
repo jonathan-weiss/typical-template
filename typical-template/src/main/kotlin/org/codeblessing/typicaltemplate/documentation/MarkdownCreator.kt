@@ -10,7 +10,8 @@ object MarkdownCreator {
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
-        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.",
+        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.",
+        CommandKey.END_TEMPLATE_RENDERER to "Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.",
         CommandKey.TEMPLATE_MODEL to "Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.",
         CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Replaces a value by a kotlin expression in a multiline string.",
         CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to "",

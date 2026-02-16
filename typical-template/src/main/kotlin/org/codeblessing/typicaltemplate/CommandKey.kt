@@ -20,6 +20,10 @@ enum class CommandKey(
         requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
         optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
     ),
+    END_TEMPLATE_RENDERER(
+        keyword = "end-template-renderer",
+        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+    ),
     TEMPLATE_MODEL(
         keyword = "template-model",
         attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,

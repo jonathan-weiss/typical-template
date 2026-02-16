@@ -53,6 +53,7 @@ object TemplateRendererContentCreator {
         }
         return when (commandKey) {
             CommandKey.TEMPLATE_RENDERER,
+            CommandKey.END_TEMPLATE_RENDERER,
             CommandKey.TEMPLATE_MODEL,
             CommandKey.STRIP_LINE_BEFORE_COMMENT,
             CommandKey.STRIP_LINE_AFTER_COMMENT,

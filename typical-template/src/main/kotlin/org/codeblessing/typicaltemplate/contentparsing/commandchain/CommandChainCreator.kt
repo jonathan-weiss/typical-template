@@ -15,6 +15,16 @@ object CommandChainCreator {
     private const val DEFAULT_PACKAGE_NAME = ""
 
     fun validateAndInterpretFragments(templateFragments: List<TemplateFragment>): List<TemplateRendererDescription> {
+        val (outerFragments, nestedSections) = splitNestedTemplateRenderers(templateFragments)
+        val result = mutableListOf<TemplateRendererDescription>()
+        result.add(validateAndInterpretSingleTemplate(outerFragments))
+        for (nestedSection in nestedSections) {
+            result.addAll(validateAndInterpretFragments(nestedSection))
+        }
+        return result
+    }
+
+    private fun validateAndInterpretSingleTemplate(templateFragments: List<TemplateFragment>): TemplateRendererDescription {
         val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateFragments)
         val templateModels = assureNoDuplicateModelNames(templateFragments)
         val templateRendererClassDescription = templateRendererKeywordCommand
@@ -32,20 +42,99 @@ object CommandChainCreator {
         val remainingFragments = templateFragments
             .filterNot { it.isTemplateDefinitionCommand() }
             .filterNot { it.isModelDefinitionCommand() }
+            .filterNot { it.isEndTemplateRendererCommand() }
 
 
         validateNestingLevelOfFragments(remainingFragments)
 
         val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
 
-        val templateRendererDescription = TemplateRendererDescription(
+        return TemplateRendererDescription(
             templateRendererClass = templateRendererClassDescription,
             templateRendererInterface = templateRendererInterfaceDescription,
             modelClasses = templateModels,
             templateChain = templateChainItems
         )
-        return listOf(templateRendererDescription)
+    }
 
+    private data class SplitResult(
+        val outerFragments: List<TemplateFragment>,
+        val nestedSections: List<List<TemplateFragment>>,
+    )
+
+    private fun splitNestedTemplateRenderers(templateFragments: List<TemplateFragment>): SplitResult {
+        val outerFragments = mutableListOf<TemplateFragment>()
+        val nestedSections = mutableListOf<List<TemplateFragment>>()
+        var foundTopLevel = false
+        var depth = 0
+        var currentNestedSection: MutableList<TemplateFragment>? = null
+
+        for (fragment in templateFragments) {
+            if (currentNestedSection != null) {
+                // We are inside a nested section
+                if (fragment.isTemplateDefinitionCommand()) {
+                    depth++
+                    currentNestedSection.add(fragment)
+                } else if (fragment.isEndTemplateRendererCommand()) {
+                    if (depth > 0) {
+                        depth--
+                        currentNestedSection.add(fragment)
+                    } else {
+                        // Close this nested section
+                        nestedSections.add(currentNestedSection)
+                        currentNestedSection = null
+                    }
+                } else {
+                    currentNestedSection.add(fragment)
+                }
+            } else {
+                // We are in the outer section
+                if (fragment.isTemplateDefinitionCommand()) {
+                    if (!foundTopLevel) {
+                        foundTopLevel = true
+                        outerFragments.add(fragment)
+                    } else {
+                        // Start a new nested section
+                        currentNestedSection = mutableListOf(fragment)
+                        depth = 0
+                    }
+                } else if (fragment.isEndTemplateRendererCommand()) {
+                    if (!foundTopLevel) {
+                        throw TemplateParsingException(
+                            lineNumbers = fragment.lineNumbers,
+                            msg = "Found '${CommandKey.END_TEMPLATE_RENDERER.keyword}' without a corresponding " +
+                                    "'${CommandKey.TEMPLATE_RENDERER.keyword}' command.",
+                        )
+                    }
+                    // Top-level end-template-renderer: optional, but nothing may follow
+                    outerFragments.add(fragment)
+                    val remainingIndex = templateFragments.indexOf(fragment) + 1
+                    val remainingFragments = templateFragments.subList(remainingIndex, templateFragments.size)
+                    val remainingCommands = remainingFragments.filterIsInstance<CommandFragment>()
+                    if (remainingCommands.isNotEmpty()) {
+                        throw TemplateParsingException(
+                            lineNumbers = remainingCommands.first().lineNumbers,
+                            msg = "No commands are allowed after the top-level '${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
+                        )
+                    }
+                    return SplitResult(outerFragments, nestedSections)
+                } else {
+                    outerFragments.add(fragment)
+                }
+            }
+        }
+
+        if (currentNestedSection != null) {
+            // Find the template-renderer command in the unclosed section for better error reporting
+            val nestedRendererFragment = currentNestedSection.firstOrNull { it.isTemplateDefinitionCommand() }
+            throw TemplateParsingException(
+                lineNumbers = nestedRendererFragment?.lineNumbers ?: EMPTY_LINE_NUMBERS,
+                msg = "Nested '${CommandKey.TEMPLATE_RENDERER.keyword}' must be closed with " +
+                        "'${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
+            )
+        }
+
+        return SplitResult(outerFragments, nestedSections)
     }
 
     private fun validateNestingLevelOfFragments(fragments: List<TemplateFragment>) {
@@ -273,6 +362,10 @@ object CommandChainCreator {
 
     private fun TemplateFragment.isModelDefinitionCommand(): Boolean {
         return this is CommandFragment && this.keywordCommand.commandKey == CommandKey.TEMPLATE_MODEL
+    }
+
+    private fun TemplateFragment.isEndTemplateRendererCommand(): Boolean {
+        return this is CommandFragment && this.keywordCommand.commandKey == CommandKey.END_TEMPLATE_RENDERER
     }
 
 }

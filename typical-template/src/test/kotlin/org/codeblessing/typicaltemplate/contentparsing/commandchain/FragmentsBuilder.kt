@@ -146,6 +146,11 @@ class FragmentsBuilder private constructor() {
             .addCommandToChain()
     }
 
+    fun addEndTemplateRendererCommand(): FragmentsBuilder {
+        return this.createCommand(CommandKey.END_TEMPLATE_RENDERER)
+            .addCommandToChain()
+    }
+
     fun addPrintTextCommand(
         text: String,
     ): FragmentsBuilder {
