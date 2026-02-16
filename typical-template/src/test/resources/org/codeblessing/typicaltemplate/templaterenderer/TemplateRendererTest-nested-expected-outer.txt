@@ -1,0 +1,39 @@
+/*
+ * This file is generated using typical-template.
+ */
+package examples.outer
+
+import examples.outer.OuterModel
+
+/**
+ * Generate the content for the template OuterRenderer filled up
+ * with the content of the passed models.
+ */
+object OuterRenderer {
+
+    fun renderTemplate(outerModel: OuterModel): String {
+        return """
+          |
+          |
+          |
+          |class ${outerModel.entityName}Service {
+          |
+          |    fun get${outerModel.entityName}(): String {
+          |        return "${outerModel.entityName}"
+          |    }
+          |
+          |
+          |
+          |    fun outerMethod(): String {
+          |        return "outer ${outerModel.entityName} method"
+          |    }
+          |
+          |}
+          |
+        """.trimMargin(marginPrefix = "|")
+    }
+
+    fun filePath(outerModel: OuterModel): String {
+      return "dummy-dir/author-subdir/dummy-${outerModel.entityName}.txt"
+    }
+}

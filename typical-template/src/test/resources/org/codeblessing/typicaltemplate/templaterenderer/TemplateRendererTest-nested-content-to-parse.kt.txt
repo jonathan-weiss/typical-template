@@ -1,0 +1,68 @@
+/* @tt{{{
+   @template-renderer [
+    templateRendererClassName="OuterRenderer"
+    templateRendererPackageName="examples.outer"
+   ]
+   @template-model [
+    modelClassName="OuterModel"
+    modelPackageName="examples.outer"
+    modelName="outerModel"
+   ]
+}}}@ */
+
+/* @tt{{{
+       @replace-value-by-expression [searchValue="Author" replaceByExpression="outerModel.entityName"]
+       @modify-provided-filename-by-replacements
+}}}@ */
+class AuthorService {
+
+    fun getAuthor(): String {
+        return "Author"
+    }
+
+/* @tt{{{
+   @template-renderer [
+    templateRendererClassName="InnerRenderer"
+    templateRendererPackageName="examples.inner"
+   ]
+   @template-model [
+    modelClassName="InnerModel"
+    modelPackageName="examples.inner"
+    modelName="innerModel"
+   ]
+}}}@ */
+
+/* @tt{{{ @if [ conditionExpression="innerModel.isEnabled()" ]}}}@ */
+    fun isActive(): Boolean = true
+/* @tt{{{ @end-if}}}@ */
+
+/* @tt{{{
+   @template-renderer [
+    templateRendererClassName="DeepRenderer"
+    templateRendererPackageName="examples.deep"
+   ]
+   @template-model [
+    modelClassName="DeepModel"
+    modelPackageName="examples.deep"
+    modelName="deepModel"
+   ]
+}}}@ */
+
+/* @tt{{{ @foreach [ iteratorExpression="deepModel.items" loopVariable="item" ]}}}@ */
+    println("item: $item")
+/* @tt{{{ @end-foreach}}}@ */
+
+/* @tt{{{ @end-template-renderer}}}@ */
+
+    fun innerMethod(): String {
+        return "inner"
+    }
+
+/* @tt{{{ @end-template-renderer}}}@ */
+
+    fun outerMethod(): String {
+        return "outer Author method"
+    }
+
+}
+/* @tt{{{ @end-replace-value-by-expression}}}@ */

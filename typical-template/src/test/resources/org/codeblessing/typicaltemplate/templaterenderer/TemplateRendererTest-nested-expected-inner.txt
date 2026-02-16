@@ -1,0 +1,37 @@
+/*
+ * This file is generated using typical-template.
+ */
+package examples.inner
+
+import examples.inner.InnerModel
+
+/**
+ * Generate the content for the template InnerRenderer filled up
+ * with the content of the passed models.
+ */
+object InnerRenderer {
+
+    fun renderTemplate(innerModel: InnerModel): String {
+        return """
+          |
+          |
+          |${ if(innerModel.isEnabled()) { """
+              |    fun isActive(): Boolean = true
+              |
+          """ } else { """
+          """ } }
+          |
+          |
+          |
+          |    fun innerMethod(): String {
+          |        return "inner"
+          |    }
+          |
+          |
+        """.trimMargin(marginPrefix = "|")
+    }
+
+    fun filePath(innerModel: InnerModel): String {
+      return "dummy-dir/inner.txt"
+    }
+}

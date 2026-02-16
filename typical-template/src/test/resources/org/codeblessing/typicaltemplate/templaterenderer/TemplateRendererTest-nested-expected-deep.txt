@@ -1,0 +1,30 @@
+/*
+ * This file is generated using typical-template.
+ */
+package examples.deep
+
+import examples.deep.DeepModel
+
+/**
+ * Generate the content for the template DeepRenderer filled up
+ * with the content of the passed models.
+ */
+object DeepRenderer {
+
+    fun renderTemplate(deepModel: DeepModel): String {
+        return """
+          |
+          |
+          |${ deepModel.items.joinToString("") { item ->  """
+              |    println("item: ${"$"}item")
+              |
+          """ } }
+          |
+          |
+        """.trimMargin(marginPrefix = "|")
+    }
+
+    fun filePath(deepModel: DeepModel): String {
+      return "dummy-dir/deep.txt"
+    }
+}
