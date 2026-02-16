@@ -56,17 +56,17 @@ object FragmentFactory {
                             ?: throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
                                 msg = "Unknown attribute key '$keyString' in attributes group #${groupIndex + 1}. " +
-                                        "Only the following attributes are allowed: ${commandKey.allowedAttributes.map { it.keyAsString }}.",
+                                        "Only the following attributes are allowed: ${commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }}.",
                             )
                     }
                     .onEach { (attributeKey, attributeValue) ->
-                        if (attributeKey !in commandKey.allowedAttributes) {
+                        if (attributeKey !in commandKey.allowedAttributesForGroup(groupIndex)) {
                             throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
                                 msg = "Not allowed attribute key '${attributeKey.keyAsString}' " +
                                         "in attributes group #${groupIndex + 1}. " +
                                         "Only the following attributes are " +
-                                        "allowed: ${commandKey.allowedAttributes.map { it.keyAsString }}.",
+                                        "allowed: ${commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }}.",
                             )
                         }
                         if (attributeKey.allowedValues != null && attributeValue !in attributeKey.allowedValues) {
@@ -87,7 +87,7 @@ object FragmentFactory {
 
                     }
             ).also { attributeGroup ->
-                    val missingAttributes = commandKey.missingRequiredAttributes(attributeGroup.attributes.keys)
+                    val missingAttributes = commandKey.missingRequiredAttributesForGroup(groupIndex, attributeGroup.attributes.keys)
                     if(missingAttributes.isNotEmpty()) {
                         throw TemplateParsingException(
                             lineNumbers = lineNumbers,
@@ -96,7 +96,7 @@ object FragmentFactory {
                                     "${missingAttributes.joinToString { it.keyAsString }} ",
                         )
                     }
-                    val unallowedAttributes = commandKey.unallowedAttributes(attributeGroup.attributes.keys)
+                    val unallowedAttributes = commandKey.unallowedAttributesForGroup(groupIndex, attributeGroup.attributes.keys)
                     if(unallowedAttributes.isNotEmpty()) {
                         throw TemplateParsingException(
                             lineNumbers = lineNumbers,

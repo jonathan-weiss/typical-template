@@ -19,6 +19,7 @@ The following keywords/commands are supported:
 * [slac](#slac)
 * [slbc](#slbc)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
+* [render-template](#render-template)
 
 
 
@@ -307,3 +308,35 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## render-template
+
+Syntax: ```@render-template [ templateRendererClassName="..." templateRendererPackageName="..." ][ modelName="..." modelExpression="..." ][ ... ]```
+
+Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command has a header group of attributes followed by one or more groups of attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+Header-Attributes:
+* *templateRendererClassName*: The name of the template class that will generate this template.
+  * Required header attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+* *templateRendererPackageName*: The name of the package where the class defined with ```templateRendererClassName``` resides in.
+  * Required header attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+
+Attributes:
+* *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+* *modelExpression*: The expression that provides the value for the model parameter specified by ```modelName``` when calling the template renderer.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>

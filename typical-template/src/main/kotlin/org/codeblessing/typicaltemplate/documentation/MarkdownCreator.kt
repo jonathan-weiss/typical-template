@@ -28,6 +28,7 @@ object MarkdownCreator {
         CommandKey.STRIP_LINE_AFTER_COMMENT to "slac (=**s**trip **l**ine **a**fter **c**omment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
         CommandKey.STRIP_LINE_BEFORE_COMMENT to "slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
+        CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
     )
 
     // linked map to preserve the order of the keys
@@ -46,6 +47,7 @@ object MarkdownCreator {
         CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to "The condition returning a boolean value that is used for the if statement.",
         CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
         CommandAttributeKey.TEXT to "Text that is to print as-is into the template renderer.",
+        CommandAttributeKey.MODEL_EXPRESSION to "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
     )
 
     private fun CommandKey.createMarkDownChapterLink(): String {
@@ -89,13 +91,30 @@ object MarkdownCreator {
                     * ${commandKey.nestingDescription()}
                 """.trimIndent()
             )
+            if(commandKey.attributeGroupConstraint == AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
+                println("""
+                
+                        Header-Attributes:
+                    """.trimIndent()
+                )
+                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedHeaderAttributes }
+                for((attributeKey, attributeDocumentation) in attributesDocumentation) {
+                    println("""
+                    * *${attributeKey.keyAsString}*: $attributeDocumentation
+                      * Required header attribute: ${(attributeKey in commandKey.headerRequiredAttributes).yesOrNo()}
+                      * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
+                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",")}
+                    """.trimIndent()
+                    )
+                }
+            }
             if(commandKey.attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
                 println("""
                 
                         Attributes:
                     """.trimIndent()
                 )
-                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedAttributes }
+                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedNonHeaderAttributes }
                 for((attributeKey, attributeDocumentation) in attributesDocumentation) {
                     println("""
                     * *${attributeKey.keyAsString}*: $attributeDocumentation
@@ -113,15 +132,30 @@ object MarkdownCreator {
         sb.append("${COMMAND_PREFIX}${keyword}")
         if(!isClosingCommand) {
             if(attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
-
-                sb.append(" [ ")
-                allowedAttributes.forEach { attribute ->
-                    val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
-                    sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
+                if(hasHeaderAttributes) {
+                    sb.append(" [ ")
+                    (headerRequiredAttributes + headerOptionalAttributes).forEach { attribute ->
+                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
+                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
+                    }
+                    sb.append("]")
+                    sb.append("[ ")
+                    (requiredAttributes + optionalAttributes).forEach { attribute ->
+                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
+                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
+                    }
+                    sb.append("]")
+                } else {
+                    sb.append(" [ ")
+                    allowedAttributes.forEach { attribute ->
+                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
+                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
+                    }
+                    sb.append("]")
                 }
-                sb.append("]")
             }
-            if(attributeGroupConstraint == AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP) {
+            if(attributeGroupConstraint == AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP
+                || attributeGroupConstraint == AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
                 sb.append("[ ... ]")
             }
 
@@ -162,6 +196,8 @@ object MarkdownCreator {
                 -> "This command/keyword must have exactly one group of attributes."
             AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP
                 -> "This command can have many groups of attributes"
+            AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS
+                -> "This command has a header group of attributes followed by one or more groups of attributes."
         }
 
     private fun CommandKey.nestingDescription(): String =

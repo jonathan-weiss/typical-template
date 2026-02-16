@@ -71,6 +71,7 @@ object TemplateRendererContentCreator {
             CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
             CommandKey.PRINT_TEXT -> processPrintText(ctx, command.keywordCommand)
             CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS -> processProvideModifiedFilename(ctx)
+            CommandKey.RENDER_TEMPLATE -> processRenderTemplate(ctx, command.keywordCommand)
         }
     }
 
@@ -193,6 +194,21 @@ object TemplateRendererContentCreator {
     ): String {
         ctx.filepathWithModifications = ctx.nestingStack.replaceInString(ctx.filepathWithModifications.escapeKotlinSpecialCharacters())
         return NO_CONTENT_TO_WRITE
+    }
+
+    private fun processRenderTemplate(ctx: TemplateCreationContext, command: KeywordCommand): String {
+        val rendererClassName = command.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME)
+
+        val modelArguments = command.attributeGroupIndices()
+            .drop(1)
+            .map { groupIndex ->
+                val modelName = command.attribute(groupIndex, CommandAttributeKey.TEMPLATE_MODEL_NAME)
+                val modelExpression = command.attribute(groupIndex, CommandAttributeKey.MODEL_EXPRESSION)
+                "$modelName = $modelExpression"
+            }
+            .joinToString(", ")
+
+        return createExpressionPlaceholder("$rendererClassName.renderTemplate($modelArguments)").addMargin(ctx)
     }
 
     private fun processEndIgnoreText(

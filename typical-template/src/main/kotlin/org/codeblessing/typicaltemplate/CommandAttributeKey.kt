@@ -15,6 +15,7 @@ enum class CommandAttributeKey(val keyAsString: String) {
     LOOP_ITERABLE_EXPRESSION("iteratorExpression"),
     LOOP_VARIABLE_NAME("loopVariable"),
     TEXT("text"),
+    MODEL_EXPRESSION("modelExpression"),
     ;
 
     companion object {

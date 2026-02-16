@@ -10,6 +10,8 @@ enum class CommandKey(
     val correspondingOpeningCommandKey: CommandKey? = null,
     val directlyNestedInsideCommandKey: CommandKey? = null,
     val isAutoclosingSupported: Boolean = false,
+    val headerRequiredAttributes: Set<CommandAttributeKey> = emptySet(),
+    val headerOptionalAttributes: Set<CommandAttributeKey> = emptySet(),
 
     ) {
     TEMPLATE_RENDERER(
@@ -102,6 +104,14 @@ enum class CommandKey(
         keyword = "modify-provided-filename-by-replacements",
         attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
     ),
+    RENDER_TEMPLATE(
+        keyword = "render-template",
+        attributeGroupConstraint = AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS,
+        requiredAttributes = setOf(TEMPLATE_MODEL_NAME, MODEL_EXPRESSION),
+        optionalAttributes = emptySet(),
+        headerRequiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
+        headerOptionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
+    ),
     ;
 
     companion object {
@@ -125,17 +135,31 @@ enum class CommandKey(
     val isTriggerAutoclose: Boolean
         get() = this.correspondingOpeningCommandKeyForAutoclose != null
 
+    val allowedHeaderAttributes: Set<CommandAttributeKey> = headerRequiredAttributes + headerOptionalAttributes
+    val allowedNonHeaderAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes
 
-    val allowedAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes
-    val unallowedAttributes: Set<CommandAttributeKey> = CommandAttributeKey.entries.toMutableSet() - allowedAttributes
+    val allowedAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes + headerRequiredAttributes + headerOptionalAttributes
 
-    fun missingRequiredAttributes(presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
-        val missingAttributes = requiredAttributes.toMutableSet()
-        missingAttributes.removeAll(presentAttributes)
-        return missingAttributes
+    val hasHeaderAttributes: Boolean
+        get() = headerRequiredAttributes.isNotEmpty() || headerOptionalAttributes.isNotEmpty()
+
+    fun requiredAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> {
+        return if (hasHeaderAttributes && groupIndex == 0) headerRequiredAttributes
+        else requiredAttributes
     }
 
-    fun unallowedAttributes(presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
-        return unallowedAttributes.intersect(presentAttributes)
+    fun allowedAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> {
+        return if (hasHeaderAttributes && groupIndex == 0) headerRequiredAttributes + headerOptionalAttributes
+        else requiredAttributes + optionalAttributes
+    }
+
+    fun missingRequiredAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
+        val required = requiredAttributesForGroup(groupIndex)
+        return required.toMutableSet().apply { removeAll(presentAttributes) }
+    }
+
+    fun unallowedAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
+        val allowed = allowedAttributesForGroup(groupIndex)
+        return presentAttributes.toMutableSet().apply { removeAll(allowed) }
     }
 }

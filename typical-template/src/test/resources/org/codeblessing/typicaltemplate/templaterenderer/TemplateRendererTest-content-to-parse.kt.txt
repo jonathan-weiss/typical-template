@@ -135,4 +135,13 @@ and this text, too
 
   // end of test the print-text command
 
+  // test the render-template command
+
+/* @tt{{{ @render-template [templateRendererClassName="SubRenderer" templateRendererPackageName="examples.sub"]
+                           [modelName="innerModel" modelExpression="myModel.getInnerModel()"]
+                           [modelName="config" modelExpression="mySecondModel.config"]
+}}}@ */
+
+  // end of test the render-template command
+
 }

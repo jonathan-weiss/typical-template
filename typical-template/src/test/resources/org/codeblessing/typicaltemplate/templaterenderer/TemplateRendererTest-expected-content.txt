@@ -4,6 +4,7 @@
 package examples
 
 import examples.DtoModel
+import examples.sub.SubRenderer
 
 /**
  * Generate the content for the template EntityDto filled up
@@ -127,6 +128,12 @@ object EntityDto {
           |
           |
           |  // end of test the print-text command
+          |
+          |  // test the render-template command
+          |
+          |${SubRenderer.renderTemplate(innerModel = myModel.getInnerModel(), config = mySecondModel.config)}
+          |
+          |  // end of test the render-template command
           |
           |}
         """.trimMargin(marginPrefix = "|")
