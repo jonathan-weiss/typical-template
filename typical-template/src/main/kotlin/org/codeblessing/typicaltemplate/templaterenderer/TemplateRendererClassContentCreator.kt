@@ -54,7 +54,14 @@ object TemplateRendererClassContentCreator {
 
         val modelFields =
             templateRendererDescription.modelClasses
-                .joinToString(", ") { "${it.modelName}: ${it.modelClassDescription.className}" }
+                .joinToString(", ") { modelDesc ->
+                    val typeName = if (modelDesc.isList) {
+                        "List<${modelDesc.modelClassDescription.className}>"
+                    } else {
+                        modelDesc.modelClassDescription.className
+                    }
+                    "${modelDesc.modelName}: $typeName"
+                }
 
         return """
 /*

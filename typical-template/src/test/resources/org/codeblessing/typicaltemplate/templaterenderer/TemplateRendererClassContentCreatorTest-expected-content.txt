@@ -11,13 +11,13 @@ import org.codeblessing.typicaltemplate.template.model.TemplateModel
  */
 object TemplateTest {
 
-    fun renderTemplate(model: TemplateModel): String {
+    fun renderTemplate(model: TemplateModel, models: List<TemplateModel>): String {
         return """
           | hello world
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(model: TemplateModel): String {
+    fun filePath(model: TemplateModel, models: List<TemplateModel>): String {
       return "dum-dir/dum-sub-dir/dummy.txt"
     }
 }

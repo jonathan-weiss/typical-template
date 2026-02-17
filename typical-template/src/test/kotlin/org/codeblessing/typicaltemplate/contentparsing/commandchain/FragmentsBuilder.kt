@@ -59,12 +59,16 @@ class FragmentsBuilder private constructor() {
         modelName: String = "model",
         modelClassName: String = "MyModelClass",
         modelPackageName: String = "org.example.model",
+        isList: Boolean = false,
     ): FragmentsBuilder {
-        return this.createCommand(CommandKey.TEMPLATE_MODEL)
+        val builder = this.createCommand(CommandKey.TEMPLATE_MODEL)
             .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_NAME, modelName)
             .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME, modelClassName)
             .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
-            .addCommandToChain()
+        if (isList) {
+            builder.withAttribute(CommandAttributeKey.TEMPLATE_MODEL_IS_LIST, "true")
+        }
+        return builder.addCommandToChain()
     }
 
     fun addReplaceValueByExpressionCommand(

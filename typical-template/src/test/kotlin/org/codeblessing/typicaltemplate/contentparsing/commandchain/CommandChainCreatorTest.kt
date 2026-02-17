@@ -199,6 +199,48 @@ class CommandChainCreatorTest {
     }
 
     @Nested
+    inner class IsListAttributeValidation {
+
+        @Test
+        fun `isList defaults to false when attribute is absent`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addTemplateModel(modelName = "myModel")
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val model = templates.single().modelClasses.single()
+            assertEquals(false, model.isList)
+        }
+
+        @Test
+        fun `isList is true when isList attribute is set to true`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addTemplateModel(modelName = "myModel", isList = true)
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val model = templates.single().modelClasses.single()
+            assertEquals(true, model.isList)
+        }
+
+        @Test
+        fun `multiple models can independently have isList set`() {
+            val fragments = FragmentsBuilder.create()
+                .addTemplateRendererCommand()
+                .addTemplateModel(modelName = "singleModel", isList = false)
+                .addTemplateModel(modelName = "listModel", isList = true)
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val models = templates.single().modelClasses
+            assertEquals(false, models[0].isList)
+            assertEquals(true, models[1].isList)
+        }
+    }
+
+    @Nested
     inner class NestedCommandsValidation {
 
         @Test

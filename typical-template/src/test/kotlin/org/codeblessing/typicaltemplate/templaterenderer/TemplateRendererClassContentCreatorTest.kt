@@ -24,6 +24,15 @@ class TemplateRendererClassContentCreatorTest {
                         classPackageName = "org.codeblessing.typicaltemplate.template.model",
                     ),
                     modelName = "model",
+                    isList = false,
+                ),
+                ModelDescription(
+                    modelClassDescription = ClassDescription(
+                        className = "TemplateModel",
+                        classPackageName = "org.codeblessing.typicaltemplate.template.model",
+                    ),
+                    modelName = "models",
+                    isList = true,
                 )
             ),
             templateChain = emptyList()

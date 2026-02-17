@@ -328,6 +328,10 @@ object CommandChainCreator {
                     groupId = attributeGroupIndex,
                     key = TEMPLATE_MODEL_NAME,
                 ),
+                isList = this.attributeOptional(
+                    groupId = attributeGroupIndex,
+                    key = TEMPLATE_MODEL_IS_LIST,
+                )?.toBoolean() ?: false,
             )
         }
     }

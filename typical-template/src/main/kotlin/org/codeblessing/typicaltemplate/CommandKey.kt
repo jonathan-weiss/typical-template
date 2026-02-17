@@ -28,7 +28,7 @@ enum class CommandKey(
         keyword = "template-model",
         attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
-        optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME),
+        optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
     ),
     REPLACE_VALUE_BY_EXPRESSION(
         keyword = "replace-value-by-expression",

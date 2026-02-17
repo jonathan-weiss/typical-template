@@ -8,6 +8,7 @@ enum class CommandAttributeKey(val keyAsString: String) {
     TEMPLATE_MODEL_CLASS_NAME("modelClassName"),
     TEMPLATE_MODEL_PACKAGE_NAME("modelPackageName"),
     TEMPLATE_MODEL_NAME("modelName"),
+    TEMPLATE_MODEL_IS_LIST("isList"),
     REPLACE_BY_EXPRESSION("replaceByExpression"),
     REPLACE_BY_VALUE("replaceByValue"),
     SEARCH_VALUE("searchValue"),
