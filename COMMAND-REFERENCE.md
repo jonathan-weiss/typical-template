@@ -2,6 +2,7 @@
 
 The following keywords/commands are supported:
 * [template-renderer](#template-renderer)
+* [end-template-renderer](#end-template-renderer)
 * [template-model](#template-model)
 * [replace-value-by-expression](#replace-value-by-expression)
 * [end-replace-value-by-expression](#end-replace-value-by-expression)
@@ -27,7 +28,7 @@ The following keywords/commands are supported:
 
 Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ]```
 
-Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file.
+Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
@@ -53,9 +54,21 @@ Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 
+## end-template-renderer
+
+Syntax: ```@end-template-renderer```
+
+Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
 ## template-model
 
-Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." ][ ... ]```
+Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ][ ... ]```
 
 Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.
 
@@ -78,6 +91,10 @@ Attributes:
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+* *isList*: When set to ```true```, the model parameter is declared as a list of the model class defined with ```modelClassName```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: ```true```,```false```
 
 ## replace-value-by-expression
 
@@ -323,11 +340,11 @@ Varia:
 
 Header-Attributes:
 * *templateRendererClassName*: The name of the template class that will generate this template.
-  * Required header attribute: Yes
+  * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 * *templateRendererPackageName*: The name of the package where the class defined with ```templateRendererClassName``` resides in.
-  * Required header attribute: No
+  * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 

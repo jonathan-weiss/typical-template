@@ -100,15 +100,7 @@ object MarkdownCreator {
                     """.trimIndent()
                 )
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedHeaderAttributes }
-                for((attributeKey, attributeDocumentation) in attributesDocumentation) {
-                    println("""
-                    * *${attributeKey.keyAsString}*: $attributeDocumentation
-                      * Required header attribute: ${(attributeKey in commandKey.headerRequiredAttributes).yesOrNo()}
-                      * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
-                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",")}
-                    """.trimIndent()
-                    )
-                }
+                printAttributeDocumentation(attributesDocumentation, commandKey.headerRequiredAttributes)
             }
             if(commandKey.attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
                 println("""
@@ -117,18 +109,26 @@ object MarkdownCreator {
                     """.trimIndent()
                 )
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedNonHeaderAttributes }
-                for((attributeKey, attributeDocumentation) in attributesDocumentation) {
-                    println("""
-                    * *${attributeKey.keyAsString}*: $attributeDocumentation
-                      * Required attribute: ${(attributeKey in commandKey.requiredAttributes).yesOrNo()}
-                      * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
-                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",")}
-                    """.trimIndent()
-                    )
-                }
+                printAttributeDocumentation(attributesDocumentation, commandKey.requiredAttributes)
             }
         }
     }
+
+    private fun printAttributeDocumentation(
+        attributesDocumentation: Map<CommandAttributeKey, String>,
+        requiredAttributes: Set<CommandAttributeKey>
+    ) {
+        for((attributeKey, attributeDocumentation) in attributesDocumentation) {
+            println("""
+                    * *${attributeKey.keyAsString}*: $attributeDocumentation
+                      * Required attribute: ${(attributeKey in requiredAttributes).yesOrNo()}
+                      * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
+                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",") { "```$it```"}}
+                    """.trimIndent()
+            )
+        }
+    }
+
     private fun CommandKey.commandSyntax(): String {
         val sb = StringBuilder()
         sb.append("${COMMAND_PREFIX}${keyword}")

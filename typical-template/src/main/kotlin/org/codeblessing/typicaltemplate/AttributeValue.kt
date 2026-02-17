@@ -1,3 +1,3 @@
 package org.codeblessing.typicaltemplate
 
-typealias AttributeValue = String  // TODO maybe Any or an union type
+typealias AttributeValue = String  // just for documentation/clarification
