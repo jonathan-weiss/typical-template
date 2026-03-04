@@ -7,7 +7,6 @@ import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredC
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -123,13 +122,14 @@ class FragmentFactoryTest {
     }
 
     @Test
-    @Disabled("Enable this test as soon as there are values (like boolean true/false)")
     fun `throws for unallowed attribute value`() {
         val templateComment = createSingleTemplateComment(
             comment = """ 
-                        @template-renderer [
-                            templateRendererClassName="MyTemplate"
-                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
+                        @template-model [
+                            modelName="myTemplateModel"
+                            modelClassName="MyTemplateModel"
+                            modelPackageName="org.codeblessing.typicaltemplate.examples"
+                            isList="foo"
                         ]
             """.trimIndent()
         )
