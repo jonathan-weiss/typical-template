@@ -1,41 +1,41 @@
 package org.codeblessing.typicaltemplate
 
-import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.ContentMapper
 import org.codeblessing.typicaltemplate.filesearch.FileTraversal
-import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererWriter
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.pathString
+import kotlin.io.path.createParentDirectories
 import kotlin.io.path.readText
-import kotlin.io.path.relativeTo
+import kotlin.io.path.writeText
 
 class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
 
     override fun processTypicalTemplate(
         templatingConfigurations: List<TemplatingConfiguration>,
     ): Map<TemplatingConfiguration, List<Path>> {
-        val createdTemplateFactories: Map<TemplatingConfiguration, MutableList<Path>> = templatingConfigurations
-            .associateWith { mutableListOf()}
-        templatingConfigurations.forEach { templatingConfiguration ->
+        return templatingConfigurations.associateWith { templatingConfiguration ->
             val foundFiles = FileTraversal.searchFiles(templatingConfiguration.fileSearchLocations)
+            val targetBasePath = templatingConfiguration.templateRendererConfiguration.templateRendererTargetSourceBasePath
 
-            foundFiles.map { foundFile ->
-                val file = foundFile.filePath
-                val supportedCommentStyles = ContentMapper.mapContent(file)
-                val templates = try {
-                    ContentParser.parseContent(content = file.readText(), supportedCommentStyles)
+            foundFiles.flatMap { foundFile ->
+                val templateRendererClasses = try {
+                    TemplateRendererExtractor.parseContentAndCreateTemplateRenderers(
+                        filepathString = foundFile.relativeToRootDirectory(),
+                        targetBasePath = targetBasePath,
+                        contentToParse = foundFile.filePath.readText(),
+                        supportedCommentStyles = ContentMapper.mapContent(foundFile.filePath)
+                    )
                 } catch (e: Exception) {
-                    throw RuntimeException("Error parsing template content of file ${file.absolutePathString()}", e)
+                    throw RuntimeException("Error parsing template content of file ${foundFile.filePath.absolutePathString()}", e)
                 }
-
-                templates.forEach { template ->
-                    val relativeFilePath = file.relativeTo(foundFile.rootDirectory).normalize().pathString
-                    val templatePath = TemplateRendererWriter.writeTemplate(relativeFilePath, template, templatingConfiguration.templateRendererConfiguration)
-                    requireNotNull(createdTemplateFactories[templatingConfiguration]).add(templatePath)
-                }
+                templateRendererClasses
+                    .onEach { templateRendererClass ->
+                        val templateRendererClassFilePath = templateRendererClass.templateRendererClassFilePath
+                        templateRendererClassFilePath.createParentDirectories()
+                        templateRendererClassFilePath.writeText(templateRendererClass.templateRendererClassContent)
+                    }
+                    .map { templateRendererClass -> templateRendererClass.templateRendererClassFilePath }
             }
         }
-        return createdTemplateFactories
     }
 }

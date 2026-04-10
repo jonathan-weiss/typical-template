@@ -1,0 +1,29 @@
+package org.codeblessing.typicaltemplate
+
+import org.codeblessing.typicaltemplate.contentparsing.ContentParser
+import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererClassContentCreator
+import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererContentCreator
+import java.nio.file.Path
+
+object TemplateRendererExtractor {
+
+    fun parseContentAndCreateTemplateRenderers(
+        filepathString: String,
+        contentToParse: String,
+        supportedCommentStyles: List<CommentStyle>,
+        targetBasePath: Path
+    ): List<TemplateRendererClass> {
+        val templates = ContentParser.parseContent(contentToParse, supportedCommentStyles)
+        return templates.map { templateRendererDescription ->
+            val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepathString, templateRendererDescription)
+            val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateContent)
+            val kotlinFilePath = templateRendererDescription.templateRendererClass.classFilePath(targetBasePath)
+
+            TemplateRendererClass(
+                templateRendererDescription = templateRendererDescription,
+                templateRendererClassContent = kotlinTemplateRendererClassContent,
+                templateRendererClassFilePath = kotlinFilePath,
+            )
+        }
+    }
+}
