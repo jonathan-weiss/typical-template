@@ -9,8 +9,8 @@ object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, kotlinTemplateContent: KotlinTemplateContent): String {
-        val sourceContent = kotlinTemplateContent.rendererCode
+    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, kotlinTemplateRendererMethodContent: KotlinTemplateRendererMethodContent): String {
+        val sourceContent = kotlinTemplateRendererMethodContent.rendererCode
         val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
         val templateRendererClassName = templateRendererDescription.templateRendererClass.className
 
@@ -84,7 +84,7 @@ ${sourceContent.addIdentBeforeEachLine(ident = 10)}
     }
 
     ${overrideKeyword}fun filePath(${modelFields}): String {
-      return "${kotlinTemplateContent.filepath}"
+      return "${kotlinTemplateRendererMethodContent.filepath}"
     }
 }
         """.trimIndent()

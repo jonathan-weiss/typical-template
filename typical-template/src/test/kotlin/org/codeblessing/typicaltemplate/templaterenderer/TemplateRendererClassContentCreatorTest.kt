@@ -37,11 +37,11 @@ class TemplateRendererClassContentCreatorTest {
             ),
             templateChain = emptyList()
         )
-        val kotlinTemplateContent = KotlinTemplateContent(
+        val kotlinTemplateRendererMethodContent = KotlinTemplateRendererMethodContent(
             rendererCode = "| hello world",
             filepath = "dum-dir/dum-sub-dir/dummy.txt",
         )
-        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateContent)
+        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateRendererMethodContent)
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
             classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererClassContentCreatorTest-expected-content.txt"

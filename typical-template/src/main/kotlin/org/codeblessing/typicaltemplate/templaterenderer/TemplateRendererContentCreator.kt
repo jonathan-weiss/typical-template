@@ -6,7 +6,6 @@ import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.PlainTextChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
-import java.nio.file.Path
 
 object TemplateRendererContentCreator {
 
@@ -14,7 +13,7 @@ object TemplateRendererContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createMultilineStringTemplateContent(filepathString: String, templateRendererDescription: TemplateRendererDescription): KotlinTemplateContent {
+    fun createMultilineStringTemplateContent(filepathString: String, templateRendererDescription: TemplateRendererDescription): KotlinTemplateRendererMethodContent {
         val ctx = TemplateCreationContext(filepathWithModifications = filepathString, templateRendererDescription)
         val sb = StringBuilder("|")
         templateRendererDescription.templateChain.forEach { chainItem ->
@@ -29,7 +28,7 @@ object TemplateRendererContentCreator {
                 ))
             }
         }
-        return KotlinTemplateContent(
+        return KotlinTemplateRendererMethodContent(
             rendererCode = sb.toString(),
             filepath = ctx.filepathWithModifications,
         )
