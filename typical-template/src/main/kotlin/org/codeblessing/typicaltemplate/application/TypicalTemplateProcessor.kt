@@ -1,5 +1,7 @@
-package org.codeblessing.typicaltemplate
+package org.codeblessing.typicaltemplate.application
 
+import org.codeblessing.typicaltemplate.TemplatingConfiguration
+import org.codeblessing.typicaltemplate.TypicalTemplateProcessorApi
 import org.codeblessing.typicaltemplate.filemapping.ContentMapper
 import org.codeblessing.typicaltemplate.filesearch.FileTraversal
 import java.nio.file.Path
@@ -19,7 +21,7 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
 
             foundFiles.flatMap { foundFile ->
                 val templateRendererClasses = try {
-                    TemplateRendererExtractor.parseContentAndCreateTemplateRenderers(
+                    ContentToTemplateRendererTransformer.parseContentAndCreateTemplateRenderers(
                         filepathString = foundFile.relativeToRootDirectory(),
                         targetBasePath = targetBasePath,
                         contentToParse = foundFile.filePath.readText(),

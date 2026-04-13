@@ -1,11 +1,12 @@
-package org.codeblessing.typicaltemplate
+package org.codeblessing.typicaltemplate.application
 
+import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererClassContentCreator
 import org.codeblessing.typicaltemplate.templaterenderer.TemplateRendererContentCreator
 import java.nio.file.Path
 
-object TemplateRendererExtractor {
+object ContentToTemplateRendererTransformer {
 
     fun parseContentAndCreateTemplateRenderers(
         filepathString: String,

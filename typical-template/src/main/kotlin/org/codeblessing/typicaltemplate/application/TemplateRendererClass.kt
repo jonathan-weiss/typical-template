@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate
+package org.codeblessing.typicaltemplate.application
 
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import java.nio.file.Path
