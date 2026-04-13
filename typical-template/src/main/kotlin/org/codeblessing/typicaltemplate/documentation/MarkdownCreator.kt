@@ -56,37 +56,38 @@ object MarkdownCreator {
         return "[$keyword](#${keyword.lowercase().replace(' ', '-')})"
     }
 
-    fun printMarkdownDocumentation() {
-        println("""
+    fun createMarkdownDocumentation(): String {
+        val sb = StringBuilder()
+        sb.appendLine("""
             # Keyword/Command reference
 
             The following keywords/commands are supported:
         """.trimIndent())
         for ((commandKey, _) in commandKeyDocumentation) {
-            println("* ${commandKey.createMarkDownChapterLink()}")
+            sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
         }
-        println("")
-        println("")
+        sb.appendLine("")
+        sb.appendLine("")
 
 
         for ((commandKey, commandKeyDocumentation) in commandKeyDocumentation) {
-            println("""
+            sb.appendLine("""
 
                     ## ${commandKey.keyword}
-                    
+
                     Syntax: ```${commandKey.commandSyntax()}```
                 """.trimIndent()
             )
             if(commandKeyDocumentation.isNotBlank()) {
-                println("""
+                sb.appendLine("""
 
                         $commandKeyDocumentation
                     """.trimIndent()
                 )
             }
-            println("""
-                
-                    Varia: 
+            sb.appendLine("""
+
+                    Varia:
                     * ${commandKey.openingClosingDescription()}
                     * ${commandKey.autoclosingDescription()}
                     * ${commandKey.groupSupportDescription()}
@@ -94,32 +95,34 @@ object MarkdownCreator {
                 """.trimIndent()
             )
             if(commandKey.attributeGroupConstraint == AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
-                println("""
-                
+                sb.appendLine("""
+
                         Header-Attributes:
                     """.trimIndent()
                 )
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedHeaderAttributes }
-                printAttributeDocumentation(attributesDocumentation, commandKey.headerRequiredAttributes)
+                createAttributeDocumentation(attributesDocumentation, commandKey.headerRequiredAttributes, sb)
             }
             if(commandKey.attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
-                println("""
-                
+                sb.appendLine("""
+
                         Attributes:
                     """.trimIndent()
                 )
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedNonHeaderAttributes }
-                printAttributeDocumentation(attributesDocumentation, commandKey.requiredAttributes)
+                createAttributeDocumentation(attributesDocumentation, commandKey.requiredAttributes, sb)
             }
         }
+        return sb.toString()
     }
 
-    private fun printAttributeDocumentation(
+    private fun createAttributeDocumentation(
         attributesDocumentation: Map<CommandAttributeKey, String>,
-        requiredAttributes: Set<CommandAttributeKey>
+        requiredAttributes: Set<CommandAttributeKey>,
+        sb: StringBuilder
     ) {
         for((attributeKey, attributeDocumentation) in attributesDocumentation) {
-            println("""
+            sb.appendLine("""
                     * *${attributeKey.keyAsString}*: $attributeDocumentation
                       * Required attribute: ${(attributeKey in requiredAttributes).yesOrNo()}
                       * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}

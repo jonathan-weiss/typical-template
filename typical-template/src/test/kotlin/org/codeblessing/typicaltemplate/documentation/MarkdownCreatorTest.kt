@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 class MarkdownCreatorTest {
     @Test
     fun printMarkdownDocumentation() {
-        MarkdownCreator.printMarkdownDocumentation()
+        println(MarkdownCreator.createMarkdownDocumentation())
     }
 
 }
