@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.RelativeFile
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.PlainTextChainItem
@@ -13,8 +14,8 @@ object TemplateRendererContentCreator {
     private const val LINE_BREAK = "\n"
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun createMultilineStringTemplateContent(filepathString: String, templateRendererDescription: TemplateRendererDescription): KotlinTemplateRendererMethodContent {
-        val ctx = TemplateCreationContext(filepathWithModifications = filepathString, templateRendererDescription)
+    fun createMultilineStringTemplateContent(filepath: RelativeFile, templateRendererDescription: TemplateRendererDescription): KotlinTemplateRendererMethodContent {
+        val ctx = TemplateCreationContext(filepathWithModifications = filepath.relativeToRootDirectory(), templateRendererDescription)
         val sb = StringBuilder("|")
         templateRendererDescription.templateChain.forEach { chainItem ->
             when (chainItem) {

@@ -1,11 +1,11 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
+import org.codeblessing.typicaltemplate.RelativeFile
 import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.filemapping.CommentStyles.KOTLIN_COMMENT_STYLES
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.nio.file.Paths
 
 class TemplateRendererTest {
 
@@ -25,8 +25,8 @@ class TemplateRendererTest {
         assertEquals(1, templates.size)
 
         val template = templates.single()
-        val filepathString = "dummy-dir/author-subdir/dummy-Author.txt"
-        val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepathString, template)
+        val filepath = RelativeFile.fromRelativeString("dummy-dir/author-subdir/dummy-Author.txt")
+        val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepath, template)
         val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(template, kotlinTemplateContent)
 
         println("--- Kotlin Template ------------------")
@@ -51,9 +51,9 @@ class TemplateRendererTest {
             "TemplateRendererTest-nested-expected-deep.txt",
         )
         val filepathStrings = listOf(
-            "dummy-dir/author-subdir/dummy-Author.txt",
-            "dummy-dir/inner.txt",
-            "dummy-dir/deep.txt",
+            RelativeFile.fromRelativeString("dummy-dir/author-subdir/dummy-Author.txt"),
+            RelativeFile.fromRelativeString("dummy-dir/inner.txt"),
+            RelativeFile.fromRelativeString("dummy-dir/deep.txt"),
         )
 
         templates.forEachIndexed { index, template ->

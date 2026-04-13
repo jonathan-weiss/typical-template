@@ -22,7 +22,7 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
             foundFiles.flatMap { foundFile ->
                 val templateRendererClasses = try {
                     ContentToTemplateRendererTransformer.parseContentAndCreateTemplateRenderers(
-                        filepathString = foundFile.relativeToRootDirectory(),
+                        filepath = foundFile,
                         targetBasePath = targetBasePath,
                         contentToParse = foundFile.filePath.readText(),
                         supportedCommentStyles = ContentMapper.mapContent(foundFile.filePath)
