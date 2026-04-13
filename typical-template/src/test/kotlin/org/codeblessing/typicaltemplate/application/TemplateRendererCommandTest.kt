@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 class TemplateRendererCommandTest: AbstractCommandTest() {
 
     @Test
-    fun `parse template renderer command and create kotlin renderer class`() {
+    fun `test parsing @template-renderer command`() {
         val contentToParse = """
             <!-- @tt{{{
                @template-renderer [
@@ -17,5 +17,21 @@ class TemplateRendererCommandTest: AbstractCommandTest() {
         """.trimIndent()
 
         assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest.txt")
+    }
+
+    @Test
+    fun `test parsing @end-template-renderer command`() {
+        val contentToParse = """
+            <!-- @tt{{{
+               @template-renderer [
+                templateRendererClassName="MyRenderer"
+                templateRendererPackageName="com.example"
+               ]
+            }}}@ -->
+            <div>Hello World</div>
+            <!-- @tt{{{ @end-template-renderer }}}@ -->
+        """.trimIndent()
+
+        assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest-withEndTemplateRenderer.txt")
     }
 }
