@@ -7,7 +7,8 @@ import org.codeblessing.typicaltemplate.filemapping.CommentStyles.HTML_COMMENT_S
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.nio.file.Paths
 
-private const val OVERWRITE_EXPECTED_TEXT = true // do only active during developement
+private const val OVERWRITE_EXPECTED_TEXT = false // do only active during development
+private const val VERBOSE = false // do only active during development
 
 abstract class AbstractCommandTest {
 
@@ -31,5 +32,21 @@ abstract class AbstractCommandTest {
         }
 
         assertEquals(expectedContent, result.single().templateRendererClassContent)
+
+        if(VERBOSE) {
+            println("----------------------------------")
+            println("---- CONTENT TO PARSE ------------")
+            println("----------------------------------")
+            println(contentToParse)
+            println("----------------------------------")
+            println("---- GENERATED CODE --------------")
+            println("----------------------------------")
+            println(expectedContent)
+            println("----------------------------------")
+            println("---- $expectedClasspathResourceName")
+            println("----------------------------------")
+            println()
+            println()
+        }
     }
 }
