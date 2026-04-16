@@ -12,41 +12,46 @@ private const val VERBOSE = false // do only active during development
 
 abstract class AbstractCommandTest {
 
-    fun assertExpectedGeneratedText(contentToParse: String, expectedClasspathResourceName: String) {
-        val result = ContentToTemplateRendererTransformer.parseContentAndCreateTemplateRenderers(
+    fun assertExpectedGeneratedText(contentToParse: String, vararg expectedClasspathResourceNames: String) {
+        val resultTemplateRenderers = ContentToTemplateRendererTransformer.parseContentAndCreateTemplateRenderers(
             filepath = RelativeFile.fromRelativeString("input/my-renderer.html"),
             contentToParse = contentToParse,
             supportedCommentStyles = HTML_COMMENT_STYLES,
             targetBasePath = Paths.get("/output"),
         )
-        val actualContent = result.single().templateRendererClassContent
 
-        val classpathResourcePath = "org/codeblessing/typicaltemplate/application/$expectedClasspathResourceName"
-        val expectedContent = if(OVERWRITE_EXPECTED_TEXT) {
-            ClasspathResourceWriter.writeClasspathResource(classpathResourcePath, actualContent)
-            actualContent
-        } else {
-            ClasspathResourceLoader.loadClasspathResource(
-                classpathResourcePath = "org/codeblessing/typicaltemplate/application/$expectedClasspathResourceName",
-            )
-        }
+        assertEquals(expectedClasspathResourceNames.size, resultTemplateRenderers.size)
 
-        assertEquals(expectedContent, result.single().templateRendererClassContent)
+        expectedClasspathResourceNames.zip(resultTemplateRenderers).forEach { (expectedClasspathResourceName, templateRendererClass) ->
+            val actualContent = templateRendererClass.templateRendererClassContent
 
-        if(VERBOSE) {
-            println("----------------------------------")
-            println("---- CONTENT TO PARSE ------------")
-            println("----------------------------------")
-            println(contentToParse)
-            println("----------------------------------")
-            println("---- GENERATED CODE --------------")
-            println("----------------------------------")
-            println(expectedContent)
-            println("----------------------------------")
-            println("---- $expectedClasspathResourceName")
-            println("----------------------------------")
-            println()
-            println()
+            val classpathResourcePath = "org/codeblessing/typicaltemplate/application/$expectedClasspathResourceName"
+            val expectedContent = if(OVERWRITE_EXPECTED_TEXT) {
+                ClasspathResourceWriter.writeClasspathResource(classpathResourcePath, actualContent)
+                actualContent
+            } else {
+                ClasspathResourceLoader.loadClasspathResource(
+                    classpathResourcePath = "org/codeblessing/typicaltemplate/application/$expectedClasspathResourceName",
+                )
+            }
+
+            assertEquals(expectedContent, actualContent)
+
+            if(VERBOSE) {
+                println("----------------------------------")
+                println("---- CONTENT TO PARSE ------------")
+                println("----------------------------------")
+                println(contentToParse)
+                println("----------------------------------")
+                println("---- GENERATED CODE --------------")
+                println("----------------------------------")
+                println(expectedContent)
+                println("----------------------------------")
+                println("---- $expectedClasspathResourceNames")
+                println("----------------------------------")
+                println()
+                println()
+            }
         }
     }
 }
