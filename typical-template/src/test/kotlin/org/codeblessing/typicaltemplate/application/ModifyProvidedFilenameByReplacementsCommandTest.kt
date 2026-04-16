@@ -21,6 +21,6 @@ class ModifyProvidedFilenameByReplacementsCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-replace-value-by-value }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "ModifyProvidedFilenameByReplacementsCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "ModifyProvidedFilenameByReplacementsCommandTest.txt.kt")
     }
 }

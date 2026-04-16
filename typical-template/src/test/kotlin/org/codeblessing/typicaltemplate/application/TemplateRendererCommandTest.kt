@@ -16,7 +16,7 @@ class TemplateRendererCommandTest: AbstractCommandTest() {
             <div>Hello World</div>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest.txt.kt")
     }
 
     @Test
@@ -33,6 +33,6 @@ class TemplateRendererCommandTest: AbstractCommandTest() {
             <div>This is not in the template renderer</div>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest-withEndTemplateRenderer.txt")
+        assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest-withEndTemplateRenderer.txt.kt")
     }
 }

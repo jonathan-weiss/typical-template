@@ -16,6 +16,6 @@ class PrintTextCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @print-text [ text="Hello World" ] }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "PrintTextCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "PrintTextCommandTest.txt.kt")
     }
 }

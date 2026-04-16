@@ -23,6 +23,6 @@ class TemplateModelCommandTest: AbstractCommandTest() {
             <div>Hello</div>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "TemplateModelCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "TemplateModelCommandTest.txt.kt")
     }
 }

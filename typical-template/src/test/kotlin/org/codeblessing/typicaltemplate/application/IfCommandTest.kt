@@ -21,7 +21,7 @@ class IfCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-if }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "IfCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "IfCommandTest.txt.kt")
     }
 
     @Test
@@ -43,7 +43,7 @@ class IfCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-if }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "IfCommandTest-withElse.txt")
+        assertExpectedGeneratedText(contentToParse, "IfCommandTest-withElse.txt.kt")
     }
 
     @Test
@@ -65,6 +65,6 @@ class IfCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-if }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "IfCommandTest-withElseIf.txt")
+        assertExpectedGeneratedText(contentToParse, "IfCommandTest-withElseIf.txt.kt")
     }
 }

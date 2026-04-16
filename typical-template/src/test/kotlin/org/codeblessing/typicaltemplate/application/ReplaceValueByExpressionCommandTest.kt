@@ -23,6 +23,6 @@ class ReplaceValueByExpressionCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-replace-value-by-expression }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "ReplaceValueByExpressionCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "ReplaceValueByExpressionCommandTest.txt.kt")
     }
 }

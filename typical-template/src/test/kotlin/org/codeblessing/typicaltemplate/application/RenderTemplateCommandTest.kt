@@ -22,6 +22,6 @@ class RenderTemplateCommandTest: AbstractCommandTest() {
             }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "RenderTemplateCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "RenderTemplateCommandTest.txt.kt")
     }
 }

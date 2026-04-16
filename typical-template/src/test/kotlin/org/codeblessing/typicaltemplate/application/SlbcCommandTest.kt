@@ -17,6 +17,6 @@ class SlbcCommandTest: AbstractCommandTest() {
             <div>World</div>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "SlbcCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "SlbcCommandTest.txt.kt")
     }
 }

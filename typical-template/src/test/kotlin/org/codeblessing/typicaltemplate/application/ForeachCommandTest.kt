@@ -26,6 +26,6 @@ class ForeachCommandTest: AbstractCommandTest() {
             </html>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "ForeachCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "ForeachCommandTest.txt.kt")
     }
 }

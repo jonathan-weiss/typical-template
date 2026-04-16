@@ -20,6 +20,6 @@ class ReplaceValueByValueCommandTest: AbstractCommandTest() {
             <!-- @tt{{{ @end-replace-value-by-value }}}@ -->
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "ReplaceValueByValueCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "ReplaceValueByValueCommandTest.txt.kt")
     }
 }

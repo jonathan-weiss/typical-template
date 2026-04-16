@@ -20,6 +20,6 @@ class IgnoreTextCommandTest: AbstractCommandTest() {
             <div>Also Visible</div>
         """.trimIndent()
 
-        assertExpectedGeneratedText(contentToParse, "IgnoreTextCommandTest.txt")
+        assertExpectedGeneratedText(contentToParse, "IgnoreTextCommandTest.txt.kt")
     }
 }
