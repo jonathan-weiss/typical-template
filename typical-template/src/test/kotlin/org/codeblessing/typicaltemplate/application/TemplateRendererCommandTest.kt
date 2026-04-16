@@ -30,6 +30,7 @@ class TemplateRendererCommandTest: AbstractCommandTest() {
             }}}@ -->
             <div>Hello World</div>
             <!-- @tt{{{ @end-template-renderer }}}@ -->
+            <div>This is not in the template renderer</div>
         """.trimIndent()
 
         assertExpectedGeneratedText(contentToParse, "TemplateRendererCommandTest-withEndTemplateRenderer.txt")

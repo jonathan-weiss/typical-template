@@ -16,9 +16,14 @@ class ForeachCommandTest: AbstractCommandTest() {
             <!-- @tt{{{
                @template-model [ modelClassName="Team" modelPackageName="com.example.model" modelName="team" ]
             }}}@ -->
-            <!-- @tt{{{ @foreach [ iteratorExpression="team.members" loopVariable="member" ] }}}@ -->
-            <div>member</div>
+            <html>
+            <!-- @tt{{{ @foreach [ iteratorExpression="team.members" loopVariable="theMember" ] }}}@ -->
+            <!-- @tt{{{ @replace-value-by-expression [ searchValue="John" replaceByExpression="theMember" ] }}}@ -->
+            
+            <div>Member: John</div>
+            <!-- @tt{{{ @end-replace-value-by-expression }}}@ -->
             <!-- @tt{{{ @end-foreach }}}@ -->
+            </html>
         """.trimIndent()
 
         assertExpectedGeneratedText(contentToParse, "ForeachCommandTest.txt")

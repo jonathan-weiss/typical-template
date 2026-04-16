@@ -15,10 +15,15 @@ object MyRenderer {
         return """
           |
           |
-          |${ team.members.joinToString("") { member ->  """
-              |<div>member</div>
+          |<html>
+          |${ team.members.joinToString("") { theMember ->  """
+              |
+              |
+              |<div>Member: ${theMember}</div>
+              |
               |
           """ } }
+          |</html>
         """.trimMargin(marginPrefix = "|")
     }
 
