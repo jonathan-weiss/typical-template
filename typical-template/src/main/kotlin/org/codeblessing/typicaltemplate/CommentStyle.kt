@@ -6,7 +6,3 @@ data class CommentStyle(
     val commentType: CommentType,
 )
 
-enum class CommentType {
-    BLOCK_COMMENT,
-    LINE_COMMENT,
-}
