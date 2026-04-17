@@ -1,7 +1,4 @@
-package org.codeblessing.typicaltemplate.filemapping
-
-import org.codeblessing.typicaltemplate.CommentStyle
-import org.codeblessing.typicaltemplate.CommentType
+package org.codeblessing.typicaltemplate
 
 object CommentStyles {
     val HTML_COMMENT_STYLES = listOf(
@@ -26,6 +23,5 @@ object CommentStyles {
     )
 
     val SCSS_COMMENT_STYLES = KOTLIN_COMMENT_STYLES
-    val TYPESCRIPT_COMMENT_STYLES = KOTLIN_COMMENT_STYLES
 
 }

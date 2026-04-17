@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-import org.codeblessing.typicaltemplate.filemapping.CommentStyles
+import org.codeblessing.typicaltemplate.CommentStyles
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested

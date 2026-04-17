@@ -1,7 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing
 
-import org.codeblessing.typicaltemplate.filemapping.CommentStyles.HTML_COMMENT_STYLES
-import org.codeblessing.typicaltemplate.filemapping.CommentStyles.SCSS_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.CommentStyles.HTML_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.CommentStyles.SCSS_COMMENT_STYLES
 import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals

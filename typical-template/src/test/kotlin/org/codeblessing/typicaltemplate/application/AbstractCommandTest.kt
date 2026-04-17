@@ -3,7 +3,7 @@ package org.codeblessing.typicaltemplate.application
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
 import org.codeblessing.typicaltemplate.ClasspathResourceWriter
 import org.codeblessing.typicaltemplate.RelativeFile
-import org.codeblessing.typicaltemplate.filemapping.CommentStyles.HTML_COMMENT_STYLES
+import org.codeblessing.typicaltemplate.CommentStyles.HTML_COMMENT_STYLES
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.nio.file.Paths
 
