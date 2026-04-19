@@ -6,7 +6,9 @@ import java.util.Properties
 
 object TypicalTemplateConfigReader {
 
+    private val classLoader = TypicalTemplateConfig::class.java.classLoader
     private const val CONFIG_RESOURCE = "typical-template-config.properties"
+    private const val CONFIG_OVERWRITE_RESOURCE = "typical-template-config-overwrite.properties"
     private const val COMMENT_STYLE_PREFIX = "commentStyle."
     private const val EXTENSION_PREFIX = "extension."
     private const val START_SUFFIX = ".startOfComment"
@@ -14,7 +16,7 @@ object TypicalTemplateConfigReader {
     private const val TYPE_SUFFIX = ".commentType"
 
     fun readConfiguration(): TypicalTemplateConfig {
-        val properties = loadProperties()
+        val properties = loadAllProperties()
         val namedCommentStyles = parseCommentStyles(properties)
         val fileExtensionCommentStyles = parseFileExtensionMappings(properties, namedCommentStyles)
         return TypicalTemplateConfig(
@@ -23,11 +25,24 @@ object TypicalTemplateConfigReader {
         )
     }
 
-    private fun loadProperties(): Properties {
+    private fun loadAllProperties(): Properties {
+        val defaultProperties = loadProperties(CONFIG_RESOURCE, failOnError = true)
+        val overwriteProperties = loadProperties(CONFIG_OVERWRITE_RESOURCE, failOnError = false)
         val properties = Properties()
-        val stream = TypicalTemplateConfigReader::class.java.classLoader
-            .getResourceAsStream(CONFIG_RESOURCE)
-            ?: error("Resource not found on classpath: $CONFIG_RESOURCE")
+        properties.putAll(defaultProperties)
+        properties.putAll(overwriteProperties)
+        return properties
+    }
+
+    private fun loadProperties(classpathResource: String, failOnError: Boolean): Properties {
+        val properties = Properties()
+        val stream = classLoader.getResourceAsStream(classpathResource)
+            ?: if (failOnError) {
+                error("Resource not found on classpath: $CONFIG_RESOURCE")
+            } else {
+                return properties
+            }
+
         stream.use { properties.load(it) }
         return properties
     }
