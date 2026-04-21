@@ -28,7 +28,7 @@ Multi-module Gradle project (Kotlin DSL, Kotlin 2.2.0):
 
 - **`typical-template-api/`** — Public API module. Entry point is `TypicalTemplateApi` (uses Java `ServiceLoader` to load the processor). Contains configuration data classes (`TemplatingConfiguration`, `FileSearchLocation`, `TemplateRendererConfiguration`) and the `TypicalTemplateProcessorApi` interface.
 - **`typical-template/`** — Core implementation. Implements the processing pipeline.
-- **`typical-template-full-process-example/`** — Three example subprojects demonstrating end-to-end usage (creator CLI, executor CLI, annotated business project).
+- **`typical-template-blackbox-tests/`** — Three example subprojects demonstrating end-to-end usage (creator CLI, executor CLI, annotated business project).
 - **`buildSrc/`** — Custom Gradle convention plugins for Maven Central publishing and repository config.
 
 ## Processing Pipeline

@@ -9,8 +9,8 @@ dependencies {
 }
 
 tasks.register<JavaExec>("createTypicalTemplateRenderers") {
-    val exampleBusinessProjectPath = project(":typical-template-full-process-example:example-business-project").projectDir
-    val templateRendererExecutorPath = project(":typical-template-full-process-example:template-renderer-executor").projectDir
+    val exampleBusinessProjectPath = project(":typical-template-blackbox-tests:example-business-project").projectDir
+    val templateRendererExecutorPath = project(":typical-template-blackbox-tests:template-renderer-executor").projectDir
     val targetDirectoryForTemplateRenderer = templateRendererExecutorPath.resolve("src/typicaltemplate-generated/kotlin")
 
     classpath = sourceSets.main.get().runtimeClasspath

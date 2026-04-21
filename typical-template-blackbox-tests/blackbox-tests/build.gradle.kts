@@ -4,7 +4,7 @@ plugins {
 }
 
 tasks.test {
-    val blackboxBaseProject = project(":typical-template-full-process-example:example-business-project")
+    val blackboxBaseProject = project(":typical-template-blackbox-tests:example-business-project")
     useJUnitPlatform()
     systemProperty("blackbox.baseProjectPath", blackboxBaseProject.projectDir.absolutePath)
 }

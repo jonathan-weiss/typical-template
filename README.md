@@ -144,4 +144,4 @@ fun executeTypicalTemplateAndCreateRenderers() {
 ```
 Typical template will search for templates and create renderers if the function ``executeTypicalTemplateAndCreateRenderers`` is called.
 
-For a full example, see the Gradle subproject [typical-template-full-process-example](typical-template-full-process-example).
+For a full example, see the Gradle subproject [typical-template-blackbox-tests](typical-template-blackbox-tests).
