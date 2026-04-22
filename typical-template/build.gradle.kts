@@ -11,6 +11,8 @@ dependencies {
     implementation(project(":typical-template-api"))
 
     testImplementation(kotlin("test"))
+    testImplementation(platform(libs.junit.bom))
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 }
 
 tasks.register<JavaExec>("generateDocumentation") {
