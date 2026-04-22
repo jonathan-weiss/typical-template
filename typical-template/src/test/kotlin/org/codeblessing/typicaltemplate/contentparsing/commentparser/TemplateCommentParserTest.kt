@@ -232,9 +232,9 @@ class TemplateCommentParserTest {
             val input = "${keywordPrefix}my-keyword"
             val comment = parseCommentExpectingSingeResult(input)
             val expectedKeywordType = if (keywordPrefix == "#") {
-                TemplateCommentParser.KeywordType.PREPROCESSING
+                KeywordType.PREPROCESSING
             } else {
-                TemplateCommentParser.KeywordType.COMMAND
+                KeywordType.COMMAND
             }
             assertEquals(expectedKeywordType, comment.keywordType)
         }

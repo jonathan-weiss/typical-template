@@ -10,11 +10,6 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
  */
 object TemplateCommentParser {
 
-    enum class KeywordType {
-        COMMAND,
-        PREPROCESSING,
-    }
-
     private val attributeKeyPattern = Regex("""[a-zA-Z]+""")
     private val attributeValuePattern = Regex("""[^"]*""")
 
