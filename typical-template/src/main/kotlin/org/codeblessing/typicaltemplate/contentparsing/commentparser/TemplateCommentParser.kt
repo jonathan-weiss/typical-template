@@ -2,6 +2,11 @@ package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 
+/**
+ * Transform a template comment string (a list of keywords with attributes) to its structure.
+ * A valid structure is something like one or many of
+ * @<keyword>[<attribute1>="<value1>" <attribute2>="<value2>"][<attribute1>="<value3>"]
+ */
 object TemplateCommentParser {
     private val attributeKeyPattern = Regex("""[a-zA-Z]+""")
     private val attributeValuePattern = Regex("""[^"]*""")
@@ -21,7 +26,7 @@ object TemplateCommentParser {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
                         "Content of comment must be one or many commands of this structure (without the < and > characters): " +
-                        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute1>=\"<value3>\"]"
+                        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute3>=\"<value3>\"]"
             )
         }
 

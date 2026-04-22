@@ -22,14 +22,10 @@ object FragmentFactory {
         lineNumbers: LineNumbers
     ): CommandFragment {
         val keyword = structuredComment.keyword
-        val commandKey = CommandKey.fromKeyword(keyword)
-
-        if(commandKey == null) {
-            throw TemplateParsingException(
-                lineNumbers = lineNumbers,
-                msg = "Invalid keyword '$keyword'.",
-            )
-        }
+        val commandKey = CommandKey.fromKeyword(keyword) ?: throw TemplateParsingException(
+            lineNumbers = lineNumbers,
+            msg = "Invalid keyword '$keyword'.",
+        )
 
         val numberOfAttributeGroups = structuredComment.brackets.size
         if(numberOfAttributeGroups < commandKey.attributeGroupConstraint.minNumberOfAttributeGroups) {
@@ -52,7 +48,7 @@ object FragmentFactory {
             AttributeGroup(
                 attributes = attributeMap
                     .mapKeys { (keyString) ->
-                        CommandAttributeKey.Companion.fromString(keyString)
+                        CommandAttributeKey.fromString(keyString)
                             ?: throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
                                 msg = "Unknown attribute key '$keyString' in attributes group #${groupIndex + 1}. " +

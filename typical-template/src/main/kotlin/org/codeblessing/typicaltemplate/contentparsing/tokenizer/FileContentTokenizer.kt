@@ -3,6 +3,12 @@ package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.CommentType
 
+/**
+ * Split a text content into chunks of
+ * a. content of typical template comments, i.e. the content inside "@tt{{{" and "}}}@"
+ * and
+ * b. plain text (which includes non-typical template comments)
+ */
 object FileContentTokenizer {
 
     const val TT_COMMAND_LIST_START = "@tt{{{"

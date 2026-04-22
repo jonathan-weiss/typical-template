@@ -7,6 +7,9 @@ import org.codeblessing.typicaltemplate.contentparsing.tokenizer.PlainContentTok
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateCommentToken
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TokenWithMetadata
 
+/**
+ * Splits the typical template comment text into a list of structured commands.
+ */
 object Fragmenter {
 
     fun createFragmentsFromTokens(tokensWithMetadata: List<TokenWithMetadata>): List<TemplateFragment> {
