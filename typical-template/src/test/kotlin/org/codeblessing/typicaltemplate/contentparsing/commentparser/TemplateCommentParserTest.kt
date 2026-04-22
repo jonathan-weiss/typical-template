@@ -228,6 +228,19 @@ class TemplateCommentParserTest {
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
+        fun `parseComment sets keywordType based on prefix`(keywordPrefix: String) {
+            val input = "${keywordPrefix}my-keyword"
+            val comment = parseCommentExpectingSingeResult(input)
+            val expectedKeywordType = if (keywordPrefix == "#") {
+                TemplateCommentParser.KeywordType.PREPROCESSING
+            } else {
+                TemplateCommentParser.KeywordType.COMMAND
+            }
+            assertEquals(expectedKeywordType, comment.keywordType)
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for empty string`(keywordPrefix: String) {
             val input = ""
             assertThrows<TemplateParsingException> {
@@ -370,7 +383,7 @@ class TemplateCommentParserTest {
             }
         }
 
-        fun parseCommentExpectingSingeResult(comment: String): StructuredComment {
+        fun parseCommentExpectingSingeResult(comment: String): StructuredKeyword {
             val commands = TemplateCommentParser.parseComment(comment)
             assertEquals(1, commands.size, "Expected comment to have exactly one command")
             return commands.single()
@@ -384,57 +397,57 @@ class TemplateCommentParserTest {
         @ValueSource(strings = ["@", "#"])
         fun `a comment with one command having no attribute group is not splitted`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(1, structuredComments.size)
-            assertEquals("command-name", structuredComments.first().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(1, structuredKeywords.size)
+            assertEquals("command-name", structuredKeywords.first().keyword)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `a comment with one command having one attribute group is not splitted`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name ${commandGroup()}"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(1, structuredComments.size)
-            assertEquals("command-name", structuredComments.first().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(1, structuredKeywords.size)
+            assertEquals("command-name", structuredKeywords.first().keyword)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `a comment with one command having multiple attribute groups is not splitted`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name ${commandGroup()}${commandGroup()}${commandGroup()}"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(1, structuredComments.size)
-            assertEquals("command-name", structuredComments.first().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(1, structuredKeywords.size)
+            assertEquals("command-name", structuredKeywords.first().keyword)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `a comment with two command having no attribute group is splitted into two commands`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name-a ${keywordPrefix}command-name-b"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(2, structuredComments.size)
-            assertEquals("command-name-a", structuredComments.first().keyword)
-            assertEquals("command-name-b", structuredComments.last().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(2, structuredKeywords.size)
+            assertEquals("command-name-a", structuredKeywords.first().keyword)
+            assertEquals("command-name-b", structuredKeywords.last().keyword)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `a comment with two commands having each one attribute group is splitted into two commands`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name-a ${commandGroup()} ${keywordPrefix}command-name-b ${commandGroup()}"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(2, structuredComments.size)
-            assertEquals("command-name-a", structuredComments.first().keyword)
-            assertEquals("command-name-b", structuredComments.last().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(2, structuredKeywords.size)
+            assertEquals("command-name-a", structuredKeywords.first().keyword)
+            assertEquals("command-name-b", structuredKeywords.last().keyword)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `a comment with two commands having multiple attribute groups is splitted into two commands`(keywordPrefix: String) {
             val comment = "${keywordPrefix}command-name-a \t ${commandGroup()} \n\t ${commandGroup()}${commandGroup()} ${keywordPrefix}command-name-b \n\n\t ${commandGroup()}\n ${commandGroup()}\n\t  ${commandGroup()}"
-            val structuredComments = TemplateCommentParser.parseComment(comment)
-            assertEquals(2, structuredComments.size)
-            assertEquals("command-name-a", structuredComments.first().keyword)
-            assertEquals("command-name-b", structuredComments.last().keyword)
+            val structuredKeywords = TemplateCommentParser.parseComment(comment)
+            assertEquals(2, structuredKeywords.size)
+            assertEquals("command-name-a", structuredKeywords.first().keyword)
+            assertEquals("command-name-b", structuredKeywords.last().keyword)
         }
 
         private fun commandGroup(): String {

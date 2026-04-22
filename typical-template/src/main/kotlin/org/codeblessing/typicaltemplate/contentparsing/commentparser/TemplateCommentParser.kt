@@ -9,6 +9,12 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
  * or using '#' as the prefix instead of '@'.
  */
 object TemplateCommentParser {
+
+    enum class KeywordType {
+        COMMAND,
+        PREPROCESSING,
+    }
+
     private val attributeKeyPattern = Regex("""[a-zA-Z]+""")
     private val attributeValuePattern = Regex("""[^"]*""")
 
@@ -22,7 +28,7 @@ object TemplateCommentParser {
 
     private val multiCommandValidationPattern = Regex("""\s*(${singleCommandKeywordAndAttributesGroupingPattern.pattern}\s*)+\s*""", RegexOption.MULTILINE)
 
-    fun parseComment(comment: String): List<StructuredComment> {
+    fun parseComment(comment: String): List<StructuredKeyword> {
         if(!multiCommandValidationPattern.matches(comment)) {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
@@ -39,20 +45,22 @@ object TemplateCommentParser {
             .toList()
     }
 
-    private fun parseSingleCommand(command: String): StructuredComment {
+    private fun parseSingleCommand(command: String): StructuredKeyword {
         val match = requireNotNull(singleCommandKeywordAndAttributesGroupingPattern.find(command))
         val keyword = match.groupValues[1]
         val bracketsString = match.groupValues[2]
+        val keywordType = if (match.value.trimStart().startsWith("#")) KeywordType.PREPROCESSING else KeywordType.COMMAND
 
         val bracketsContent = bracketsGroupingPattern
             .findAll(bracketsString)
             .map { it.groupValues[1].trim() }
             .toList()
 
-        return StructuredComment(
+        return StructuredKeyword(
             keyword = keyword,
             brackets = bracketsContent
-                .map { parseBracketContent(it) }
+                .map { parseBracketContent(it) },
+            keywordType = keywordType,
         )
     }
 

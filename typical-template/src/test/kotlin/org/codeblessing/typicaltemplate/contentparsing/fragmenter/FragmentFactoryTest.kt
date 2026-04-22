@@ -3,7 +3,7 @@ package org.codeblessing.typicaltemplate.contentparsing.fragmenter
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredComment
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredKeyword
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 import org.junit.jupiter.api.Assertions
@@ -172,7 +172,7 @@ class FragmentFactoryTest {
 
     private val stubLineNumbers = LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
-    private fun createSingleTemplateComment(comment: String): StructuredComment {
+    private fun createSingleTemplateComment(comment: String): StructuredKeyword {
         return TemplateCommentParser.parseComment(comment).single()
     }
 }
