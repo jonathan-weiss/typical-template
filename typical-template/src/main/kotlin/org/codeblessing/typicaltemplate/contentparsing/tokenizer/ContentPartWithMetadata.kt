@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-data class TokenWithMetadata(
-    val token: Token,
+data class ContentPartWithMetadata(
+    val contentPart: ContentPart,
     val fullContent: String,
 )

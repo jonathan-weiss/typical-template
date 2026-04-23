@@ -1,33 +1,33 @@
 package org.codeblessing.typicaltemplate.contentparsing.linenumbers
 
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TokenWithMetadata
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentPartWithMetadata
 
 object LineNumberCalculator {
 
     fun calculateLineNumbers(
-        tokenWithMetadata: TokenWithMetadata,
-        allTokens: List<TokenWithMetadata>
+        contentPart: ContentPartWithMetadata,
+        allContentParts: List<ContentPartWithMetadata>
     ): LineNumbers {
 
-        var previousTokenEndLineNumber = 0
+        var previousContentPartEndLineNumber = 0
 
-        for(currentToken in allTokens) {
-            if(currentToken != tokenWithMetadata) {
-                previousTokenEndLineNumber += currentToken.fullContent.countLines()
+        for(currentContentPart in allContentParts) {
+            if(currentContentPart != contentPart) {
+                previousContentPartEndLineNumber += currentContentPart.fullContent.countLines()
             } else {
                 break
             }
         }
 
-        val tokenStartLineNumber = previousTokenEndLineNumber + 1
-        val tokenEndLineNumber = (previousTokenEndLineNumber + tokenWithMetadata.fullContent.countLines())
-            .coerceAtLeast(tokenStartLineNumber)
+        val contentPartStartLineNumber = previousContentPartEndLineNumber + 1
+        val contentPartEndLineNumber = (previousContentPartEndLineNumber + contentPart.fullContent.countLines())
+            .coerceAtLeast(contentPartStartLineNumber)
 
         return LineNumbers(
-            startLineNumber = tokenStartLineNumber,
-            endLineNumber = tokenEndLineNumber,
-            context = tokenWithMetadata.fullContent,
-            formattedDescription = "Lines ${tokenStartLineNumber}-${tokenEndLineNumber}: '${tokenWithMetadata.fullContent}'",
+            startLineNumber = contentPartStartLineNumber,
+            endLineNumber = contentPartEndLineNumber,
+            context = contentPart.fullContent,
+            formattedDescription = "Lines ${contentPartStartLineNumber}-${contentPartEndLineNumber}: '${contentPart.fullContent}'",
         )
     }
 

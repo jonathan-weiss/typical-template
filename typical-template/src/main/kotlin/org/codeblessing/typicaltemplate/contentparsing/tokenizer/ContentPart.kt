@@ -1,5 +1,5 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-sealed interface Token {
+sealed interface ContentPart {
     val value: String
 }

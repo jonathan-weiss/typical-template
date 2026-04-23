@@ -1,14 +1,13 @@
 package org.codeblessing.typicaltemplate.contentparsing.linenumbers
 
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.PlainContentToken
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.Token
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TokenWithMetadata
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.PlainTextContentPart
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentPartWithMetadata
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class LineNumberCalculatorTest {
 
-    val token1 = createTokenWithMetadata(
+    val contentPart1 = createContentPart(
         value =
             """// line1
                // line2
@@ -17,45 +16,45 @@ class LineNumberCalculatorTest {
             """
     )
 
-    val token2 = createTokenWithMetadata(
+    val contentPart2 = createContentPart(
         value =
             """// line5
                // line6
             """
     )
 
-    val token3 = createTokenWithMetadata(
+    val contentPart3 = createContentPart(
         value =
             """// line7
                // line8
                // line9
             """
     )
-    val listOfTokens = listOf<TokenWithMetadata>(
-        token1,
-        token2,
-        token3,
+    val listOfContentParts = listOf(
+        contentPart1,
+        contentPart2,
+        contentPart3,
     )
 
     @Test
-    fun `calculate line number of the first token`() {
-        val lineNumbers = LineNumberCalculator.calculateLineNumbers(tokenWithMetadata = token1, allTokens = listOfTokens)
+    fun `calculate line number of the first content part`() {
+        val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart = contentPart1, allContentParts = listOfContentParts)
 
         assertEquals(1, lineNumbers.startLineNumber)
         assertEquals(4, lineNumbers.endLineNumber)
     }
 
     @Test
-    fun `calculate line number of a token in between`() {
-        val lineNumbers = LineNumberCalculator.calculateLineNumbers(tokenWithMetadata = token2, allTokens = listOfTokens)
+    fun `calculate line number of a content part in between`() {
+        val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart = contentPart2, allContentParts = listOfContentParts)
 
         assertEquals(5, lineNumbers.startLineNumber)
         assertEquals(6, lineNumbers.endLineNumber)
     }
 
     @Test
-    fun `calculate line number of the last token`() {
-        val lineNumbers = LineNumberCalculator.calculateLineNumbers(tokenWithMetadata = token3, allTokens = listOfTokens)
+    fun `calculate line number of the last content part`() {
+        val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart = contentPart3, allContentParts = listOfContentParts)
 
         assertEquals(7, lineNumbers.startLineNumber)
         assertEquals(9, lineNumbers.endLineNumber)
@@ -63,17 +62,17 @@ class LineNumberCalculatorTest {
 
     @Test
     fun `calculate one-liner`() {
-        val oneLinerToken = createTokenWithMetadata(value = "// one-line")
+        val oneLiner = createContentPart(value = "// one-line")
 
 
-        val lineNumbers = LineNumberCalculator.calculateLineNumbers(tokenWithMetadata = oneLinerToken, allTokens = listOf(oneLinerToken))
+        val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart = oneLiner, allContentParts = listOf(oneLiner))
 
         assertEquals(1, lineNumbers.startLineNumber)
         assertEquals(1, lineNumbers.endLineNumber)
     }
 
-    private fun createTokenWithMetadata(value: String): TokenWithMetadata {
-        return TokenWithMetadata(token =PlainContentToken(value = value), fullContent = value)
+    private fun createContentPart(value: String): ContentPartWithMetadata {
+        return ContentPartWithMetadata(contentPart =PlainTextContentPart(value = value), fullContent = value)
     }
 
 }

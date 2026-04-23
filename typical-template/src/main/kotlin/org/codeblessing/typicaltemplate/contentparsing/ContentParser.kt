@@ -6,7 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.fragmenter.Fragmenter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainCreator
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateCommentToken
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateCommentContentPart
 
 object ContentParser {
 
@@ -15,14 +15,14 @@ object ContentParser {
             return emptyList()
         }
         try {
-            val tokens = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
+            val contentParts = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 
-            if(tokens.map { it.token }.none { it is TemplateCommentToken }) {
+            if(contentParts.map { it.contentPart }.none { it is TemplateCommentContentPart }) {
                 // the file does not contain any typical template commands and can be ignored.
                 return emptyList()
             }
 
-            val templateFragments = Fragmenter.createFragmentsFromTokens(tokens)
+            val templateFragments = Fragmenter.createFragmentsFromTokens(contentParts)
             return CommandChainCreator.validateAndInterpretFragments(templateFragments)
         } catch (ex: TemplateParsingException) {
             throw TypicalTemplateException(

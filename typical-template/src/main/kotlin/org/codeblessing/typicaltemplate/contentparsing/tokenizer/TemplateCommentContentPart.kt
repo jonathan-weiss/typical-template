@@ -1,5 +1,5 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-data class PlainContentToken(
+data class TemplateCommentContentPart(
     override val value: String,
-) : Token
+) : ContentPart
