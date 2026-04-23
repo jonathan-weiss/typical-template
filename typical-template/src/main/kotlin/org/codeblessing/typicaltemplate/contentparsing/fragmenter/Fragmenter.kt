@@ -24,9 +24,9 @@ object Fragmenter {
                 is TemplateCommentContentPart -> reThrowWithLineNumbers(lineNumbers) {
                     TemplateCommentParser.parseComment(contentPart.value)
                 }
-                .map { structuredKeyword ->
+                .map { commandStructure ->
                     FragmentFactory.createCommandFragment(
-                        structuredKeyword = structuredKeyword,
+                        commandStructure = commandStructure,
                         lineNumbers = lineNumbers
                     )
                 }

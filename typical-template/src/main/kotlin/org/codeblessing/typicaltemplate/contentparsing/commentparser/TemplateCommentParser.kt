@@ -23,7 +23,7 @@ object TemplateCommentParser {
 
     private val multiCommandValidationPattern = Regex("""\s*(${singleCommandKeywordAndAttributesGroupingPattern.pattern}\s*)+\s*""", RegexOption.MULTILINE)
 
-    fun parseComment(comment: String): List<StructuredKeyword> {
+    fun parseComment(comment: String): List<CommandStructure> {
         if(!multiCommandValidationPattern.matches(comment)) {
             throw TemplateParsingException(
                 msg = "Invalid comment structure. " +
@@ -40,7 +40,7 @@ object TemplateCommentParser {
             .toList()
     }
 
-    private fun parseSingleCommand(command: String): StructuredKeyword {
+    private fun parseSingleCommand(command: String): CommandStructure {
         val match = requireNotNull(singleCommandKeywordAndAttributesGroupingPattern.find(command))
         val keyword = match.groupValues[1]
         val bracketsString = match.groupValues[2]
@@ -51,7 +51,7 @@ object TemplateCommentParser {
             .map { it.groupValues[1].trim() }
             .toList()
 
-        return StructuredKeyword(
+        return CommandStructure(
             keyword = keyword,
             brackets = bracketsContent
                 .map { parseBracketContent(it) },

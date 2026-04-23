@@ -3,7 +3,7 @@ package org.codeblessing.typicaltemplate.contentparsing.fragmenter
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.StructuredKeyword
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 import org.junit.jupiter.api.Assertions
@@ -20,7 +20,7 @@ class FragmentFactoryTest {
 
     @Test
     fun `valid command fragment is created`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererClassName="MyTemplate"
@@ -29,7 +29,7 @@ class FragmentFactoryTest {
             """.trimIndent()
         )
 
-        val commandFragment = FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+        val commandFragment = FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         val keywordCommand = commandFragment.keywordCommand
         Assertions.assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
         Assertions.assertEquals(
@@ -44,20 +44,20 @@ class FragmentFactoryTest {
 
     @Test
     fun `throws for unknown keyword`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @unknown
             """.trimIndent()
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for too few attribute groups`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer
             """.trimIndent()
@@ -65,13 +65,13 @@ class FragmentFactoryTest {
 
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for too many attribute groups`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererClassName="MyTemplate"
@@ -84,13 +84,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for unknown attribute key`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererClassNameUnknown="MyTemplate"
@@ -100,13 +100,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for unallowed attribute key`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererClassName="MyTemplate"
@@ -117,13 +117,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for unallowed attribute value`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-model [
                             modelName="myTemplateModel"
@@ -135,13 +135,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for blank attribute value when not allowed`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererClassName=""
@@ -151,13 +151,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
     @Test
     fun `throws for missing required attribute`() {
-        val templateComment = createSingleTemplateComment(
+        val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
@@ -166,13 +166,13 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(templateComment, stubLineNumbers)
+            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
         }
     }
 
-    private val stubLineNumbers = LineNumbers.Companion.EMPTY_LINE_NUMBERS
+    private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS
 
-    private fun createSingleTemplateComment(comment: String): StructuredKeyword {
+    private fun createSingleTemplateComment(comment: String): CommandStructure {
         return TemplateCommentParser.parseComment(comment).single()
     }
 }
