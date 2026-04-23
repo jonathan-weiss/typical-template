@@ -16,7 +16,7 @@ object FileContentTokenizer {
     const val ALL_LINE_BREAKS = "\\r\\n|\\r|\\n"
     const val ALL_LINE_BREAKS_OR_END_OF_FILE = "$ALL_LINE_BREAKS|\\z"
 
-    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<ContentPartWithMetadata> {
+    fun tokenizeContent(content: String, supportedCommentStyles: List<CommentStyle>): List<RawContentPart> {
         val commentPatterns = supportedCommentStyles.map { style ->
             val startOfCommentRegex = Regex.escape(style.startOfComment)
             val endOfCommentRegex = when(style.commentType) {
@@ -31,7 +31,7 @@ object FileContentTokenizer {
 
         val regexPattern = commentPatterns.joinToString("|") { "(?:$it)" }
         val regex = Regex(regexPattern, setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.MULTILINE))
-        val result = mutableListOf<ContentPartWithMetadata>()
+        val result = mutableListOf<RawContentPart>()
         var lastIndex = 0
         var leftoverContent = ""
         for (match in regex.findAll(content)) {
@@ -42,7 +42,7 @@ object FileContentTokenizer {
             result.addPlainContentContentPart(leftoverContent + contentBeforeCommand)
 
             val strippedCommand = match.groupValueSegment( offset = 0, numberOfGroupsPerExpression = 2)
-            result.add(ContentPartWithMetadata(contentPart = TemplateCommentContentPart(value = strippedCommand), fullContent = match.value))
+            result.addTemplateCommentContentPart(content = strippedCommand, pristineContent = match.value)
 
             leftoverContent = match.groupValueSegment(offset = 1, numberOfGroupsPerExpression = 2)
             lastIndex = match.range.last + 1
@@ -67,9 +67,13 @@ object FileContentTokenizer {
         return content
     }
 
-    private fun MutableList<ContentPartWithMetadata>.addPlainContentContentPart(content: String) {
+    private fun MutableList<RawContentPart>.addPlainContentContentPart(content: String) {
         if(content.isNotEmpty()) {
-            add(ContentPartWithMetadata(contentPart = PlainTextContentPart(content), fullContent = content))
+            add(RawContentPart(contentType = ContentType.PLAIN_TEXT, content = content, pristineContent = content))
         }
+    }
+
+    private fun MutableList<RawContentPart>.addTemplateCommentContentPart(content: String, pristineContent: String) {
+        add(RawContentPart(contentType = ContentType.TEMPLATE_COMMENT, content = content, pristineContent = pristineContent))
     }
 }

@@ -6,7 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.fragmenter.Fragmenter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainCreator
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.TemplateCommentContentPart
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
 
 object ContentParser {
 
@@ -17,7 +17,7 @@ object ContentParser {
         try {
             val contentParts = FileContentTokenizer.tokenizeContent(content, supportedCommentStyles)
 
-            if(contentParts.map { it.contentPart }.none { it is TemplateCommentContentPart }) {
+            if(contentParts.none { it.contentType == ContentType.TEMPLATE_COMMENT }) {
                 // the file does not contain any typical template commands and can be ignored.
                 return emptyList()
             }

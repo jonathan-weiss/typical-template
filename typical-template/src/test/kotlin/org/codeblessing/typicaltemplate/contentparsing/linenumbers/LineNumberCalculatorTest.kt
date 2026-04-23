@@ -1,7 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing.linenumbers
 
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.PlainTextContentPart
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentPartWithMetadata
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.RawContentPart
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -71,8 +71,12 @@ class LineNumberCalculatorTest {
         assertEquals(1, lineNumbers.endLineNumber)
     }
 
-    private fun createContentPart(value: String): ContentPartWithMetadata {
-        return ContentPartWithMetadata(contentPart =PlainTextContentPart(value = value), fullContent = value)
+    private fun createContentPart(value: String): RawContentPart {
+        return RawContentPart(
+            contentType = ContentType.PLAIN_TEXT,
+            content = value,
+            pristineContent = value,
+        )
     }
 
 }

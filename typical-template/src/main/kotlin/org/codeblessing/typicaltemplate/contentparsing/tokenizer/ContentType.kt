@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.tokenizer
 
-sealed interface ContentPart {
-    val value: String
+enum class ContentType {
+    PLAIN_TEXT,
+    TEMPLATE_COMMENT,
 }
