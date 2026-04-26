@@ -5,7 +5,7 @@ import org.codeblessing.typicaltemplate.AttributeValue
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.resolver.CommandContentPart
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
@@ -15,10 +15,10 @@ class ContentPartBuilder private constructor() {
         fun create(): ContentPartBuilder = ContentPartBuilder()
     }
 
-    private val commandContentParts: MutableList<TemplateContentPart> = mutableListOf()
+    private val contentParts: MutableList<TemplateContentPart> = mutableListOf()
 
     fun addText(text: String): ContentPartBuilder {
-        commandContentParts.add(TextContentPart(createLineNumbers(), text))
+        contentParts.add(TextContentPart(createLineNumbers(), text))
         return this
     }
 
@@ -27,12 +27,12 @@ class ContentPartBuilder private constructor() {
     }
 
     fun addKeywordCommand(keywordCommand: KeywordCommand): ContentPartBuilder {
-        commandContentParts.add(CommandContentPart(createLineNumbers(), keywordCommand))
+        contentParts.add(TemplateCommentContentPart(createLineNumbers(), listOf(keywordCommand)))
         return this
     }
 
     fun build(): List<TemplateContentPart> {
-        return commandContentParts
+        return contentParts
     }
 
     fun addStripLineBeforeCommentCommand(): ContentPartBuilder {

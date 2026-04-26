@@ -1,10 +1,10 @@
 package org.codeblessing.typicaltemplate.contentparsing.resolver
 
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException.Companion.reThrowWithLineNumbers
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumberCalculator
-import org.codeblessing.typicaltemplate.contentparsing.tokenizer.RawContentPart
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
+import org.codeblessing.typicaltemplate.contentparsing.tokenizer.RawContentPart
 
 /**
  * Splits the typical template comment text into a list of structured commands.
@@ -12,24 +12,26 @@ import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
 object ContentPartResolver {
 
     fun createContentParts(contentParts: List<RawContentPart>): List<TemplateContentPart> {
-        return contentParts.flatMap { contentPart ->
+        return contentParts.map { contentPart ->
             val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart, contentParts)
-            when (contentPart.contentType) {
-                ContentType.PLAIN_TEXT -> listOf(TextContentPart(lineNumbers = lineNumbers, text = contentPart.content)
-)
-                ContentType.TEMPLATE_COMMENT -> reThrowWithLineNumbers(lineNumbers) {
-                    TemplateCommentParser.parseComment(contentPart.content)
-                }
-                .map { commandStructure ->
-                    CommandContentPart(
+            reThrowWithLineNumbers(lineNumbers) {
+                when (contentPart.contentType) {
+                    ContentType.PLAIN_TEXT -> TextContentPart(
                         lineNumbers = lineNumbers,
-                        keywordCommand = KeywordCommandFactory.createKeywordCommand(
-                            commandStructure = commandStructure,
-                            lineNumbers = lineNumbers
-                        )
+                        text = contentPart.content,
+                    )
+                    ContentType.TEMPLATE_COMMENT -> TemplateCommentContentPart(
+                        lineNumbers = lineNumbers,
+                        keywordCommands = TemplateCommentParser.parseComment(contentPart.content)
+                            .map { commandStructure ->
+                                KeywordCommandFactory.createKeywordCommand(
+                                    commandStructure = commandStructure,
+                                    lineNumbers = lineNumbers,
+                                )
+                            },
                     )
                 }
-        }
+            }
         }
     }
 }
