@@ -14,7 +14,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `valid template chain is accepted`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addText("here is text")
@@ -23,14 +23,14 @@ class CommandChainCreatorTest {
                 .addEndReplaceValueByExpressionCommand()
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
 
         }
 
         @Test
         fun `valid template chain with nested commands is accepted`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addText("here is text")
@@ -50,13 +50,13 @@ class CommandChainCreatorTest {
                 .addEndReplaceValueByExpressionCommand()
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
         }
 
         @Test
         fun `valid template chain with nested commands that are autoclosed is accepted`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addText("here is text")
@@ -76,13 +76,13 @@ class CommandChainCreatorTest {
                 // replace-value-by-expression command is autoclosed by end of command chain
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
         }
 
         @Test
         fun `throws for unmatched closing command`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addReplaceValueByExpressionCommand()
@@ -91,26 +91,26 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `valid template chain for unclosed opening command that supports auto-closing`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addReplaceValueByExpressionCommand()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
         }
 
         @Test
         fun `throws for unclosed opening command that do not supports auto-closing`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addIfCommand()
@@ -118,13 +118,13 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `throws for invalid open and closing command mix`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addIfCommand("model.isSerializable()")
@@ -136,7 +136,7 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
     }
@@ -146,18 +146,18 @@ class CommandChainCreatorTest {
 
         @Test
         fun `throws for no template definition command`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `throws for multiple template definition commands`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addTemplateRendererCommand()
@@ -165,13 +165,13 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `throws for multiple model commands with same model name`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addTemplateModel(modelName = "myModel")
@@ -179,13 +179,13 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `throws if first command is not template definition`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addReplaceValueByExpressionCommand()
                 .addEndReplaceValueByExpressionCommand()
@@ -193,7 +193,7 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
     }
@@ -203,37 +203,37 @@ class CommandChainCreatorTest {
 
         @Test
         fun `isList defaults to false when attribute is absent`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addTemplateModel(modelName = "myModel")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             val model = templates.single().modelClasses.single()
             assertEquals(false, model.isList)
         }
 
         @Test
         fun `isList is true when isList attribute is set to true`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addTemplateModel(modelName = "myModel", isList = true)
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             val model = templates.single().modelClasses.single()
             assertEquals(true, model.isList)
         }
 
         @Test
         fun `multiple models can independently have isList set`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addTemplateModel(modelName = "singleModel", isList = false)
                 .addTemplateModel(modelName = "listModel", isList = true)
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             val models = templates.single().modelClasses
             assertEquals(false, models[0].isList)
             assertEquals(true, models[1].isList)
@@ -245,7 +245,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `throws for else command not in if statement`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addIfCommand("model.isSerializable()")
@@ -255,13 +255,13 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `throws for else if command not in if statement`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
                 .addTemplateRendererCommand()
                 .addIfCommand("model.isSerializable()")
@@ -271,7 +271,7 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
     }
@@ -282,7 +282,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `single nested template-renderer produces two descriptions`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
@@ -291,7 +291,7 @@ class CommandChainCreatorTest {
                 .addText("more outer content")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(2, templates.size)
             assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
             assertEquals("InnerRenderer", templates[1].templateRendererClass.className)
@@ -299,7 +299,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `nested template-renderer without end-template-renderer throws`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
@@ -307,38 +307,38 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `top-level end-template-renderer is optional`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
         }
 
         @Test
         fun `top-level end-template-renderer is accepted when present`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .addEndTemplateRendererCommand()
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
         }
 
         @Test
         fun `nested template context is isolated from outer`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
                 .addText("outer content")
@@ -352,7 +352,7 @@ class CommandChainCreatorTest {
                 .addEndReplaceValueByExpressionCommand()
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(2, templates.size)
             assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
             assertEquals(1, templates[0].modelClasses.size)
@@ -364,7 +364,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `deeply nested template-renderers supported`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "Level0")
                 .addText("level 0 content")
                 .addTemplateRendererCommand(templateRendererClassName = "Level1")
@@ -377,7 +377,7 @@ class CommandChainCreatorTest {
                 .addText("more level 0 content")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(3, templates.size)
             assertEquals("Level0", templates[0].templateRendererClass.className)
             assertEquals("Level1", templates[1].templateRendererClass.className)
@@ -386,7 +386,7 @@ class CommandChainCreatorTest {
 
         @Test
         fun `multiple sibling nested template-renderers`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .addTemplateRendererCommand(templateRendererClassName = "Inner1")
@@ -399,7 +399,7 @@ class CommandChainCreatorTest {
                 .addText("more outer content")
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(3, templates.size)
             assertEquals("OuterRenderer", templates[0].templateRendererClass.className)
             assertEquals("Inner1", templates[1].templateRendererClass.className)
@@ -408,19 +408,19 @@ class CommandChainCreatorTest {
 
         @Test
         fun `end-template-renderer without opener throws`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addEndTemplateRendererCommand()
                 .addText("some content")
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `commands after top-level end-template-renderer throws`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addText("outer content")
                 .addEndTemplateRendererCommand()
@@ -430,13 +430,13 @@ class CommandChainCreatorTest {
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
-                CommandChainCreator.validateAndInterpretFragments(fragments)
+                CommandChainCreator.validateAndInterpretContentParts(contentParts)
             }
         }
 
         @Test
         fun `nested renderer with its own model commands works`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
                 .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
                 .addText("outer content")
@@ -447,7 +447,7 @@ class CommandChainCreatorTest {
                 .addEndTemplateRendererCommand()
                 .build()
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(2, templates.size)
             assertEquals("InnerRenderer", templates[1].templateRendererClass.className)
             assertEquals(2, templates[1].modelClasses.size)
@@ -461,13 +461,13 @@ class CommandChainCreatorTest {
 
         @Test
         fun `do not mark plain text item if no influencing commands are in the chain`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addText("here is text")
                 .build()
 
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             val template = templates.single()
             assertEquals(1, template.templateChain.size)
@@ -478,14 +478,14 @@ class CommandChainCreatorTest {
         }
         @Test
         fun `mark previous plain text item to remove last line on directly following strip-line-before command`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addText("here is text")
                 .addStripLineBeforeCommentCommand()
                 .build()
 
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             val template = templates.single()
             assertEquals(1, template.templateChain.size)
@@ -497,14 +497,14 @@ class CommandChainCreatorTest {
 
         @Test
         fun `mark next plain text item to remove first line on directly preceding strip-line-after command`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addStripLineAfterCommentCommand()
                 .addText("here is text")
                 .build()
 
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             val template = templates.single()
             assertEquals(1, template.templateChain.size)
@@ -516,14 +516,14 @@ class CommandChainCreatorTest {
 
         @Test
         fun `remove commands from chain without effects on text if no text is available`() {
-            val fragments = FragmentsBuilder.create()
+            val contentParts = ContentPartBuilder.create()
                 .addTemplateRendererCommand()
                 .addStripLineBeforeCommentCommand()
                 .addStripLineAfterCommentCommand()
                 .build()
 
 
-            val templates = CommandChainCreator.validateAndInterpretFragments(fragments)
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
             val template = templates.single()
             assertEquals(0, template.templateChain.size)

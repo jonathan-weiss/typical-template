@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing.fragmenter
+package org.codeblessing.typicaltemplate.contentparsing.resolver
 
 import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.CommandAttributeKey
@@ -8,19 +8,19 @@ import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStru
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
-object FragmentFactory {
+object ContentPartFactory {
 
-    fun createTextFragment(
+    fun createTextContentPart(
         text: String,
         lineNumbers: LineNumbers
-    ): TextFragment {
-        return TextFragment(lineNumbers = lineNumbers, text = text)
+    ): TextContentPart {
+        return TextContentPart(lineNumbers = lineNumbers, text = text)
     }
 
-    fun createCommandFragment(
+    fun createCommandContentPart(
         commandStructure: CommandStructure,
         lineNumbers: LineNumbers
-    ): CommandFragment {
+    ): CommandContentPart {
         val keyword = commandStructure.keyword
         val commandKey = CommandKey.fromKeyword(keyword) ?: throw TemplateParsingException(
             lineNumbers = lineNumbers,
@@ -107,6 +107,6 @@ object FragmentFactory {
 
 
         val keywordCommand = KeywordCommand(commandKey, attributeGroups)
-        return CommandFragment(lineNumbers = lineNumbers, keywordCommand = keywordCommand)
+        return CommandContentPart(lineNumbers = lineNumbers, keywordCommand = keywordCommand)
     }
 }

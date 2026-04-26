@@ -5,20 +5,20 @@ import org.codeblessing.typicaltemplate.AttributeValue
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.fragmenter.CommandFragment
-import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TemplateFragment
-import org.codeblessing.typicaltemplate.contentparsing.fragmenter.TextFragment
+import org.codeblessing.typicaltemplate.contentparsing.resolver.CommandContentPart
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
-class FragmentsBuilder private constructor() {
+class ContentPartBuilder private constructor() {
     companion object {
-        fun create(): FragmentsBuilder = FragmentsBuilder()
+        fun create(): ContentPartBuilder = ContentPartBuilder()
     }
 
-    private val commandFragments: MutableList<TemplateFragment> = mutableListOf()
+    private val commandContentParts: MutableList<TemplateContentPart> = mutableListOf()
 
-    fun addText(text: String): FragmentsBuilder {
-        commandFragments.add(TextFragment(createLineNumbers(), text))
+    fun addText(text: String): ContentPartBuilder {
+        commandContentParts.add(TextContentPart(createLineNumbers(), text))
         return this
     }
 
@@ -26,21 +26,21 @@ class FragmentsBuilder private constructor() {
         return KeywordCommandBuilder(this, commandKey)
     }
 
-    fun addKeywordCommand(keywordCommand: KeywordCommand): FragmentsBuilder {
-        commandFragments.add(CommandFragment(createLineNumbers(), keywordCommand))
+    fun addKeywordCommand(keywordCommand: KeywordCommand): ContentPartBuilder {
+        commandContentParts.add(CommandContentPart(createLineNumbers(), keywordCommand))
         return this
     }
 
-    fun build(): List<TemplateFragment> {
-        return commandFragments
+    fun build(): List<TemplateContentPart> {
+        return commandContentParts
     }
 
-    fun addStripLineBeforeCommentCommand(): FragmentsBuilder {
+    fun addStripLineBeforeCommentCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.STRIP_LINE_BEFORE_COMMENT)
             .addCommandToChain()
     }
 
-    fun addStripLineAfterCommentCommand(): FragmentsBuilder {
+    fun addStripLineAfterCommentCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.STRIP_LINE_AFTER_COMMENT)
             .addCommandToChain()
     }
@@ -48,7 +48,7 @@ class FragmentsBuilder private constructor() {
     fun addTemplateRendererCommand(
         templateRendererClassName: String = "MyTemplateRendererClass",
         templateRendererPackageName: String = "org.example.template",
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.TEMPLATE_RENDERER)
             .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME, templateRendererClassName)
             .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME, templateRendererPackageName)
@@ -60,7 +60,7 @@ class FragmentsBuilder private constructor() {
         modelClassName: String = "MyModelClass",
         modelPackageName: String = "org.example.model",
         isList: Boolean = false,
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         val builder = this.createCommand(CommandKey.TEMPLATE_MODEL)
             .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_NAME, modelName)
             .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME, modelClassName)
@@ -74,7 +74,7 @@ class FragmentsBuilder private constructor() {
     fun addReplaceValueByExpressionCommand(
         searchValue: String = "search",
         fieldName: String = "myField",
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
             .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
             .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
@@ -83,7 +83,7 @@ class FragmentsBuilder private constructor() {
 
     fun addReplaceValueByExpressionCommand(
         vararg replacements: Pair<String, String>,
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
         replacements.forEach { (searchValue, fieldName) ->
             builder = builder
@@ -94,14 +94,14 @@ class FragmentsBuilder private constructor() {
         return builder.addCommandToChain()
     }
 
-    fun addEndReplaceValueByExpressionCommand(): FragmentsBuilder {
+    fun addEndReplaceValueByExpressionCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
             .addCommandToChain()
     }
 
     fun addIfCommand(
         conditionExpression: String = "myConditionExpression",
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.IF_CONDITION)
             .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
             .addCommandToChain()
@@ -109,18 +109,18 @@ class FragmentsBuilder private constructor() {
 
     fun addElseIfCommand(
         conditionExpression: String = "myOtherConditionExpression",
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.ELSE_IF_CONDITION)
             .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
             .addCommandToChain()
     }
 
-    fun addElseCommand(): FragmentsBuilder {
+    fun addElseCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.ELSE_CLAUSE)
             .addCommandToChain()
     }
 
-    fun addEndIfCommand(): FragmentsBuilder {
+    fun addEndIfCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.END_IF_CONDITION)
             .addCommandToChain()
     }
@@ -128,36 +128,36 @@ class FragmentsBuilder private constructor() {
     fun addForeachCommand(
         loopVariable: String = "item",
         loopIterable: String = "myList",
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.FOREACH)
             .withAttribute(CommandAttributeKey.LOOP_VARIABLE_NAME, loopVariable)
             .withAttribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION, loopIterable)
             .addCommandToChain()
     }
 
-    fun addEndForeachCommand(): FragmentsBuilder {
+    fun addEndForeachCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.END_FOREACH)
             .addCommandToChain()
     }
 
-    fun addIgnoreTextCommand(): FragmentsBuilder {
+    fun addIgnoreTextCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.IGNORE_TEXT)
             .addCommandToChain()
     }
 
-    fun addEndIgnoreTextCommand(): FragmentsBuilder {
+    fun addEndIgnoreTextCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.END_IGNORE_TEXT)
             .addCommandToChain()
     }
 
-    fun addEndTemplateRendererCommand(): FragmentsBuilder {
+    fun addEndTemplateRendererCommand(): ContentPartBuilder {
         return this.createCommand(CommandKey.END_TEMPLATE_RENDERER)
             .addCommandToChain()
     }
 
     fun addPrintTextCommand(
         text: String,
-    ): FragmentsBuilder {
+    ): ContentPartBuilder {
         return this.createCommand(CommandKey.PRINT_TEXT)
             .withAttribute(CommandAttributeKey.TEXT, text)
             .addCommandToChain()
@@ -165,7 +165,7 @@ class FragmentsBuilder private constructor() {
 
 
     class KeywordCommandBuilder(
-        private val fragmentsBuilder: FragmentsBuilder,
+        private val contentPartBuilder: ContentPartBuilder,
         private val commandKey: CommandKey
     ) {
 
@@ -183,18 +183,18 @@ class FragmentsBuilder private constructor() {
             return this
         }
 
-        fun addCommandToChain(): FragmentsBuilder {
+        fun addCommandToChain(): ContentPartBuilder {
             if(attributes.isNotEmpty()) {
                 nextAttributeGroup()
             }
 
             val keywordCommand = KeywordCommand(commandKey, attributeGroups)
-            return fragmentsBuilder.addKeywordCommand(keywordCommand)
+            return contentPartBuilder.addKeywordCommand(keywordCommand)
         }
     }
 
     private fun createLineNumbers(): LineNumbers {
-        return LineNumbers.Companion.EMPTY_LINE_NUMBERS
+        return LineNumbers.EMPTY_LINE_NUMBERS
     }
 
 }

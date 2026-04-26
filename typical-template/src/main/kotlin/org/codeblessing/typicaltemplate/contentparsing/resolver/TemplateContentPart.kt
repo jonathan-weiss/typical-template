@@ -1,7 +1,7 @@
-package org.codeblessing.typicaltemplate.contentparsing.fragmenter
+package org.codeblessing.typicaltemplate.contentparsing.resolver
 
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
-sealed interface TemplateFragment {
+sealed interface TemplateContentPart {
     val lineNumbers: LineNumbers
 }

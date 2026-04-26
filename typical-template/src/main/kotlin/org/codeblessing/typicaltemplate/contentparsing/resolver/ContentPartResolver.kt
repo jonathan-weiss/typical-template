@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing.fragmenter
+package org.codeblessing.typicaltemplate.contentparsing.resolver
 
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException.Companion.reThrowWithLineNumbers
@@ -9,13 +9,13 @@ import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
 /**
  * Splits the typical template comment text into a list of structured commands.
  */
-object Fragmenter {
+object ContentPartResolver {
 
-    fun createFragmentsFromTokens(contentParts: List<RawContentPart>): List<TemplateFragment> {
+    fun createContentParts(contentParts: List<RawContentPart>): List<TemplateContentPart> {
         return contentParts.flatMap { contentPart ->
             val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart, contentParts)
             when (contentPart.contentType) {
-                ContentType.PLAIN_TEXT -> listOf(FragmentFactory.createTextFragment(
+                ContentType.PLAIN_TEXT -> listOf(ContentPartFactory.createTextContentPart(
                     text = contentPart.content,
                     lineNumbers = lineNumbers
 
@@ -24,7 +24,7 @@ object Fragmenter {
                     TemplateCommentParser.parseComment(contentPart.content)
                 }
                 .map { commandStructure ->
-                    FragmentFactory.createCommandFragment(
+                    ContentPartFactory.createCommandContentPart(
                         commandStructure = commandStructure,
                         lineNumbers = lineNumbers
                     )

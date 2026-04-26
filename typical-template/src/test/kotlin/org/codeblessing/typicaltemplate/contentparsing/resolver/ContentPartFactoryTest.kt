@@ -1,4 +1,4 @@
-package org.codeblessing.typicaltemplate.contentparsing.fragmenter
+package org.codeblessing.typicaltemplate.contentparsing.resolver
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
@@ -10,16 +10,16 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class FragmentFactoryTest {
+class ContentPartFactoryTest {
 
     @Test
-    fun `valid text fragment is created`() {
-        val commandFragment = FragmentFactory.createTextFragment("my content", stubLineNumbers)
-        Assertions.assertEquals("my content", commandFragment.text)
+    fun `valid text content part is created`() {
+        val contentPart = ContentPartFactory.createTextContentPart("my content", stubLineNumbers)
+        Assertions.assertEquals("my content", contentPart.text)
     }
 
     @Test
-    fun `valid command fragment is created`() {
+    fun `valid command content part is created`() {
         val commandStructure = createSingleTemplateComment(
             comment = """ 
                         @template-renderer [
@@ -29,8 +29,8 @@ class FragmentFactoryTest {
             """.trimIndent()
         )
 
-        val commandFragment = FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
-        val keywordCommand = commandFragment.keywordCommand
+        val contentPart = ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+        val keywordCommand = contentPart.keywordCommand
         Assertions.assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
         Assertions.assertEquals(
             "MyTemplate",
@@ -51,7 +51,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -65,7 +65,7 @@ class FragmentFactoryTest {
 
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -84,7 +84,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -100,7 +100,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -117,7 +117,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -135,7 +135,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -151,7 +151,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
@@ -166,7 +166,7 @@ class FragmentFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            FragmentFactory.createCommandFragment(commandStructure, stubLineNumbers)
+            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
         }
     }
 
