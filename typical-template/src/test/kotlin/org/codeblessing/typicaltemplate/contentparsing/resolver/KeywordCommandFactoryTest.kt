@@ -10,13 +10,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class ContentPartFactoryTest {
-
-    @Test
-    fun `valid text content part is created`() {
-        val contentPart = ContentPartFactory.createTextContentPart("my content", stubLineNumbers)
-        Assertions.assertEquals("my content", contentPart.text)
-    }
+class KeywordCommandFactoryTest {
 
     @Test
     fun `valid command content part is created`() {
@@ -29,8 +23,7 @@ class ContentPartFactoryTest {
             """.trimIndent()
         )
 
-        val contentPart = ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
-        val keywordCommand = contentPart.keywordCommand
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         Assertions.assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
         Assertions.assertEquals(
             "MyTemplate",
@@ -51,7 +44,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -65,7 +58,7 @@ class ContentPartFactoryTest {
 
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -84,7 +77,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -100,7 +93,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -117,7 +110,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -135,7 +128,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -151,7 +144,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 
@@ -166,7 +159,7 @@ class ContentPartFactoryTest {
         )
 
         assertThrows<TemplateParsingException> {
-            ContentPartFactory.createCommandContentPart(commandStructure, stubLineNumbers)
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
     }
 

@@ -15,18 +15,18 @@ object ContentPartResolver {
         return contentParts.flatMap { contentPart ->
             val lineNumbers = LineNumberCalculator.calculateLineNumbers(contentPart, contentParts)
             when (contentPart.contentType) {
-                ContentType.PLAIN_TEXT -> listOf(ContentPartFactory.createTextContentPart(
-                    text = contentPart.content,
-                    lineNumbers = lineNumbers
-
-                ))
+                ContentType.PLAIN_TEXT -> listOf(TextContentPart(lineNumbers = lineNumbers, text = contentPart.content)
+)
                 ContentType.TEMPLATE_COMMENT -> reThrowWithLineNumbers(lineNumbers) {
                     TemplateCommentParser.parseComment(contentPart.content)
                 }
                 .map { commandStructure ->
-                    ContentPartFactory.createCommandContentPart(
-                        commandStructure = commandStructure,
-                        lineNumbers = lineNumbers
+                    CommandContentPart(
+                        lineNumbers = lineNumbers,
+                        keywordCommand = KeywordCommandFactory.createKeywordCommand(
+                            commandStructure = commandStructure,
+                            lineNumbers = lineNumbers
+                        )
                     )
                 }
         }

@@ -4,23 +4,16 @@ import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
+import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
-object ContentPartFactory {
+object KeywordCommandFactory {
 
-    fun createTextContentPart(
-        text: String,
-        lineNumbers: LineNumbers
-    ): TextContentPart {
-        return TextContentPart(lineNumbers = lineNumbers, text = text)
-    }
-
-    fun createCommandContentPart(
+    fun createKeywordCommand(
         commandStructure: CommandStructure,
         lineNumbers: LineNumbers
-    ): CommandContentPart {
+    ): KeywordCommand {
         val keyword = commandStructure.keyword
         val commandKey = CommandKey.fromKeyword(keyword) ?: throw TemplateParsingException(
             lineNumbers = lineNumbers,
@@ -104,9 +97,6 @@ object ContentPartFactory {
                 }
             }
 
-
-
-        val keywordCommand = KeywordCommand(commandKey, attributeGroups)
-        return CommandContentPart(lineNumbers = lineNumbers, keywordCommand = keywordCommand)
+        return KeywordCommand(commandKey, attributeGroups)
     }
 }
