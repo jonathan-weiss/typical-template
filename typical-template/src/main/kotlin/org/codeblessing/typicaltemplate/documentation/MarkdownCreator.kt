@@ -94,23 +94,19 @@ object MarkdownCreator {
                     * ${commandKey.nestingDescription()}
                 """.trimIndent()
             )
-            if(commandKey.attributeGroupOccurrence == AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
+            for ((constraintIndex, constraint) in commandKey.attributeGroupConstraints.withIndex()) {
+                val sectionLabel = if (commandKey.attributeGroupConstraints.size > 1 && constraintIndex == 0) {
+                    "Header-Attributes"
+                } else {
+                    "Attributes"
+                }
                 sb.appendLine("""
 
-                        Header-Attributes:
+                        $sectionLabel:
                     """.trimIndent()
                 )
-                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedHeaderAttributes }
-                createAttributeDocumentation(attributesDocumentation, commandKey.headerRequiredAttributes, sb)
-            }
-            if(commandKey.attributeGroupOccurrence != AttributeGroupOccurrence.NO_ATTRIBUTES) {
-                sb.appendLine("""
-
-                        Attributes:
-                    """.trimIndent()
-                )
-                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedNonHeaderAttributes }
-                createAttributeDocumentation(attributesDocumentation, commandKey.requiredAttributes, sb)
+                val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in constraint.allowedAttributes }
+                createAttributeDocumentation(attributesDocumentation, constraint.requiredAttributes, sb)
             }
         }
         return sb.toString()
@@ -135,40 +131,22 @@ object MarkdownCreator {
     private fun CommandKey.commandSyntax(): String {
         val sb = StringBuilder()
         sb.append("${COMMAND_PREFIX}${keyword}")
-        if(!isClosingCommand) {
-            if(attributeGroupOccurrence != AttributeGroupOccurrence.NO_ATTRIBUTES) {
-                if(hasHeaderAttributes) {
-                    sb.append(" [ ")
-                    (headerRequiredAttributes + headerOptionalAttributes).forEach { attribute ->
-                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
-                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
-                    }
-                    sb.append("]")
-                    sb.append("[ ")
-                    (requiredAttributes + optionalAttributes).forEach { attribute ->
-                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
-                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
-                    }
-                    sb.append("]")
-                } else {
-                    sb.append(" [ ")
-                    allowedAttributes.forEach { attribute ->
-                        val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
-                        sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
-                    }
-                    sb.append("]")
+        if (!isClosingCommand) {
+            for (constraint in attributeGroupConstraints) {
+                sb.append(" [ ")
+                constraint.allowedAttributes.forEach { attribute ->
+                    val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
+                    sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
                 }
+                sb.append("]")
             }
-            if(attributeGroupOccurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
-                || attributeGroupOccurrence == AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
+            if (attributeGroupConstraints.lastOrNull()?.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP) {
                 sb.append("[ ... ]")
             }
-
             correspondingClosingCommandKey?.let { closingKey ->
                 sb.append(" .... ${COMMAND_PREFIX}${closingKey.keyword}")
             }
         }
-
         return sb.toString()
     }
 
@@ -194,15 +172,17 @@ object MarkdownCreator {
     }
 
     private fun CommandKey.groupSupportDescription(): String =
-        when(attributeGroupOccurrence) {
-            AttributeGroupOccurrence.NO_ATTRIBUTES
-                -> "This command/keyword does not support groups and has no attributes."
-            AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP
-                -> "This command/keyword must have exactly one group of attributes."
-            AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
-                -> "This command can have many groups of attributes"
-            AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS
-                -> "This command has a header group of attributes followed by one or more groups of attributes."
+        when {
+            attributeGroupConstraints.isEmpty() ->
+                "This command/keyword does not support groups and has no attributes."
+            attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP ->
+                "This command/keyword must have exactly one group of attributes."
+            attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
+                "This command can have many groups of attributes"
+            attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
+                "This command has a header group of attributes followed by one or more groups of attributes."
+            else ->
+                "This command/keyword has ${attributeGroupConstraints.size} fixed groups of attributes."
         }
 
     private fun CommandKey.nestingDescription(): String =

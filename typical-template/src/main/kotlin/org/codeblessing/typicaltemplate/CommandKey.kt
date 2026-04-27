@@ -1,40 +1,47 @@
 package org.codeblessing.typicaltemplate
 
+import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
+import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
     val keyword: String,
-    val attributeGroupOccurrence: AttributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
-    val requiredAttributes: Set<CommandAttributeKey> = emptySet(),
-    val optionalAttributes: Set<CommandAttributeKey> = emptySet(),
+    val attributeGroupConstraints: List<AttributeGroupConstraint> = emptyList(),
     val correspondingOpeningCommandKey: CommandKey? = null,
     val directlyNestedInsideCommandKey: CommandKey? = null,
     val isAutoclosingSupported: Boolean = false,
-    val headerRequiredAttributes: Set<CommandAttributeKey> = emptySet(),
-    val headerOptionalAttributes: Set<CommandAttributeKey> = emptySet(),
-
-    ) {
+) {
     TEMPLATE_RENDERER(
         keyword = "template-renderer",
-        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
-        optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
+                optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
+            )
+        ),
     ),
     END_TEMPLATE_RENDERER(
         keyword = "end-template-renderer",
-        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     TEMPLATE_MODEL(
         keyword = "template-model",
-        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
-        optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
+                optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
+            )
+        ),
     ),
     REPLACE_VALUE_BY_EXPRESSION(
         keyword = "replace-value-by-expression",
-        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_EXPRESSION),
-        optionalAttributes = setOf(),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_EXPRESSION),
+            )
+        ),
         isAutoclosingSupported = true,
     ),
     END_REPLACE_VALUE_BY_EXPRESSION(
@@ -43,9 +50,12 @@ enum class CommandKey(
     ),
     REPLACE_VALUE_BY_VALUE(
         keyword = "replace-value-by-value",
-        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_VALUE),
-        optionalAttributes = setOf(),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_VALUE),
+            )
+        ),
         isAutoclosingSupported = true,
     ),
     END_REPLACE_VALUE_BY_VALUE(
@@ -54,15 +64,21 @@ enum class CommandKey(
     ),
     IF_CONDITION(
         keyword = "if",
-        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(CONDITION_EXPRESSION),
-        optionalAttributes = setOf(),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(CONDITION_EXPRESSION),
+            )
+        ),
     ),
     ELSE_IF_CONDITION(
         keyword = "else-if",
-        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(CONDITION_EXPRESSION),
-        optionalAttributes = setOf(),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(CONDITION_EXPRESSION),
+            )
+        ),
         directlyNestedInsideCommandKey = IF_CONDITION,
     ),
     ELSE_CLAUSE(
@@ -75,9 +91,12 @@ enum class CommandKey(
     ),
     FOREACH(
         keyword = "foreach",
-        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE_NAME),
-        optionalAttributes = setOf(),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE_NAME),
+            )
+        ),
     ),
     END_FOREACH(
         keyword = "end-foreach",
@@ -93,28 +112,35 @@ enum class CommandKey(
     ),
     PRINT_TEXT(
         keyword = "print-text",
-        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
-        requiredAttributes = setOf(TEXT),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEXT),
+            )
+        ),
     ),
     STRIP_LINE_BEFORE_COMMENT(
         keyword = "slbc",
-        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     STRIP_LINE_AFTER_COMMENT(
         keyword = "slac",
-        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS(
         keyword = "modify-provided-filename-by-replacements",
-        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     RENDER_TEMPLATE(
         keyword = "render-template",
-        attributeGroupOccurrence = AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS,
-        requiredAttributes = setOf(TEMPLATE_MODEL_NAME, MODEL_EXPRESSION),
-        optionalAttributes = emptySet(),
-        headerRequiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
-        headerOptionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
+                optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
+            ),
+            AttributeGroupConstraint(
+                occurrence = MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEMPLATE_MODEL_NAME, MODEL_EXPRESSION),
+            ),
+        ),
     ),
     ;
 
@@ -123,6 +149,43 @@ enum class CommandKey(
             return entries.firstOrNull { it.keyword == keyword }
         }
     }
+
+    val minNumberOfAttributeGroups: Int
+        get() = attributeGroupConstraints.sumOf { it.occurrence.minNumberOfAttributeGroups }
+
+    val maxNumberOfAttributeGroups: Int
+        get() = attributeGroupConstraints.fold(0) { acc, c ->
+            if (acc == Int.MAX_VALUE || c.occurrence.maxNumberOfAttributeGroups == Int.MAX_VALUE) Int.MAX_VALUE
+            else acc + c.occurrence.maxNumberOfAttributeGroups
+        }
+
+    val allowedAttributes: Set<CommandAttributeKey>
+        get() = attributeGroupConstraints.flatMap { it.allowedAttributes }.toSet()
+
+    private fun constraintForGroup(groupIndex: Int): AttributeGroupConstraint {
+        require(attributeGroupConstraints.isNotEmpty()) {
+            "constraintForGroup called on CommandKey '$keyword' which has no attribute group constraints"
+        }
+        return if (groupIndex < attributeGroupConstraints.size) attributeGroupConstraints[groupIndex]
+        else attributeGroupConstraints.last()
+    }
+
+    fun requiredAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> =
+        constraintForGroup(groupIndex).requiredAttributes
+
+    fun allowedAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> =
+        constraintForGroup(groupIndex).allowedAttributes
+
+    fun missingRequiredAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
+        val required = requiredAttributesForGroup(groupIndex)
+        return required.toMutableSet().apply { removeAll(presentAttributes) }
+    }
+
+    fun unallowedAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
+        val allowed = allowedAttributesForGroup(groupIndex)
+        return presentAttributes.toMutableSet().apply { removeAll(allowed) }
+    }
+
     val correspondingClosingCommandKey: CommandKey?
         get() = entries.singleOrNull { it.correspondingOpeningCommandKey == this }
 
@@ -138,32 +201,4 @@ enum class CommandKey(
 
     val isTriggerAutoclose: Boolean
         get() = this.correspondingOpeningCommandKeyForAutoclose != null
-
-    val allowedHeaderAttributes: Set<CommandAttributeKey> = headerRequiredAttributes + headerOptionalAttributes
-    val allowedNonHeaderAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes
-
-    val allowedAttributes: Set<CommandAttributeKey> = requiredAttributes + optionalAttributes + headerRequiredAttributes + headerOptionalAttributes
-
-    val hasHeaderAttributes: Boolean
-        get() = headerRequiredAttributes.isNotEmpty() || headerOptionalAttributes.isNotEmpty()
-
-    fun requiredAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> {
-        return if (hasHeaderAttributes && groupIndex == 0) headerRequiredAttributes
-        else requiredAttributes
-    }
-
-    fun allowedAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> {
-        return if (hasHeaderAttributes && groupIndex == 0) headerRequiredAttributes + headerOptionalAttributes
-        else requiredAttributes + optionalAttributes
-    }
-
-    fun missingRequiredAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
-        val required = requiredAttributesForGroup(groupIndex)
-        return required.toMutableSet().apply { removeAll(presentAttributes) }
-    }
-
-    fun unallowedAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
-        val allowed = allowedAttributesForGroup(groupIndex)
-        return presentAttributes.toMutableSet().apply { removeAll(allowed) }
-    }
 }

@@ -21,19 +21,19 @@ object KeywordCommandFactory {
         )
 
         val numberOfAttributeGroups = commandStructure.brackets.size
-        if(numberOfAttributeGroups < commandKey.attributeGroupOccurrence.minNumberOfAttributeGroups) {
+        if (numberOfAttributeGroups < commandKey.minNumberOfAttributeGroups) {
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
                 msg = "Invalid number of attributes groups. " +
-                        "Must be at least ${commandKey.attributeGroupOccurrence.minNumberOfAttributeGroups} but was ${numberOfAttributeGroups}.",
+                        "Must be at least ${commandKey.minNumberOfAttributeGroups} but was ${numberOfAttributeGroups}.",
             )
         }
 
-        if(numberOfAttributeGroups > commandKey.attributeGroupOccurrence.maxNumberOfAttributeGroups) {
+        if (numberOfAttributeGroups > commandKey.maxNumberOfAttributeGroups) {
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
                 msg = "Invalid number of attributes groups. " +
-                        "Only ${commandKey.attributeGroupOccurrence.maxNumberOfAttributeGroups} are allowed but was ${numberOfAttributeGroups}.",
+                        "Only ${commandKey.maxNumberOfAttributeGroups} are allowed but was ${numberOfAttributeGroups}.",
             )
         }
 
