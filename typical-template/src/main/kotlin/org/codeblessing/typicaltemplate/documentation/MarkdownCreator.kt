@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate.documentation
 
-import org.codeblessing.typicaltemplate.AttributeGroupConstraint
+import org.codeblessing.typicaltemplate.AttributeGroupOccurrence
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 
@@ -94,7 +94,7 @@ object MarkdownCreator {
                     * ${commandKey.nestingDescription()}
                 """.trimIndent()
             )
-            if(commandKey.attributeGroupConstraint == AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
+            if(commandKey.attributeGroupOccurrence == AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
                 sb.appendLine("""
 
                         Header-Attributes:
@@ -103,7 +103,7 @@ object MarkdownCreator {
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in commandKey.allowedHeaderAttributes }
                 createAttributeDocumentation(attributesDocumentation, commandKey.headerRequiredAttributes, sb)
             }
-            if(commandKey.attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
+            if(commandKey.attributeGroupOccurrence != AttributeGroupOccurrence.NO_ATTRIBUTES) {
                 sb.appendLine("""
 
                         Attributes:
@@ -136,7 +136,7 @@ object MarkdownCreator {
         val sb = StringBuilder()
         sb.append("${COMMAND_PREFIX}${keyword}")
         if(!isClosingCommand) {
-            if(attributeGroupConstraint != AttributeGroupConstraint.NO_ATTRIBUTES) {
+            if(attributeGroupOccurrence != AttributeGroupOccurrence.NO_ATTRIBUTES) {
                 if(hasHeaderAttributes) {
                     sb.append(" [ ")
                     (headerRequiredAttributes + headerOptionalAttributes).forEach { attribute ->
@@ -159,8 +159,8 @@ object MarkdownCreator {
                     sb.append("]")
                 }
             }
-            if(attributeGroupConstraint == AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP
-                || attributeGroupConstraint == AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
+            if(attributeGroupOccurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
+                || attributeGroupOccurrence == AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS) {
                 sb.append("[ ... ]")
             }
 
@@ -194,14 +194,14 @@ object MarkdownCreator {
     }
 
     private fun CommandKey.groupSupportDescription(): String =
-        when(attributeGroupConstraint) {
-            AttributeGroupConstraint.NO_ATTRIBUTES
+        when(attributeGroupOccurrence) {
+            AttributeGroupOccurrence.NO_ATTRIBUTES
                 -> "This command/keyword does not support groups and has no attributes."
-            AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP
+            AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP
                 -> "This command/keyword must have exactly one group of attributes."
-            AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP
+            AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
                 -> "This command can have many groups of attributes"
-            AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS
+            AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS
                 -> "This command has a header group of attributes followed by one or more groups of attributes."
         }
 

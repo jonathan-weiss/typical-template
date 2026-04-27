@@ -1,6 +1,6 @@
 package org.codeblessing.typicaltemplate
 
-enum class AttributeGroupConstraint(
+enum class AttributeGroupOccurrence(
     val minNumberOfAttributeGroups: Int = 0,
     val maxNumberOfAttributeGroups: Int = 0,
 ) {

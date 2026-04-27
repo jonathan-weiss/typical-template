@@ -4,7 +4,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
     val keyword: String,
-    val attributeGroupConstraint: AttributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+    val attributeGroupOccurrence: AttributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     val requiredAttributes: Set<CommandAttributeKey> = emptySet(),
     val optionalAttributes: Set<CommandAttributeKey> = emptySet(),
     val correspondingOpeningCommandKey: CommandKey? = null,
@@ -16,23 +16,23 @@ enum class CommandKey(
     ) {
     TEMPLATE_RENDERER(
         keyword = "template-renderer",
-        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
         optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
     ),
     END_TEMPLATE_RENDERER(
         keyword = "end-template-renderer",
-        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     TEMPLATE_MODEL(
         keyword = "template-model",
-        attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
         optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
     ),
     REPLACE_VALUE_BY_EXPRESSION(
         keyword = "replace-value-by-expression",
-        attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_EXPRESSION),
         optionalAttributes = setOf(),
         isAutoclosingSupported = true,
@@ -43,7 +43,7 @@ enum class CommandKey(
     ),
     REPLACE_VALUE_BY_VALUE(
         keyword = "replace-value-by-value",
-        attributeGroupConstraint = AttributeGroupConstraint.MANY_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(SEARCH_VALUE, REPLACE_BY_VALUE),
         optionalAttributes = setOf(),
         isAutoclosingSupported = true,
@@ -54,13 +54,13 @@ enum class CommandKey(
     ),
     IF_CONDITION(
         keyword = "if",
-        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
     ),
     ELSE_IF_CONDITION(
         keyword = "else-if",
-        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(CONDITION_EXPRESSION),
         optionalAttributes = setOf(),
         directlyNestedInsideCommandKey = IF_CONDITION,
@@ -75,7 +75,7 @@ enum class CommandKey(
     ),
     FOREACH(
         keyword = "foreach",
-        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(LOOP_ITERABLE_EXPRESSION, LOOP_VARIABLE_NAME),
         optionalAttributes = setOf(),
     ),
@@ -93,24 +93,24 @@ enum class CommandKey(
     ),
     PRINT_TEXT(
         keyword = "print-text",
-        attributeGroupConstraint = AttributeGroupConstraint.ONE_ATTRIBUTE_GROUP,
+        attributeGroupOccurrence = AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP,
         requiredAttributes = setOf(TEXT),
     ),
     STRIP_LINE_BEFORE_COMMENT(
         keyword = "slbc",
-        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     STRIP_LINE_AFTER_COMMENT(
         keyword = "slac",
-        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS(
         keyword = "modify-provided-filename-by-replacements",
-        attributeGroupConstraint = AttributeGroupConstraint.NO_ATTRIBUTES,
+        attributeGroupOccurrence = AttributeGroupOccurrence.NO_ATTRIBUTES,
     ),
     RENDER_TEMPLATE(
         keyword = "render-template",
-        attributeGroupConstraint = AttributeGroupConstraint.HEADER_WITH_MANY_ATTRIBUTE_GROUPS,
+        attributeGroupOccurrence = AttributeGroupOccurrence.HEADER_WITH_MANY_ATTRIBUTE_GROUPS,
         requiredAttributes = setOf(TEMPLATE_MODEL_NAME, MODEL_EXPRESSION),
         optionalAttributes = emptySet(),
         headerRequiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
