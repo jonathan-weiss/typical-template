@@ -151,10 +151,170 @@ class KeywordCommandFactoryTest {
     @Test
     fun `throws for missing required attribute`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @template-renderer [
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
+            """.trimIndent()
+        )
+
+        assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+    }
+
+    @Test
+    fun `valid command with no attribute constraints`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = "@end-template-renderer"
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.END_TEMPLATE_RENDERER, keywordCommand.commandKey)
+        Assertions.assertTrue(keywordCommand.attributeGroups.isEmpty())
+    }
+
+    @Test
+    fun `valid MANY attribute group command with single group`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @replace-value-by-expression [
+                    searchValue="old"
+                    replaceByExpression="new"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.REPLACE_VALUE_BY_EXPRESSION, keywordCommand.commandKey)
+        Assertions.assertEquals("old", keywordCommand.attribute(CommandAttributeKey.SEARCH_VALUE))
+        Assertions.assertEquals("new", keywordCommand.attribute(CommandAttributeKey.REPLACE_BY_EXPRESSION))
+    }
+
+    @Test
+    fun `valid MANY attribute group command with multiple groups`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @replace-value-by-expression [
+                    searchValue="old"
+                    replaceByExpression="new"
+                ][
+                    searchValue="old2"
+                    replaceByExpression="new2"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.REPLACE_VALUE_BY_EXPRESSION, keywordCommand.commandKey)
+        Assertions.assertEquals(2, keywordCommand.attributeGroups.size)
+        Assertions.assertEquals("old", keywordCommand.attribute(0, CommandAttributeKey.SEARCH_VALUE))
+        Assertions.assertEquals("new", keywordCommand.attribute(0, CommandAttributeKey.REPLACE_BY_EXPRESSION))
+        Assertions.assertEquals("old2", keywordCommand.attribute(1, CommandAttributeKey.SEARCH_VALUE))
+        Assertions.assertEquals("new2", keywordCommand.attribute(1, CommandAttributeKey.REPLACE_BY_EXPRESSION))
+    }
+
+    @Test
+    fun `valid multi-constraint command with minimum groups`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    templateRendererClassName="MyRenderer"
+                ][
+                    modelName="myModel"
+                    modelExpression="modelVar"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.RENDER_TEMPLATE, keywordCommand.commandKey)
+        Assertions.assertEquals(2, keywordCommand.attributeGroups.size)
+        Assertions.assertEquals("MyRenderer", keywordCommand.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME))
+        Assertions.assertEquals("myModel", keywordCommand.attribute(1, CommandAttributeKey.TEMPLATE_MODEL_NAME))
+        Assertions.assertEquals("modelVar", keywordCommand.attribute(1, CommandAttributeKey.MODEL_EXPRESSION))
+    }
+
+    @Test
+    fun `valid multi-constraint command with extra MANY groups`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    templateRendererClassName="MyRenderer"
+                ][
+                    modelName="model"
+                    modelExpression="modelVar"
+                ][
+                    modelName="model2"
+                    modelExpression="modelVar2"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.RENDER_TEMPLATE, keywordCommand.commandKey)
+        Assertions.assertEquals(3, keywordCommand.attributeGroups.size)
+    }
+
+    @Test
+    fun `throws for multi-constraint command with too few groups`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    templateRendererClassName="MyRenderer"
+                ]
+            """.trimIndent()
+        )
+
+        assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+    }
+
+    @Test
+    fun `throws when first group has attributes from second constraint`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    modelName="myModel"
+                    modelExpression="modelVar"
+                ][
+                    templateRendererClassName="MyRenderer"
+                ]
+            """.trimIndent()
+        )
+
+        assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+    }
+
+    @Test
+    fun `throws when MANY group has attributes from first constraint`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    templateRendererClassName="MyRenderer"
+                ][
+                    templateRendererClassName="MyRenderer"
+                ]
+            """.trimIndent()
+        )
+
+        assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+    }
+
+    @Test
+    fun `throws for missing required attribute in second attribute group`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @render-template [
+                    templateRendererClassName="MyRenderer"
+                ][
+                    modelName="myModel"
+                ]
             """.trimIndent()
         )
 
