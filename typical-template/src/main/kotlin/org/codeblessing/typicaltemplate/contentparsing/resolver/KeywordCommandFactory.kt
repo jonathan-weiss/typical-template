@@ -8,6 +8,19 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 
+/**
+ * Translates a raw [CommandStructure] (parsed comment text) into a fully validated [KeywordCommand],
+ * rejecting invalid input with a [TemplateParsingException].
+ * It does so by:
+ * - Resolving the keyword string to a known [CommandKey], failing fast on unknown keywords
+ * - Checking that the number of bracket groups falls within the min/max bounds derived from the command's [CommandKey.attributeGroupConstraints]
+ * - Converting each raw attribute key string to a typed [CommandAttributeKey], rejecting strings not present in the enum
+ * - Verifying each attribute key is permitted for its specific group index (groups beyond the constraint list reuse the last constraint)
+ * - Validating each attribute value against the key's allowed values list when one is defined
+ * - Rejecting blank attribute values for keys that require a non-empty value
+ * - Ensuring all required attributes for each group are present
+ * - Ensuring no attributes outside the allowed set for each group have snuck through
+ */
 object KeywordCommandFactory {
 
     fun createKeywordCommand(

@@ -10,6 +10,34 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
+/**
+ * Validation and semantic-interpretation layer that transforms a raw list of parsed template
+ * content parts into a structured [TemplateRendererDescription] — enforcing structural rules
+ * (correct header, no duplicate models, balanced nesting) and converting all fragments into a
+ * flat command chain ready for code generation.
+ *
+ * Responsibilities:
+ * - **Entry point ([validateAndInterpretContentParts]):** Accepts a flat list of parsed template
+ *   content parts and recursively processes nested template renderer definitions, returning one
+ *   [TemplateRendererDescription] per renderer found.
+ * - **Splits nested renderers:** Separates top-level fragments from nested
+ *   `@template-renderer`...`@end-template-renderer` blocks, tracking depth to handle arbitrarily
+ *   deep nesting. Throws on unclosed or misplaced end commands.
+ * - **Validates the template header:** Ensures there is exactly one `@template-renderer` command,
+ *   and that it is the first non-strip command in the fragment list.
+ * - **Validates model definitions:** Collects all `@template-model` commands and throws if the
+ *   same model name appears more than once.
+ * - **Validates command nesting:** Uses a stack to verify that opening/closing commands are
+ *   properly paired and that commands requiring a specific parent are directly inside their
+ *   required enclosing command. Supports auto-close semantics.
+ * - **Builds the chain:** Converts the remaining content parts into a flat list of [ChainItem]s —
+ *   either [CommandChainItem] (for keyword commands) or [PlainTextChainItem] (for raw text).
+ *   Strip-line commands are not added as chain items themselves but instead influence adjacent
+ *   [PlainTextChainItem]s to trim leading/trailing whitespace-only lines.
+ * - **Maps to descriptions:** Converts [KeywordCommand] attributes into [ClassDescription],
+ *   [ModelDescription], and [TemplateRendererDescription] data objects for downstream code
+ *   generation.
+ */
 object CommandChainCreator {
 
     private const val DEFAULT_PACKAGE_NAME = ""
