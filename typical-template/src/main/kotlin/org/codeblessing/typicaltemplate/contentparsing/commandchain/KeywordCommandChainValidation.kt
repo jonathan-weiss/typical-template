@@ -11,7 +11,7 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
 object KeywordCommandChainValidation {
 
     fun validate(templateContentParts: List<TemplateContentPart>) {
-        val (outerFragments, nestedSections) = splitAndValidateNestedTemplateRenderers(templateContentParts)
+        val (outerFragments, nestedSections) = splitIntoSections(templateContentParts)
         validateSingleSection(outerFragments)
         for (nestedSection in nestedSections) {
             validate(nestedSection)
@@ -23,7 +23,7 @@ object KeywordCommandChainValidation {
         val nestedSections: List<List<TemplateContentPart>>,
     )
 
-    private fun splitAndValidateNestedTemplateRenderers(templateContentParts: List<TemplateContentPart>): SplitResult {
+    private fun splitIntoSections(templateContentParts: List<TemplateContentPart>): SplitResult {
         val outerFragments = mutableListOf<TemplateContentPart>()
         val nestedSections = mutableListOf<List<TemplateContentPart>>()
         var foundTopLevel = false
@@ -56,13 +56,6 @@ object KeywordCommandChainValidation {
                         depth = 0
                     }
                 } else if (fragment.isEndTemplateRendererCommand()) {
-                    if (!foundTopLevel) {
-                        throw TemplateParsingException(
-                            lineNumbers = fragment.lineNumbers,
-                            msg = "Found '${CommandKey.END_TEMPLATE_RENDERER.keyword}' without a corresponding " +
-                                    "'${CommandKey.TEMPLATE_RENDERER.keyword}' command.",
-                        )
-                    }
                     outerFragments.add(fragment)
                     val remainingIndex = templateContentParts.indexOf(fragment) + 1
                     val remainingCommands = templateContentParts
@@ -97,9 +90,7 @@ object KeywordCommandChainValidation {
         validateFirstAndOnlyCommandIsTemplateDefinition(templateContentParts)
         validateNoDuplicateModelNames(templateContentParts)
         val remainingFragments = templateContentParts
-            .filterNot { it.isTemplateDefinitionCommand() }
             .filterNot { it.isModelDefinitionCommand() }
-            .filterNot { it.isEndTemplateRendererCommand() }
         validateNestingLevelOfFragments(remainingFragments)
     }
 
@@ -216,6 +207,9 @@ object KeywordCommandChainValidation {
         while (openingCommandKeysStack.isNotEmpty()) {
             val lastCommandKey = openingCommandKeysStack.last()
             if (lastCommandKey == correspondingOpeningCommandKey) {
+                return
+            }
+            if (!lastCommandKey.isAutoclosingSupported) {
                 return
             }
             openingCommandKeysStack.removeLast()

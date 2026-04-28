@@ -20,9 +20,11 @@ enum class CommandKey(
                 optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
             )
         ),
+        isAutoclosingSupported = true,
     ),
     END_TEMPLATE_RENDERER(
         keyword = "end-template-renderer",
+        correspondingOpeningCommandKey = TEMPLATE_RENDERER,
     ),
     TEMPLATE_MODEL(
         keyword = "template-model",
