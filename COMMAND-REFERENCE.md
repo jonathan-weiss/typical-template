@@ -68,7 +68,7 @@ Varia:
 
 ## template-model
 
-Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ][ ... ]```
+Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ] [ ... ]```
 
 Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.
 
@@ -78,7 +78,7 @@ Varia:
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Attributes:
+Repeatable Group Attributes:
 * *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
   * Required attribute: Yes
   * Required not empty: Yes
@@ -98,7 +98,7 @@ Attributes:
 
 ## replace-value-by-expression
 
-Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ][ ... ] .... @end-replace-value-by-expression```
+Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ] [ ... ] .... @end-replace-value-by-expression```
 
 Replaces a value by a kotlin expression in a multiline string.
 
@@ -108,7 +108,7 @@ Varia:
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Attributes:
+Repeatable Group Attributes:
 * *searchValue*: The token that has to be searched in the enclosed block of content. The search is case-sensitive.
   * Required attribute: Yes
   * Required not empty: Yes
@@ -130,7 +130,7 @@ Varia:
 
 ## replace-value-by-value
 
-Syntax: ```@replace-value-by-value [ searchValue="..." replaceByValue="..." ][ ... ] .... @end-replace-value-by-value```
+Syntax: ```@replace-value-by-value [ searchValue="..." replaceByValue="..." ] [ ... ] .... @end-replace-value-by-value```
 
 Replaces a value by another value.
 
@@ -140,7 +140,7 @@ Varia:
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Attributes:
+Repeatable Group Attributes:
 * *searchValue*: The token that has to be searched in the enclosed block of content. The search is case-sensitive.
   * Required attribute: Yes
   * Required not empty: Yes
@@ -328,17 +328,17 @@ Varia:
 
 ## render-template
 
-Syntax: ```@render-template [ templateRendererClassName="..." templateRendererPackageName="..." ][ modelName="..." modelExpression="..." ][ ... ]```
+Syntax: ```@render-template [ templateRendererClassName="..." templateRendererPackageName="..." ] [ modelName="..." modelExpression="..." ] [ ... ]```
 
 Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command has a header group of attributes followed by one or more groups of attributes.
+* This command has a primary group of attributes followed by one or more groups of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Header-Attributes:
+Primary Attributes:
 * *templateRendererClassName*: The name of the template class that will generate this template.
   * Required attribute: Yes
   * Required not empty: Yes
@@ -348,7 +348,7 @@ Header-Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
 
-Attributes:
+Repeatable Group Attributes:
 * *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
   * Required attribute: Yes
   * Required not empty: Yes

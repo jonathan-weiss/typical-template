@@ -42,8 +42,8 @@ object MarkdownCreator {
         CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
         CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
         CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```true```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.",
-        CommandAttributeKey.SEARCH_VALUE to "The rawContentPart that has to be searched in the enclosed block of content. The search is case-sensitive.",
-        CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the rawContentPart defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
+        CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
+        CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
         CommandAttributeKey.REPLACE_BY_VALUE to "The plain value the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
         CommandAttributeKey.CONDITION_EXPRESSION to "The condition returning a boolean value that is used for the if statement or else-if statement.",
         CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to "The condition returning a boolean value that is used for the if statement.",
@@ -95,10 +95,10 @@ object MarkdownCreator {
                 """.trimIndent()
             )
             for ((constraintIndex, constraint) in commandKey.attributeGroupConstraints.withIndex()) {
-                val sectionLabel = if (commandKey.attributeGroupConstraints.size > 1 && constraintIndex == 0) {
-                    "Header-Attributes"
-                } else {
-                    "Attributes"
+                val sectionLabel = when {
+                    commandKey.attributeGroupConstraints.size > 1 && constraintIndex == 0 -> "Primary Attributes"
+                    constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP -> "Repeatable Group Attributes"
+                    else -> "Attributes"
                 }
                 sb.appendLine("""
 
@@ -139,9 +139,9 @@ object MarkdownCreator {
                     sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
                 }
                 sb.append("]")
-            }
-            if (attributeGroupConstraints.lastOrNull()?.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP) {
-                sb.append("[ ... ]")
+                if (constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP) {
+                    sb.append(" [ ... ]")
+                }
             }
             correspondingClosingCommandKey?.let { closingKey ->
                 sb.append(" .... ${COMMAND_PREFIX}${closingKey.keyword}")
@@ -180,7 +180,7 @@ object MarkdownCreator {
             attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
                 "This command can have many groups of attributes"
             attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
-                "This command has a header group of attributes followed by one or more groups of attributes."
+                "This command has a primary group of attributes followed by one or more groups of attributes."
             else ->
                 "This command/keyword has ${attributeGroupConstraints.size} fixed groups of attributes."
         }
