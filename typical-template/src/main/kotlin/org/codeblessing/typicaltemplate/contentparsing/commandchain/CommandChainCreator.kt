@@ -4,17 +4,16 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
-import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
 
 /**
- * Validation and semantic-interpretation layer that transforms a raw list of parsed template
- * content parts into a structured [TemplateRendererDescription] — enforcing structural rules
- * (correct header, no duplicate models, balanced nesting) and converting all fragments into a
- * flat command chain ready for code generation.
+ * Semantic-interpretation layer that transforms a validated list of parsed template content parts
+ * into a structured [TemplateRendererDescription] — converting all fragments into a flat command
+ * chain ready for code generation.
+ *
+ * Assumes input has already been validated by [KeywordCommandChainValidation].
  *
  * Responsibilities:
  * - **Entry point ([validateAndInterpretContentParts]):** Accepts a flat list of parsed template
@@ -22,14 +21,7 @@ import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.C
  *   [TemplateRendererDescription] per renderer found.
  * - **Splits nested renderers:** Separates top-level fragments from nested
  *   `@template-renderer`...`@end-template-renderer` blocks, tracking depth to handle arbitrarily
- *   deep nesting. Throws on unclosed or misplaced end commands.
- * - **Validates the template header:** Ensures there is exactly one `@template-renderer` command,
- *   and that it is the first non-strip command in the fragment list.
- * - **Validates model definitions:** Collects all `@template-model` commands and throws if the
- *   same model name appears more than once.
- * - **Validates command nesting:** Uses a stack to verify that opening/closing commands are
- *   properly paired and that commands requiring a specific parent are directly inside their
- *   required enclosing command. Supports auto-close semantics.
+ *   deep nesting.
  * - **Builds the chain:** Converts the remaining content parts into a flat list of [ChainItem]s —
  *   either [CommandChainItem] (for keyword commands) or [PlainTextChainItem] (for raw text).
  *   Strip-line commands are not added as chain items themselves but instead influence adjacent
@@ -45,16 +37,16 @@ object CommandChainCreator {
     fun validateAndInterpretContentParts(templateContentParts: List<TemplateContentPart>): List<TemplateRendererDescription> {
         val (outerFragments, nestedSections) = splitNestedTemplateRenderers(templateContentParts)
         val result = mutableListOf<TemplateRendererDescription>()
-        result.add(validateAndInterpretSingleTemplate(outerFragments))
+        result.add(interpretSingleTemplate(outerFragments))
         for (nestedSection in nestedSections) {
             result.addAll(validateAndInterpretContentParts(nestedSection))
         }
         return result
     }
 
-    private fun validateAndInterpretSingleTemplate(templateContentParts: List<TemplateContentPart>): TemplateRendererDescription {
-        val templateRendererKeywordCommand: KeywordCommand = assureFirstAndOnlyCommandIsTemplateDefinition(templateContentParts)
-        val templateModels = assureNoDuplicateModelNames(templateContentParts)
+    private fun interpretSingleTemplate(templateContentParts: List<TemplateContentPart>): TemplateRendererDescription {
+        val templateRendererKeywordCommand: KeywordCommand = findTemplateRendererCommand(templateContentParts)
+        val templateModels = collectModelDescriptions(templateContentParts)
         val templateRendererClassDescription = templateRendererKeywordCommand
             .toClassDescription(
                 classNameAttribute = TEMPLATE_RENDERER_CLASS_NAME,
@@ -72,9 +64,6 @@ object CommandChainCreator {
             .filterNot { it.isModelDefinitionCommand() }
             .filterNot { it.isEndTemplateRendererCommand() }
 
-
-        validateNestingLevelOfFragments(remainingFragments)
-
         val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
 
         return TemplateRendererDescription(
@@ -90,6 +79,12 @@ object CommandChainCreator {
         val nestedSections: List<List<TemplateContentPart>>,
     )
 
+    /**
+     * splitNestedTemplateRenderers walks the flat list of TemplateContentParts and partitions them into two groups:
+     *   1. **outerFragments** — the content belonging to the top-level template renderer
+     *      (everything before the first nested `@template-renderer`, plus the top-level `@template-renderer? command itself)
+     *   2. **nestedSections** — a list of content-part lists, one per nested `@template-renderer`...`@end-template-renderer` block
+     */
     private fun splitNestedTemplateRenderers(templateContentParts: List<TemplateContentPart>): SplitResult {
         val outerFragments = mutableListOf<TemplateContentPart>()
         val nestedSections = mutableListOf<List<TemplateContentPart>>()
@@ -99,7 +94,6 @@ object CommandChainCreator {
 
         for (fragment in templateContentParts) {
             if (currentNestedSection != null) {
-                // We are inside a nested section
                 if (fragment.isTemplateDefinitionCommand()) {
                     depth++
                     currentNestedSection.add(fragment)
@@ -108,7 +102,6 @@ object CommandChainCreator {
                         depth--
                         currentNestedSection.add(fragment)
                     } else {
-                        // Close this nested section
                         nestedSections.add(currentNestedSection)
                         currentNestedSection = null
                     }
@@ -116,35 +109,16 @@ object CommandChainCreator {
                     currentNestedSection.add(fragment)
                 }
             } else {
-                // We are in the outer section
                 if (fragment.isTemplateDefinitionCommand()) {
                     if (!foundTopLevel) {
                         foundTopLevel = true
                         outerFragments.add(fragment)
                     } else {
-                        // Start a new nested section
                         currentNestedSection = mutableListOf(fragment)
                         depth = 0
                     }
                 } else if (fragment.isEndTemplateRendererCommand()) {
-                    if (!foundTopLevel) {
-                        throw TemplateParsingException(
-                            lineNumbers = fragment.lineNumbers,
-                            msg = "Found '${CommandKey.END_TEMPLATE_RENDERER.keyword}' without a corresponding " +
-                                    "'${CommandKey.TEMPLATE_RENDERER.keyword}' command.",
-                        )
-                    }
-                    // Top-level end-template-renderer: optional, but nothing may follow
                     outerFragments.add(fragment)
-                    val remainingIndex = templateContentParts.indexOf(fragment) + 1
-                    val remainingFragments = templateContentParts.subList(remainingIndex, templateContentParts.size)
-                    val remainingCommands = remainingFragments.filterIsInstance<TemplateCommentContentPart>()
-                    if (remainingCommands.isNotEmpty()) {
-                        throw TemplateParsingException(
-                            lineNumbers = remainingCommands.first().lineNumbers,
-                            msg = "No commands are allowed after the top-level '${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
-                        )
-                    }
                     return SplitResult(outerFragments, nestedSections)
                 } else {
                     outerFragments.add(fragment)
@@ -152,100 +126,7 @@ object CommandChainCreator {
             }
         }
 
-        if (currentNestedSection != null) {
-            // Find the template-renderer command in the unclosed section for better error reporting
-            val nestedRendererFragment = currentNestedSection.firstOrNull { it.isTemplateDefinitionCommand() }
-            throw TemplateParsingException(
-                lineNumbers = nestedRendererFragment?.lineNumbers ?: EMPTY_LINE_NUMBERS,
-                msg = "Nested '${CommandKey.TEMPLATE_RENDERER.keyword}' must be closed with " +
-                        "'${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
-            )
-        }
-
         return SplitResult(outerFragments, nestedSections)
-    }
-
-    private fun validateNestingLevelOfFragments(contentParts: List<TemplateContentPart>) {
-        val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
-
-        contentParts.filterIsInstance<TemplateCommentContentPart>().forEach { commandFragment ->
-            commandFragment.keywordCommands.forEach { keywordCommand ->
-                val commandKey = keywordCommand.commandKey
-                if(commandKey.isTriggerAutoclose) {
-                    autocloseNestedStackElements(commandKey, openingCommandKeysStack)
-                }
-                if(commandKey.isOpeningCommand) {
-                    openingCommandKeysStack.add(commandKey)
-                } else if(commandKey.isClosingCommand) {
-                    validateClosingCommand(commandFragment, keywordCommand, openingCommandKeysStack)
-                    openingCommandKeysStack.removeLast()
-                }
-                if(commandKey.isRequiredDirectlyNestedInOtherCommand) {
-                    validateDirectlyNestedCommand(commandFragment, keywordCommand, openingCommandKeysStack)
-                }
-            }
-        }
-
-        if(openingCommandKeysStack.filterNot { it.isAutoclosingSupported }.isNotEmpty()) {
-            throw TemplateParsingException(
-                lineNumbers = EMPTY_LINE_NUMBERS,
-                msg = "The template has the following opening commands ${openingCommandKeysStack.map { it.keyword }} " +
-                        "that needs to be closed using the following closing commands " +
-                        "${openingCommandKeysStack.map { it.correspondingClosingCommandKey?.keyword }}."
-            )
-        }
-
-    }
-
-    private fun validateDirectlyNestedCommand(
-        commandFragment: TemplateCommentContentPart,
-        keywordCommand: KeywordCommand,
-        openingCommandKeysStack: List<CommandKey>,
-    ) {
-        val commandKey = keywordCommand.commandKey
-        val requiredEnclosingCommandKey = requireNotNull(commandKey.directlyNestedInsideCommandKey)
-
-        if(openingCommandKeysStack.lastOrNull() != requiredEnclosingCommandKey) {
-            throw TemplateParsingException(
-                lineNumbers = commandFragment.lineNumbers,
-                msg = "The command '${commandKey.keyword}' must reside as directly nested command " +
-                        "inside the command '${requiredEnclosingCommandKey.keyword}'."
-            )
-        }
-    }
-
-    private fun autocloseNestedStackElements(
-        commandKey: CommandKey,
-        openingCommandKeysStack: MutableList<CommandKey>,
-    ) {
-        require(commandKey.isTriggerAutoclose)
-        val correspondingOpeningCommandKey = requireNotNull(commandKey.correspondingOpeningCommandKeyForAutoclose)
-        while (openingCommandKeysStack.isNotEmpty()) {
-            val lastCommandKey = openingCommandKeysStack.last()
-            if(lastCommandKey == correspondingOpeningCommandKey) {
-                return
-            }
-            // here we continue and the lastCommandKey is autoclosed
-            openingCommandKeysStack.removeLast()
-        }
-    }
-
-    private fun validateClosingCommand(
-        commandFragment: TemplateCommentContentPart,
-        keywordCommand: KeywordCommand,
-        openingCommandKeysStack: List<CommandKey>,
-    ) {
-        val closingCommandKey = keywordCommand.commandKey
-        val correspondingOpeningCommandKey = requireNotNull(closingCommandKey.correspondingOpeningCommandKey)
-        val lastCommandKey = openingCommandKeysStack.lastOrNull()
-        if(lastCommandKey == null || lastCommandKey != correspondingOpeningCommandKey) {
-            throw TemplateParsingException(
-                lineNumbers = commandFragment.lineNumbers,
-                msg = "The template has a closing command '${closingCommandKey.keyword}' " +
-                        "without a corresponding opening command '${correspondingOpeningCommandKey.keyword}'" +
-                        "before in the template."
-            )
-        }
     }
 
     private fun adaptMutualInfluencedFragments(contentParts: List<TemplateContentPart>): List<ChainItem> {
@@ -296,70 +177,22 @@ object CommandChainCreator {
             .any { part -> part.keywordCommands.any { it.commandKey == commandKey } }
     }
 
-    private fun assureNoDuplicateModelNames(
-        templateContentParts: List<TemplateContentPart>
-    ): List<ModelDescription> {
-
-        val modelFragments = templateContentParts
+    private fun findTemplateRendererCommand(templateContentParts: List<TemplateContentPart>): KeywordCommand {
+        return templateContentParts
             .filterIsInstance<TemplateCommentContentPart>()
-            .filter { it.isModelDefinitionCommand() }
-
-        val usedModelNames = mutableSetOf<String>()
-        for(modelFragment in modelFragments) {
-            val modelDescriptions = modelFragment.keywordCommands
-                .filter { it.commandKey == CommandKey.TEMPLATE_MODEL }
-                .flatMap { it.toModelDescription() }
-            for(modelDescription in modelDescriptions) {
-                if(modelDescription.modelName in usedModelNames) {
-                    throw TemplateParsingException(
-                        lineNumbers = modelFragment.lineNumbers,
-                        msg = "The model name ${modelDescription.modelName} is used more than once."
-                    )
-                }
-                usedModelNames.add(modelDescription.modelName)
-            }
-        }
-        return modelFragments.flatMap { part ->
-            part.keywordCommands
-                .filter { it.commandKey == CommandKey.TEMPLATE_MODEL }
-                .flatMap { it.toModelDescription() }
-        }
+            .first { it.isTemplateDefinitionCommand() }
+            .keywordCommands.first { it.commandKey == CommandKey.TEMPLATE_RENDERER }
     }
 
-
-    private fun assureFirstAndOnlyCommandIsTemplateDefinition(
-        templateContentParts: List<TemplateContentPart>
-    ): KeywordCommand {
-        val count = templateContentParts.count { it.isTemplateDefinitionCommand() }
-
-        if(count != 1) {
-            throw TemplateParsingException(
-                lineNumbers = templateContentParts.firstOrNull()?.lineNumbers ?: EMPTY_LINE_NUMBERS,
-                msg = "There must be exactly one template command '${CommandKey.TEMPLATE_RENDERER.keyword}'. ",
-            )
-        }
-
-        val fragment = templateContentParts
+    private fun collectModelDescriptions(templateContentParts: List<TemplateContentPart>): List<ModelDescription> {
+        return templateContentParts
             .filterIsInstance<TemplateCommentContentPart>()
-            .first { part ->
-                part.keywordCommands.any {
-                    it.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT
-                            && it.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT
-                }
+            .filter { it.isModelDefinitionCommand() }
+            .flatMap { part ->
+                part.keywordCommands
+                    .filter { it.commandKey == CommandKey.TEMPLATE_MODEL }
+                    .flatMap { it.toModelDescription() }
             }
-
-        if(!fragment.isTemplateDefinitionCommand()) {
-            val firstNonStripCommand = fragment.keywordCommands.first {
-                it.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT
-                        && it.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT
-            }
-            throw TemplateParsingException(
-                lineNumbers = fragment.lineNumbers,
-                msg = "The first command in a file must be '${CommandKey.TEMPLATE_RENDERER.keyword}' " +
-                        "but was ${firstNonStripCommand.commandKey.keyword}. ",
-            )
-        }
-        return fragment.keywordCommands.first { it.commandKey == CommandKey.TEMPLATE_RENDERER }
     }
 
     private fun KeywordCommand.toModelDescription(): List<ModelDescription> {
