@@ -11,10 +11,14 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
 object KeywordCommandChainValidation {
 
     fun validate(templateContentParts: List<TemplateContentPart>) {
+        validateRecursive(templateContentParts, requiresExplicitClose = false)
+    }
+
+    private fun validateRecursive(templateContentParts: List<TemplateContentPart>, requiresExplicitClose: Boolean) {
         val (outerFragments, nestedSections) = splitIntoSections(templateContentParts)
-        validateSingleSection(outerFragments)
+        validateSingleSection(outerFragments, requiresExplicitClose)
         for (nestedSection in nestedSections) {
-            validate(nestedSection)
+            validateRecursive(nestedSection, requiresExplicitClose = true)
         }
     }
 
@@ -27,6 +31,7 @@ object KeywordCommandChainValidation {
         val outerFragments = mutableListOf<TemplateContentPart>()
         val nestedSections = mutableListOf<List<TemplateContentPart>>()
         var foundTopLevel = false
+        var topLevelRendererClosed = false
         var depth = 0
         var currentNestedSection: MutableList<TemplateContentPart>? = null
 
@@ -40,6 +45,7 @@ object KeywordCommandChainValidation {
                         depth--
                         currentNestedSection.add(fragment)
                     } else {
+                        currentNestedSection.add(fragment)
                         nestedSections.add(currentNestedSection)
                         currentNestedSection = null
                     }
@@ -47,7 +53,9 @@ object KeywordCommandChainValidation {
                     currentNestedSection.add(fragment)
                 }
             } else {
-                if (fragment.isTemplateDefinitionCommand()) {
+                if (topLevelRendererClosed) {
+                    outerFragments.add(fragment)
+                } else if (fragment.isTemplateDefinitionCommand()) {
                     if (!foundTopLevel) {
                         foundTopLevel = true
                         outerFragments.add(fragment)
@@ -57,17 +65,7 @@ object KeywordCommandChainValidation {
                     }
                 } else if (fragment.isEndTemplateRendererCommand()) {
                     outerFragments.add(fragment)
-                    val remainingIndex = templateContentParts.indexOf(fragment) + 1
-                    val remainingCommands = templateContentParts
-                        .subList(remainingIndex, templateContentParts.size)
-                        .filterIsInstance<TemplateCommentContentPart>()
-                    if (remainingCommands.isNotEmpty()) {
-                        throw TemplateParsingException(
-                            lineNumbers = remainingCommands.first().lineNumbers,
-                            msg = "No commands are allowed after the top-level '${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
-                        )
-                    }
-                    return SplitResult(outerFragments, nestedSections)
+                    topLevelRendererClosed = true
                 } else {
                     outerFragments.add(fragment)
                 }
@@ -75,23 +73,16 @@ object KeywordCommandChainValidation {
         }
 
         if (currentNestedSection != null) {
-            val nestedRendererFragment = currentNestedSection.firstOrNull { it.isTemplateDefinitionCommand() }
-            throw TemplateParsingException(
-                lineNumbers = nestedRendererFragment?.lineNumbers ?: EMPTY_LINE_NUMBERS,
-                msg = "Nested '${CommandKey.TEMPLATE_RENDERER.keyword}' must be closed with " +
-                        "'${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
-            )
+            nestedSections.add(currentNestedSection)
         }
 
         return SplitResult(outerFragments, nestedSections)
     }
 
-    private fun validateSingleSection(templateContentParts: List<TemplateContentPart>) {
+    private fun validateSingleSection(templateContentParts: List<TemplateContentPart>, requiresExplicitClose: Boolean) {
         validateFirstAndOnlyCommandIsTemplateDefinition(templateContentParts)
         validateNoDuplicateModelNames(templateContentParts)
-        val remainingFragments = templateContentParts
-            .filterNot { it.isModelDefinitionCommand() }
-        validateNestingLevelOfFragments(remainingFragments)
+        validateNestingLevelOfFragments(templateContentParts, requiresExplicitClose)
     }
 
     private fun validateFirstAndOnlyCommandIsTemplateDefinition(templateContentParts: List<TemplateContentPart>) {
@@ -151,23 +142,35 @@ object KeywordCommandChainValidation {
         }
     }
 
-    private fun validateNestingLevelOfFragments(contentParts: List<TemplateContentPart>) {
+    private fun validateNestingLevelOfFragments(contentParts: List<TemplateContentPart>, requiresExplicitClose: Boolean) {
         val openingCommandKeysStack: MutableList<CommandKey> = mutableListOf()
+        var sectionClosed = false
 
         contentParts.filterIsInstance<TemplateCommentContentPart>().forEach { commandFragment ->
-            commandFragment.keywordCommands.forEach { keywordCommand ->
-                val commandKey = keywordCommand.commandKey
-                if (commandKey.isTriggerAutoclose) {
-                    autocloseNestedStackElements(commandKey, openingCommandKeysStack)
-                }
-                if (commandKey.isOpeningCommand) {
-                    openingCommandKeysStack.add(commandKey)
-                } else if (commandKey.isClosingCommand) {
-                    validateClosingCommand(commandFragment, keywordCommand, openingCommandKeysStack)
-                    openingCommandKeysStack.removeLast()
-                }
-                if (commandKey.isRequiredDirectlyNestedInOtherCommand) {
-                    validateDirectlyNestedCommand(commandFragment, keywordCommand, openingCommandKeysStack)
+            if (sectionClosed) {
+                throw TemplateParsingException(
+                    lineNumbers = commandFragment.lineNumbers,
+                    msg = "No commands are allowed after the top-level '${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
+                )
+            }
+            if (commandFragment.isEndTemplateRendererCommand()) {
+                sectionClosed = true
+            } else if (!commandFragment.isModelDefinitionCommand()) {
+                commandFragment.keywordCommands.forEach { keywordCommand ->
+                    val commandKey = keywordCommand.commandKey
+                    if (commandKey == CommandKey.TEMPLATE_RENDERER) return@forEach
+                    if (commandKey.isTriggerAutoclose) {
+                        autocloseNestedStackElements(commandKey, openingCommandKeysStack)
+                    }
+                    if (commandKey.isOpeningCommand) {
+                        openingCommandKeysStack.add(commandKey)
+                    } else if (commandKey.isClosingCommand) {
+                        validateClosingCommand(commandFragment, keywordCommand, openingCommandKeysStack)
+                        openingCommandKeysStack.removeLast()
+                    }
+                    if (commandKey.isRequiredDirectlyNestedInOtherCommand) {
+                        validateDirectlyNestedCommand(commandFragment, keywordCommand, openingCommandKeysStack)
+                    }
                 }
             }
         }
@@ -178,6 +181,16 @@ object KeywordCommandChainValidation {
                 msg = "The template has the following opening commands ${openingCommandKeysStack.map { it.keyword }} " +
                         "that needs to be closed using the following closing commands " +
                         "${openingCommandKeysStack.map { it.correspondingClosingCommandKey?.keyword }}."
+            )
+        }
+
+        if (requiresExplicitClose && !sectionClosed) {
+            val nestedRendererFragment = contentParts.filterIsInstance<TemplateCommentContentPart>()
+                .firstOrNull { it.isTemplateDefinitionCommand() }
+            throw TemplateParsingException(
+                lineNumbers = nestedRendererFragment?.lineNumbers ?: EMPTY_LINE_NUMBERS,
+                msg = "Nested '${CommandKey.TEMPLATE_RENDERER.keyword}' must be closed with " +
+                        "'${CommandKey.END_TEMPLATE_RENDERER.keyword}'.",
             )
         }
     }
