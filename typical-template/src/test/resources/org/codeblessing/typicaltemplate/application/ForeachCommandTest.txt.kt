@@ -14,7 +14,6 @@ object MyRenderer {
     fun renderTemplate(team: Team): String {
         return """
           |
-          |
           |<html>
           |${ team.members.joinToString("") { theMember ->  """
               |

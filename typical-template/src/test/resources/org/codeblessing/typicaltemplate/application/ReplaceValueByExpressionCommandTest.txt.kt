@@ -15,7 +15,6 @@ object MyRenderer {
         return """
           |
           |
-          |
           |<div>Hello ${person.name}</div>
           |
         """.trimMargin(marginPrefix = "|")

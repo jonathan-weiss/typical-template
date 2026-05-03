@@ -11,10 +11,7 @@ class ForeachCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [ modelClassName="Team" modelPackageName="com.example.model" modelName="team" ]
+               ][ modelClassName="Team" modelPackageName="com.example.model" modelName="team" ]
             }}}@ -->
             <html>
             <!-- @tt{{{ @foreach [ iteratorExpression="team.members" loopVariable="theMember" ] }}}@ -->

@@ -14,7 +14,6 @@ object MyRenderer {
     fun renderTemplate(person: Person): String {
         return """
           |
-          |
           |${ if(person.isAdmin()) { """
               |<div>Admin Content</div>
               |

@@ -75,14 +75,19 @@ class ContentPartBuilder private constructor() {
             modelPackageName: String = "org.example.model",
             isList: Boolean = false,
         ): TemplateCommentBuilder {
-            val builder = this.createCommand(CommandKey.TEMPLATE_MODEL)
-                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_NAME, modelName)
-                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME, modelClassName)
-                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
+            val lastCommand = keywordCommands.removeLast()
+            require(lastCommand.commandKey == CommandKey.TEMPLATE_RENDERER)
+            val modelAttributes = mutableMapOf<CommandAttributeKey, AttributeValue>(
+                CommandAttributeKey.TEMPLATE_MODEL_NAME to modelName,
+                CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to modelClassName,
+                CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to modelPackageName,
+            )
             if (isList) {
-                builder.withAttribute(CommandAttributeKey.TEMPLATE_MODEL_IS_LIST, "true")
+                modelAttributes[CommandAttributeKey.TEMPLATE_MODEL_IS_LIST] = "true"
             }
-            return builder.addCommandToChain()
+            val updatedCommand = KeywordCommand(CommandKey.TEMPLATE_RENDERER, lastCommand.attributeGroups + AttributeGroup(modelAttributes))
+            keywordCommands.add(updatedCommand)
+            return this
         }
 
         fun addReplaceValueByExpressionCommand(

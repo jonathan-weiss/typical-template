@@ -206,9 +206,6 @@ class KeywordCommandChainValidationTest {
                 .addTemplateComment()
                     .addTemplateRendererCommand()
                     .end()
-                .addTemplateComment()
-                    .addTemplateModel()
-                    .end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {

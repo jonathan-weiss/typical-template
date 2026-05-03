@@ -11,10 +11,7 @@ class IfCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
+               ][ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
             }}}@ -->
             <!-- @tt{{{ @if [ conditionExpression="person.isAdmin()" ] }}}@ -->
             <div>Admin Content</div>
@@ -31,10 +28,7 @@ class IfCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
+               ][ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
             }}}@ -->
             <!-- @tt{{{ @if [ conditionExpression="person.isAdmin()" ] }}}@ -->
             <div>Admin Content</div>
@@ -53,10 +47,7 @@ class IfCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
+               ][ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
             }}}@ -->
             <!-- @tt{{{ @if [ conditionExpression="person.isAdmin()" ] }}}@ -->
             <div>Admin Content</div>

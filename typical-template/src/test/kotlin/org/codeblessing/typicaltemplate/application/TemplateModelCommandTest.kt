@@ -11,10 +11,7 @@ class TemplateModelCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [
+               ][
                 modelClassName="Person"
                 modelPackageName="com.example.model"
                 modelName="person"

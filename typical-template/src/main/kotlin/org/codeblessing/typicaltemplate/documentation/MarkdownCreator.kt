@@ -10,9 +10,8 @@ object MarkdownCreator {
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
-        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.",
+        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into, and optionally declares model instances passed to the renderer. The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.",
         CommandKey.END_TEMPLATE_RENDERER to "Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.",
-        CommandKey.TEMPLATE_MODEL to "Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.",
         CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Replaces a value by a kotlin expression in a multiline string.",
         CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to "",
         CommandKey.REPLACE_VALUE_BY_VALUE to "Replaces a value by another value.",
@@ -97,7 +96,8 @@ object MarkdownCreator {
             for ((constraintIndex, constraint) in commandKey.attributeGroupConstraints.withIndex()) {
                 val sectionLabel = when {
                     commandKey.attributeGroupConstraints.size > 1 && constraintIndex == 0 -> "Primary Attributes"
-                    constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP -> "Repeatable Group Attributes"
+                    constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
+                            || constraint.occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP -> "Repeatable Group Attributes"
                     else -> "Attributes"
                 }
                 sb.appendLine("""
@@ -139,7 +139,8 @@ object MarkdownCreator {
                     sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
                 }
                 sb.append("]")
-                if (constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP) {
+                if (constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
+                    || constraint.occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP) {
                     sb.append(" [ ... ]")
                 }
             }
@@ -179,8 +180,12 @@ object MarkdownCreator {
                 "This command/keyword must have exactly one group of attributes."
             attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
                 "This command can have many groups of attributes"
+            attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP ->
+                "This command can have zero or many groups of attributes"
             attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
                 "This command has a primary group of attributes followed by one or more groups of attributes."
+            attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP ->
+                "This command has a primary group of attributes optionally followed by zero or more groups of attributes."
             else ->
                 "This command/keyword has ${attributeGroupConstraints.size} fixed groups of attributes."
         }

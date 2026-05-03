@@ -19,7 +19,7 @@ Here is an example of a real source code (here it is HTML) enriched with typical
 <!-- @tt{{{
 
   @template-renderer [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
-  @template-model [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
+              [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
   @replace-value-by-expression
     [ searchValue="News" replaceByExpression="listPageModel.pageTitle" ]
     [ searchValue="news" replaceByExpression="listPageModel.pageTitle.lowercase()" ]

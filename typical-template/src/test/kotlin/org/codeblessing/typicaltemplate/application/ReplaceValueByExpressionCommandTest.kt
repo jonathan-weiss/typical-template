@@ -11,10 +11,7 @@ class ReplaceValueByExpressionCommandTest: AbstractCommandTest() {
                @template-renderer [
                 templateRendererClassName="MyRenderer"
                 templateRendererPackageName="com.example"
-               ]
-            }}}@ -->
-            <!-- @tt{{{
-               @template-model [ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
+               ][ modelClassName="Person" modelPackageName="com.example.model" modelName="person" ]
             }}}@ -->
             <!-- @tt{{{
                @replace-value-by-expression [ searchValue="John" replaceByExpression="person.name" ]

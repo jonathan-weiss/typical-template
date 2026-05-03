@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate
 
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP
+import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
@@ -18,23 +19,18 @@ enum class CommandKey(
                 occurrence = ONE_ATTRIBUTE_GROUP,
                 requiredAttributes = setOf(TEMPLATE_RENDERER_CLASS_NAME),
                 optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME, TEMPLATE_RENDERER_INTERFACE_NAME, TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME),
-            )
+            ),
+            AttributeGroupConstraint(
+                occurrence = ZERO_OR_MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
+                optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
+            ),
         ),
         isAutoclosingSupported = true,
     ),
     END_TEMPLATE_RENDERER(
         keyword = "end-template-renderer",
         correspondingOpeningCommandKey = TEMPLATE_RENDERER,
-    ),
-    TEMPLATE_MODEL(
-        keyword = "template-model",
-        attributeGroupConstraints = listOf(
-            AttributeGroupConstraint(
-                occurrence = MANY_ATTRIBUTE_GROUP,
-                requiredAttributes = setOf(TEMPLATE_MODEL_CLASS_NAME, TEMPLATE_MODEL_NAME),
-                optionalAttributes = setOf(TEMPLATE_MODEL_PACKAGE_NAME, TEMPLATE_MODEL_IS_LIST),
-            )
-        ),
     ),
     REPLACE_VALUE_BY_EXPRESSION(
         keyword = "replace-value-by-expression",

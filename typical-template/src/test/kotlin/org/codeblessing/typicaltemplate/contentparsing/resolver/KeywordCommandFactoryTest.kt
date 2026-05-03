@@ -63,15 +63,35 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `throws for too many attribute groups`() {
+    fun `valid template-renderer with renderer and model attribute groups`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
+                        @template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
+                        ][
+                            modelName="myModel"
+                            modelClassName="MyModelClass"
+                        ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.TEMPLATE_RENDERER, keywordCommand.commandKey)
+        Assertions.assertEquals(2, keywordCommand.attributeGroups.size)
+        Assertions.assertEquals("MyTemplate", keywordCommand.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME))
+        Assertions.assertEquals("myModel", keywordCommand.attribute(1, CommandAttributeKey.TEMPLATE_MODEL_NAME))
+    }
+
+    @Test
+    fun `throws when model attribute group contains renderer attributes`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
                         @template-renderer [
                             templateRendererClassName="MyTemplate"
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ][
                             templateRendererClassName="MyTemplate"
-                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
                         ]
             """.trimIndent()
         )
@@ -117,8 +137,11 @@ class KeywordCommandFactoryTest {
     @Test
     fun `throws for unallowed attribute value`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
-                        @template-model [
+            comment = """
+                        @template-renderer [
+                            templateRendererClassName="MyTemplate"
+                            templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
+                        ][
                             modelName="myTemplateModel"
                             modelClassName="MyTemplateModel"
                             modelPackageName="org.codeblessing.typicaltemplate.examples"

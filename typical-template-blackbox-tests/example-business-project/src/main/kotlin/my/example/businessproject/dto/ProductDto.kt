@@ -5,8 +5,7 @@ package my.example.businessproject.dto
   @template-renderer [
       templateRendererClassName="EntityDtoTemplateRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
-  ]
-  @template-model [
+  ][
       modelClassName="DtoEntityRenderModel"
       modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
       modelName="model"

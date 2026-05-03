@@ -2,8 +2,7 @@
    @template-renderer [
     templateRendererClassName="OuterRenderer"
     templateRendererPackageName="examples.outer"
-   ]
-   @template-model [
+   ][
     modelClassName="OuterModel"
     modelPackageName="examples.outer"
     modelName="outerModel"
@@ -24,8 +23,7 @@ class AuthorService {
    @template-renderer [
     templateRendererClassName="InnerRenderer"
     templateRendererPackageName="examples.inner"
-   ]
-   @template-model [
+   ][
     modelClassName="InnerModel"
     modelPackageName="examples.inner"
     modelName="innerModel"
@@ -40,8 +38,7 @@ class AuthorService {
    @template-renderer [
     templateRendererClassName="DeepRenderer"
     templateRendererPackageName="examples.deep"
-   ]
-   @template-model [
+   ][
     modelClassName="DeepModel"
     modelPackageName="examples.deep"
     modelName="deepModel"

@@ -46,7 +46,7 @@ object CommandChainCreator {
 
     private fun interpretSingleTemplate(templateContentParts: List<TemplateContentPart>): TemplateRendererDescription {
         val templateRendererKeywordCommand: KeywordCommand = findTemplateRendererCommand(templateContentParts)
-        val templateModels = collectModelDescriptions(templateContentParts)
+        val templateModels = templateRendererKeywordCommand.toModelDescription()
         val templateRendererClassDescription = templateRendererKeywordCommand
             .toClassDescription(
                 classNameAttribute = TEMPLATE_RENDERER_CLASS_NAME,
@@ -61,7 +61,6 @@ object CommandChainCreator {
 
         val remainingFragments = templateContentParts
             .filterNot { it.isTemplateDefinitionCommand() }
-            .filterNot { it.isModelDefinitionCommand() }
             .filterNot { it.isEndTemplateRendererCommand() }
 
         val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
@@ -184,19 +183,8 @@ object CommandChainCreator {
             .keywordCommands.first { it.commandKey == CommandKey.TEMPLATE_RENDERER }
     }
 
-    private fun collectModelDescriptions(templateContentParts: List<TemplateContentPart>): List<ModelDescription> {
-        return templateContentParts
-            .filterIsInstance<TemplateCommentContentPart>()
-            .filter { it.isModelDefinitionCommand() }
-            .flatMap { part ->
-                part.keywordCommands
-                    .filter { it.commandKey == CommandKey.TEMPLATE_MODEL }
-                    .flatMap { it.toModelDescription() }
-            }
-    }
-
     private fun KeywordCommand.toModelDescription(): List<ModelDescription> {
-        return this.attributeGroupIndices().map { attributeGroupIndex ->
+        return this.attributeGroupIndices().drop(1).map { attributeGroupIndex ->
             ModelDescription(
                 modelClassDescription = this.toClassDescription(
                     groupId = attributeGroupIndex,
@@ -241,10 +229,6 @@ object CommandChainCreator {
 
     private fun TemplateContentPart.isTemplateDefinitionCommand(): Boolean {
         return this is TemplateCommentContentPart && this.keywordCommands.any { it.commandKey == CommandKey.TEMPLATE_RENDERER }
-    }
-
-    private fun TemplateContentPart.isModelDefinitionCommand(): Boolean {
-        return this is TemplateCommentContentPart && this.keywordCommands.any { it.commandKey == CommandKey.TEMPLATE_MODEL }
     }
 
     private fun TemplateContentPart.isEndTemplateRendererCommand(): Boolean {

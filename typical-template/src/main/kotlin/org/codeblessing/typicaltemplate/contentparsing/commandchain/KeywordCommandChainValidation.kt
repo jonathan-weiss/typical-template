@@ -117,28 +117,21 @@ object KeywordCommandChainValidation {
     }
 
     private fun validateNoDuplicateModelNames(templateContentParts: List<TemplateContentPart>) {
-        val modelFragments = templateContentParts
+        val rendererFragment = templateContentParts
             .filterIsInstance<TemplateCommentContentPart>()
-            .filter { it.isModelDefinitionCommand() }
+            .firstOrNull { it.isTemplateDefinitionCommand() } ?: return
+        val rendererCommand = rendererFragment.keywordCommands.first { it.commandKey == CommandKey.TEMPLATE_RENDERER }
 
         val usedModelNames = mutableSetOf<String>()
-        for (modelFragment in modelFragments) {
-            val modelNames = modelFragment.keywordCommands
-                .filter { it.commandKey == CommandKey.TEMPLATE_MODEL }
-                .flatMap { command ->
-                    command.attributeGroupIndices().map { groupId ->
-                        command.attribute(groupId = groupId, key = TEMPLATE_MODEL_NAME)
-                    }
-                }
-            for (modelName in modelNames) {
-                if (modelName in usedModelNames) {
-                    throw TemplateParsingException(
-                        lineNumbers = modelFragment.lineNumbers,
-                        msg = "The model name $modelName is used more than once."
-                    )
-                }
-                usedModelNames.add(modelName)
+        rendererCommand.attributeGroupIndices().drop(1).forEach { groupId ->
+            val modelName = rendererCommand.attribute(groupId = groupId, key = TEMPLATE_MODEL_NAME)
+            if (modelName in usedModelNames) {
+                throw TemplateParsingException(
+                    lineNumbers = rendererFragment.lineNumbers,
+                    msg = "The model name $modelName is used more than once."
+                )
             }
+            usedModelNames.add(modelName)
         }
     }
 
@@ -155,7 +148,7 @@ object KeywordCommandChainValidation {
             }
             if (commandFragment.isEndTemplateRendererCommand()) {
                 sectionClosed = true
-            } else if (!commandFragment.isModelDefinitionCommand()) {
+            } else {
                 commandFragment.keywordCommands.forEach { keywordCommand ->
                     val commandKey = keywordCommand.commandKey
                     if (commandKey == CommandKey.TEMPLATE_RENDERER) return@forEach
@@ -249,10 +242,6 @@ object KeywordCommandChainValidation {
 
     private fun TemplateContentPart.isTemplateDefinitionCommand(): Boolean {
         return this is TemplateCommentContentPart && this.keywordCommands.any { it.commandKey == CommandKey.TEMPLATE_RENDERER }
-    }
-
-    private fun TemplateContentPart.isModelDefinitionCommand(): Boolean {
-        return this is TemplateCommentContentPart && this.keywordCommands.any { it.commandKey == CommandKey.TEMPLATE_MODEL }
     }
 
     private fun TemplateContentPart.isEndTemplateRendererCommand(): Boolean {

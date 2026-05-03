@@ -2,15 +2,11 @@
    @template-renderer [
     templateRendererClassName="EntityDto"
     templateRendererPackageName="examples"
-   ]
-   @template-model [
+   ][
     modelClassName="DtoModel"
     modelPackageName="examples"
     modelName="myModel"
-   ]
-
-
-   @template-model [
+   ][
     modelClassName="DtoModel"
     modelPackageName="examples"
     modelName="mySecondModel"

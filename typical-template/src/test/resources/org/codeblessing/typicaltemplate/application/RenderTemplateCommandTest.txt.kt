@@ -15,7 +15,6 @@ object MyRenderer {
     fun renderTemplate(person: Person): String {
         return """
           |
-          |
           |${SubRenderer.renderTemplate(person = person)}
         """.trimMargin(marginPrefix = "|")
     }

@@ -382,15 +382,12 @@ class FileContentTokenizerTest {
         @Test
         fun `tokenize correctly with two delimited comments that strip each the begin and end of line`() {
             val input = """
-                |/* 
+                |/*
                 |@tt{{{
                 |template-renderer [
                 |    templateRendererClassName="EntityDtoTemplateRenderer"
                 |    templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
-                |]
-                |
-                |
-                |template-model [
+                |][
                 |    modelClassName="DtoEntityRenderModel"
                 |    modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
                 |    modelName="model"
@@ -404,10 +401,7 @@ class FileContentTokenizerTest {
                             "template-renderer [\n" +
                             "    templateRendererClassName=\"EntityDtoTemplateRenderer\"\n" +
                             "    templateRendererPackageName=\"org.codeblessing.typicaltemplate.example.renderer\"\n" +
-                            "]\n" +
-                            "\n" +
-                            "\n" +
-                            "template-model [\n" +
+                            "][\n" +
                             "    modelClassName=\"DtoEntityRenderModel\"\n" +
                             "    modelPackageName=\"org.codeblessing.typicaltemplate.example.renderer.model\"\n" +
                             "    modelName=\"model\"\n" +

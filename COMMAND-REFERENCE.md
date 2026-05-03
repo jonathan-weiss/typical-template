@@ -3,7 +3,6 @@
 The following keywords/commands are supported:
 * [template-renderer](#template-renderer)
 * [end-template-renderer](#end-template-renderer)
-* [template-model](#template-model)
 * [replace-value-by-expression](#replace-value-by-expression)
 * [end-replace-value-by-expression](#end-replace-value-by-expression)
 * [replace-value-by-value](#replace-value-by-value)
@@ -26,17 +25,17 @@ The following keywords/commands are supported:
 
 ## template-renderer
 
-Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ]```
+Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ] [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ] [ ... ] .... @end-template-renderer```
 
-Defines in which template the content of the given file is put into. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.
+Defines in which template the content of the given file is put into, and optionally declares model instances passed to the renderer. The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.
 
 Varia:
-* This command stands for itself and does not need to be closed by another command.
-* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command/keyword must have exactly one group of attributes.
+* This command must be closed using the [end-template-renderer](#end-template-renderer) command.
+* This command supports to be auto-closed. The corresponding [end-template-renderer](#end-template-renderer) command can be skipped.
+* This command has a primary group of attributes optionally followed by zero or more groups of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Attributes:
+Primary Attributes:
 * *templateRendererClassName*: The name of the template class that will generate this template.
   * Required attribute: Yes
   * Required not empty: Yes
@@ -53,30 +52,6 @@ Attributes:
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
-
-## end-template-renderer
-
-Syntax: ```@end-template-renderer```
-
-Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.
-
-Varia:
-* This command stands for itself and does not need to be closed by another command.
-* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command/keyword does not support groups and has no attributes.
-* This command/keyword is NOT forced to reside as nested element in a certain parent element.
-
-## template-model
-
-Syntax: ```@template-model [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ] [ ... ]```
-
-Defines model instances that are passed to the template renderer. You can access these instances in your template render to fill data into your template.
-
-Varia:
-* This command stands for itself and does not need to be closed by another command.
-* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command can have many groups of attributes
-* This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
 Repeatable Group Attributes:
 * *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
@@ -95,6 +70,18 @@ Repeatable Group Attributes:
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: ```true```,```false```
+
+## end-template-renderer
+
+Syntax: ```@end-template-renderer```
+
+Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.
+
+Varia:
+* This command is closing the [template-renderer](#template-renderer) command.
+* This command triggers to close all nested commands that support auto-closing.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
 ## replace-value-by-expression
 
@@ -357,3 +344,4 @@ Repeatable Group Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+
