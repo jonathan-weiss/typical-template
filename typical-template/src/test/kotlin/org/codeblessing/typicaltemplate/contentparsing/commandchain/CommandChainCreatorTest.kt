@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
+import org.codeblessing.typicaltemplate.CommandKey
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -236,6 +237,33 @@ class CommandChainCreatorTest {
             assertEquals(2, templates[1].modelClasses.size)
             assertEquals("innerModel1", templates[1].modelClasses[0].modelName)
             assertEquals("innerModel2", templates[1].modelClasses[1].modelName)
+        }
+    }
+
+    @Nested
+    inner class CommandsAlongsideTemplateRenderer {
+
+        @Test
+        fun `replace-value-by-expression in same block as template-renderer is added to chain`() {
+            val contentParts = ContentPartBuilder.create()
+                .addTemplateComment()
+                    .addTemplateRendererCommand()
+                    .addTemplateModel()
+                    .addReplaceValueByExpressionCommand()
+                    .end()
+                .addText("text with search")
+                .addTemplateComment()
+                    .addEndReplaceValueByExpressionCommand()
+                    .end()
+                .build()
+
+            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
+            assertEquals(1, templates.size)
+            val chain = templates.single().templateChain
+            assertEquals(3, chain.size)
+            assertEquals(CommandKey.REPLACE_VALUE_BY_EXPRESSION, (chain[0] as CommandChainItem).keywordCommand.commandKey)
+            assertEquals(true, chain[1] is PlainTextChainItem)
+            assertEquals(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION, (chain[2] as CommandChainItem).keywordCommand.commandKey)
         }
     }
 

@@ -59,11 +59,7 @@ object CommandChainCreator {
                 packageNameAttribute = TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME
             )
 
-        val remainingFragments = templateContentParts
-            .filterNot { it.isTemplateDefinitionCommand() }
-            .filterNot { it.isEndTemplateRendererCommand() }
-
-        val templateChainItems = adaptMutualInfluencedFragments(remainingFragments)
+        val templateChainItems = adaptMutualInfluencedFragments(templateContentParts)
 
         return TemplateRendererDescription(
             templateRendererClass = templateRendererClassDescription,
@@ -136,7 +132,9 @@ object CommandChainCreator {
                     templateFragment.keywordCommands.forEach { keywordCommand ->
                         when (keywordCommand.commandKey) {
                             CommandKey.STRIP_LINE_BEFORE_COMMENT,
-                            CommandKey.STRIP_LINE_AFTER_COMMENT -> Unit
+                            CommandKey.STRIP_LINE_AFTER_COMMENT,
+                            CommandKey.TEMPLATE_RENDERER,
+                            CommandKey.END_TEMPLATE_RENDERER -> Unit
                             else -> templateChainItems.add(CommandChainItem(keywordCommand = keywordCommand))
                         }
                     }

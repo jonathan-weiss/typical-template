@@ -31,6 +31,40 @@ class KeywordCommandChainValidationTest {
         }
 
         @Test
+        fun `valid template with renderer and replace-value-by-expression in same comment block is accepted`() {
+            val contentParts = ContentPartBuilder.create()
+                .addText("here is text")
+                .addTemplateComment()
+                    .addStripLineBeforeCommentCommand()
+                    .addTemplateRendererCommand()
+                    .addTemplateModel()
+                    .addReplaceValueByExpressionCommand()
+                    .addStripLineAfterCommentCommand()
+                    .end()
+                .addText("here is text")
+                .addTemplateComment()
+                    .addForeachCommand()
+                    .end()
+                .addText("item text")
+                .addTemplateComment()
+                    .addStripLineBeforeCommentCommand()
+                    .addEndForeachCommand()
+                    .addIgnoreTextCommand()
+                    .addStripLineAfterCommentCommand()
+                    .end()
+                .addText("ignored text")
+                .addTemplateComment()
+                    .addStripLineBeforeCommentCommand()
+                    .addEndIgnoreTextCommand()
+                    .addEndReplaceValueByExpressionCommand()
+                    .end()
+                .addText("closing text")
+                .build()
+
+            KeywordCommandChainValidation.validate(contentParts)
+        }
+
+        @Test
         fun `valid template chain with nested commands is accepted`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
