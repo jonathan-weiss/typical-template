@@ -22,153 +22,157 @@ class ContentPartBuilder private constructor() {
         return this
     }
 
-    fun createCommand(commandKey: CommandKey): KeywordCommandBuilder {
-        return KeywordCommandBuilder(this, commandKey)
+    fun addTemplateComment(): TemplateCommentBuilder {
+        return TemplateCommentBuilder(this)
     }
 
-    fun addKeywordCommand(keywordCommand: KeywordCommand): ContentPartBuilder {
-        contentParts.add(TemplateCommentContentPart(createLineNumbers(), listOf(keywordCommand)))
-        return this
+    internal fun finishTemplateComment(keywordCommands: List<KeywordCommand>) {
+        contentParts.add(TemplateCommentContentPart(createLineNumbers(), keywordCommands))
     }
 
-    fun build(): List<TemplateContentPart> {
-        return contentParts
-    }
+    fun build(): List<TemplateContentPart> = contentParts
 
-    fun addStripLineBeforeCommentCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.STRIP_LINE_BEFORE_COMMENT)
-            .addCommandToChain()
-    }
+    private fun createLineNumbers(): LineNumbers = LineNumbers.EMPTY_LINE_NUMBERS
 
-    fun addStripLineAfterCommentCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.STRIP_LINE_AFTER_COMMENT)
-            .addCommandToChain()
-    }
+    class TemplateCommentBuilder(private val contentPartBuilder: ContentPartBuilder) {
+        private val keywordCommands: MutableList<KeywordCommand> = mutableListOf()
 
-    fun addTemplateRendererCommand(
-        templateRendererClassName: String = "MyTemplateRendererClass",
-        templateRendererPackageName: String = "org.example.template",
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.TEMPLATE_RENDERER)
-            .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME, templateRendererClassName)
-            .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME, templateRendererPackageName)
-            .addCommandToChain()
-    }
-
-    fun addTemplateModel(
-        modelName: String = "model",
-        modelClassName: String = "MyModelClass",
-        modelPackageName: String = "org.example.model",
-        isList: Boolean = false,
-    ): ContentPartBuilder {
-        val builder = this.createCommand(CommandKey.TEMPLATE_MODEL)
-            .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_NAME, modelName)
-            .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME, modelClassName)
-            .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
-        if (isList) {
-            builder.withAttribute(CommandAttributeKey.TEMPLATE_MODEL_IS_LIST, "true")
+        internal fun addKeywordCommand(keywordCommand: KeywordCommand): TemplateCommentBuilder {
+            keywordCommands.add(keywordCommand)
+            return this
         }
-        return builder.addCommandToChain()
-    }
 
-    fun addReplaceValueByExpressionCommand(
-        searchValue: String = "search",
-        fieldName: String = "myField",
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
-            .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-            .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
-            .addCommandToChain()
-    }
+        fun createCommand(commandKey: CommandKey): KeywordCommandBuilder {
+            return KeywordCommandBuilder(this, commandKey)
+        }
 
-    fun addReplaceValueByExpressionCommand(
-        vararg replacements: Pair<String, String>,
-    ): ContentPartBuilder {
-        var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
-        replacements.forEach { (searchValue, fieldName) ->
-            builder = builder
+        fun end(): ContentPartBuilder {
+            contentPartBuilder.finishTemplateComment(keywordCommands)
+            return contentPartBuilder
+        }
+
+        fun addStripLineBeforeCommentCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.STRIP_LINE_BEFORE_COMMENT).addCommandToChain()
+        }
+
+        fun addStripLineAfterCommentCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.STRIP_LINE_AFTER_COMMENT).addCommandToChain()
+        }
+
+        fun addTemplateRendererCommand(
+            templateRendererClassName: String = "MyTemplateRendererClass",
+            templateRendererPackageName: String = "org.example.template",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.TEMPLATE_RENDERER)
+                .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME, templateRendererClassName)
+                .withAttribute(CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME, templateRendererPackageName)
+                .addCommandToChain()
+        }
+
+        fun addTemplateModel(
+            modelName: String = "model",
+            modelClassName: String = "MyModelClass",
+            modelPackageName: String = "org.example.model",
+            isList: Boolean = false,
+        ): TemplateCommentBuilder {
+            val builder = this.createCommand(CommandKey.TEMPLATE_MODEL)
+                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_NAME, modelName)
+                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME, modelClassName)
+                .withAttribute(CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME, modelPackageName)
+            if (isList) {
+                builder.withAttribute(CommandAttributeKey.TEMPLATE_MODEL_IS_LIST, "true")
+            }
+            return builder.addCommandToChain()
+        }
+
+        fun addReplaceValueByExpressionCommand(
+            searchValue: String = "search",
+            fieldName: String = "myField",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
                 .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
                 .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
-                .nextAttributeGroup()
+                .addCommandToChain()
         }
-        return builder.addCommandToChain()
-    }
 
-    fun addEndReplaceValueByExpressionCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
-            .addCommandToChain()
-    }
+        fun addReplaceValueByExpressionCommand(
+            vararg replacements: Pair<String, String>,
+        ): TemplateCommentBuilder {
+            var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
+            replacements.forEach { (searchValue, fieldName) ->
+                builder = builder
+                    .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
+                    .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
+                    .nextAttributeGroup()
+            }
+            return builder.addCommandToChain()
+        }
 
-    fun addIfCommand(
-        conditionExpression: String = "myConditionExpression",
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.IF_CONDITION)
-            .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
-            .addCommandToChain()
-    }
+        fun addEndReplaceValueByExpressionCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION).addCommandToChain()
+        }
 
-    fun addElseIfCommand(
-        conditionExpression: String = "myOtherConditionExpression",
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.ELSE_IF_CONDITION)
-            .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
-            .addCommandToChain()
-    }
+        fun addIfCommand(
+            conditionExpression: String = "myConditionExpression",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.IF_CONDITION)
+                .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
+                .addCommandToChain()
+        }
 
-    fun addElseCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.ELSE_CLAUSE)
-            .addCommandToChain()
-    }
+        fun addElseIfCommand(
+            conditionExpression: String = "myOtherConditionExpression",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.ELSE_IF_CONDITION)
+                .withAttribute(CommandAttributeKey.CONDITION_EXPRESSION, conditionExpression)
+                .addCommandToChain()
+        }
 
-    fun addEndIfCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.END_IF_CONDITION)
-            .addCommandToChain()
-    }
+        fun addElseCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.ELSE_CLAUSE).addCommandToChain()
+        }
 
-    fun addForeachCommand(
-        loopVariable: String = "item",
-        loopIterable: String = "myList",
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.FOREACH)
-            .withAttribute(CommandAttributeKey.LOOP_VARIABLE_NAME, loopVariable)
-            .withAttribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION, loopIterable)
-            .addCommandToChain()
-    }
+        fun addEndIfCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_IF_CONDITION).addCommandToChain()
+        }
 
-    fun addEndForeachCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.END_FOREACH)
-            .addCommandToChain()
-    }
+        fun addForeachCommand(
+            loopVariable: String = "item",
+            loopIterable: String = "myList",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.FOREACH)
+                .withAttribute(CommandAttributeKey.LOOP_VARIABLE_NAME, loopVariable)
+                .withAttribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION, loopIterable)
+                .addCommandToChain()
+        }
 
-    fun addIgnoreTextCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.IGNORE_TEXT)
-            .addCommandToChain()
-    }
+        fun addEndForeachCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_FOREACH).addCommandToChain()
+        }
 
-    fun addEndIgnoreTextCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.END_IGNORE_TEXT)
-            .addCommandToChain()
-    }
+        fun addIgnoreTextCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.IGNORE_TEXT).addCommandToChain()
+        }
 
-    fun addEndTemplateRendererCommand(): ContentPartBuilder {
-        return this.createCommand(CommandKey.END_TEMPLATE_RENDERER)
-            .addCommandToChain()
-    }
+        fun addEndIgnoreTextCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_IGNORE_TEXT).addCommandToChain()
+        }
 
-    fun addPrintTextCommand(
-        text: String,
-    ): ContentPartBuilder {
-        return this.createCommand(CommandKey.PRINT_TEXT)
-            .withAttribute(CommandAttributeKey.TEXT, text)
-            .addCommandToChain()
-    }
+        fun addEndTemplateRendererCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_TEMPLATE_RENDERER).addCommandToChain()
+        }
 
+        fun addPrintTextCommand(text: String): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.PRINT_TEXT)
+                .withAttribute(CommandAttributeKey.TEXT, text)
+                .addCommandToChain()
+        }
+    }
 
     class KeywordCommandBuilder(
-        private val contentPartBuilder: ContentPartBuilder,
-        private val commandKey: CommandKey
+        private val templateCommentBuilder: TemplateCommentBuilder,
+        private val commandKey: CommandKey,
     ) {
-
         val attributeGroups: MutableList<AttributeGroup> = mutableListOf()
         var attributes: MutableMap<CommandAttributeKey, AttributeValue> = mutableMapOf()
 
@@ -183,18 +187,12 @@ class ContentPartBuilder private constructor() {
             return this
         }
 
-        fun addCommandToChain(): ContentPartBuilder {
-            if(attributes.isNotEmpty()) {
+        fun addCommandToChain(): TemplateCommentBuilder {
+            if (attributes.isNotEmpty()) {
                 nextAttributeGroup()
             }
-
             val keywordCommand = KeywordCommand(commandKey, attributeGroups)
-            return contentPartBuilder.addKeywordCommand(keywordCommand)
+            return templateCommentBuilder.addKeywordCommand(keywordCommand)
         }
     }
-
-    private fun createLineNumbers(): LineNumbers {
-        return LineNumbers.EMPTY_LINE_NUMBERS
-    }
-
 }

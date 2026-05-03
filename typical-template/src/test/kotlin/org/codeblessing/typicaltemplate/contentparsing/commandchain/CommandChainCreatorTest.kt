@@ -12,8 +12,8 @@ class CommandChainCreatorTest {
         @Test
         fun `isList defaults to false when attribute is absent`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
-                .addTemplateModel(modelName = "myModel")
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateModel(modelName = "myModel").end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -24,8 +24,8 @@ class CommandChainCreatorTest {
         @Test
         fun `isList is true when isList attribute is set to true`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
-                .addTemplateModel(modelName = "myModel", isList = true)
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateModel(modelName = "myModel", isList = true).end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -36,9 +36,9 @@ class CommandChainCreatorTest {
         @Test
         fun `multiple models can independently have isList set`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
-                .addTemplateModel(modelName = "singleModel", isList = false)
-                .addTemplateModel(modelName = "listModel", isList = true)
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateModel(modelName = "singleModel", isList = false).end()
+                .addTemplateComment().addTemplateModel(modelName = "listModel", isList = true).end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -54,11 +54,11 @@ class CommandChainCreatorTest {
         @Test
         fun `single nested template-renderer produces two descriptions`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
-                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "InnerRenderer").end()
                 .addText("inner content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("more outer content")
                 .build()
 
@@ -71,7 +71,7 @@ class CommandChainCreatorTest {
         @Test
         fun `top-level end-template-renderer is optional`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
                 .build()
 
@@ -83,9 +83,9 @@ class CommandChainCreatorTest {
         @Test
         fun `top-level end-template-renderer is accepted when present`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -96,17 +96,17 @@ class CommandChainCreatorTest {
         @Test
         fun `nested template context is isolated from outer`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
-                .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
+                .addTemplateComment().addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel").end()
                 .addText("outer content")
-                .addReplaceValueByExpressionCommand(searchValue = "outerSearch", fieldName = "outerModel.field")
+                .addTemplateComment().addReplaceValueByExpressionCommand(searchValue = "outerSearch", fieldName = "outerModel.field").end()
                 .addText("text with outerSearch")
-                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
-                .addTemplateModel(modelName = "innerModel", modelClassName = "InnerModel")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "InnerRenderer").end()
+                .addTemplateComment().addTemplateModel(modelName = "innerModel", modelClassName = "InnerModel").end()
                 .addText("inner content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("more outer text with outerSearch")
-                .addEndReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -122,15 +122,15 @@ class CommandChainCreatorTest {
         @Test
         fun `deeply nested template-renderers supported`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "Level0")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "Level0").end()
                 .addText("level 0 content")
-                .addTemplateRendererCommand(templateRendererClassName = "Level1")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "Level1").end()
                 .addText("level 1 content")
-                .addTemplateRendererCommand(templateRendererClassName = "Level2")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "Level2").end()
                 .addText("level 2 content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("more level 1 content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("more level 0 content")
                 .build()
 
@@ -144,15 +144,15 @@ class CommandChainCreatorTest {
         @Test
         fun `multiple sibling nested template-renderers`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
-                .addTemplateRendererCommand(templateRendererClassName = "Inner1")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "Inner1").end()
                 .addText("inner 1 content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("between nested")
-                .addTemplateRendererCommand(templateRendererClassName = "Inner2")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "Inner2").end()
                 .addText("inner 2 content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("more outer content")
                 .build()
 
@@ -166,14 +166,14 @@ class CommandChainCreatorTest {
         @Test
         fun `nested renderer with its own model commands works`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
-                .addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
+                .addTemplateComment().addTemplateModel(modelName = "outerModel", modelClassName = "OuterModel").end()
                 .addText("outer content")
-                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
-                .addTemplateModel(modelName = "innerModel1", modelClassName = "InnerModel1")
-                .addTemplateModel(modelName = "innerModel2", modelClassName = "InnerModel2")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "InnerRenderer").end()
+                .addTemplateComment().addTemplateModel(modelName = "innerModel1", modelClassName = "InnerModel1").end()
+                .addTemplateComment().addTemplateModel(modelName = "innerModel2", modelClassName = "InnerModel2").end()
                 .addText("inner content")
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .build()
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
@@ -191,10 +191,9 @@ class CommandChainCreatorTest {
         @Test
         fun `do not mark plain text item if no influencing commands are in the chain`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .addText("here is text")
                 .build()
-
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
@@ -209,11 +208,10 @@ class CommandChainCreatorTest {
         @Test
         fun `mark previous plain text item to remove last line on directly following strip-line-before command`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .addText("here is text")
-                .addStripLineBeforeCommentCommand()
+                .addTemplateComment().addStripLineBeforeCommentCommand().end()
                 .build()
-
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
@@ -228,11 +226,10 @@ class CommandChainCreatorTest {
         @Test
         fun `mark next plain text item to remove first line on directly preceding strip-line-after command`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
-                .addStripLineAfterCommentCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addStripLineAfterCommentCommand().end()
                 .addText("here is text")
                 .build()
-
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)
@@ -247,11 +244,10 @@ class CommandChainCreatorTest {
         @Test
         fun `remove commands from chain without effects on text if no text is available`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand()
-                .addStripLineBeforeCommentCommand()
-                .addStripLineAfterCommentCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addStripLineBeforeCommentCommand().end()
+                .addTemplateComment().addStripLineAfterCommentCommand().end()
                 .build()
-
 
             val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
             assertEquals(1, templates.size)

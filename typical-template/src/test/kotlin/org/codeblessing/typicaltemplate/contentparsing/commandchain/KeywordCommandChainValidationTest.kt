@@ -14,11 +14,11 @@ class KeywordCommandChainValidationTest {
         fun `valid template chain is accepted`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .addText("here is text")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addEndReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
                 .build()
 
             KeywordCommandChainValidation.validate(contentParts)
@@ -28,22 +28,22 @@ class KeywordCommandChainValidationTest {
         fun `valid template chain with nested commands is accepted`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .addText("here is text")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addIfCommand("myConditionExpression")
+                .addTemplateComment().addIfCommand("myConditionExpression").end()
                 .addText("inside if statement")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("replace expression inside if statement")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("replace expression inside replace expression statement")
-                .addEndReplaceValueByExpressionCommand()
-                .addEndReplaceValueByExpressionCommand()
-                .addElseCommand()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
+                .addTemplateComment().addElseCommand().end()
                 .addText("inside else statement")
-                .addEndIfCommand()
-                .addEndReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndIfCommand().end()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
                 .build()
 
             KeywordCommandChainValidation.validate(contentParts)
@@ -53,21 +53,21 @@ class KeywordCommandChainValidationTest {
         fun `valid template chain with nested commands that are autoclosed is accepted`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .addText("here is text")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addIfCommand("myConditionExpression")
+                .addTemplateComment().addIfCommand("myConditionExpression").end()
                 .addText("inside if statement")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("replace expression inside if statement")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("replace expression inside replace expression statement")
                 // replace-value-by-expression command is autoclosed by else command
                 // replace-value-by-expression command is autoclosed by else command
-                .addElseCommand()
+                .addTemplateComment().addElseCommand().end()
                 .addText("inside else statement")
-                .addEndIfCommand()
+                .addTemplateComment().addEndIfCommand().end()
                 // replace-value-by-expression command is autoclosed by end of command chain
                 .build()
 
@@ -78,10 +78,10 @@ class KeywordCommandChainValidationTest {
         fun `throws for unmatched closing command`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addEndIfCommand()
+                .addTemplateComment().addEndIfCommand().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -93,8 +93,8 @@ class KeywordCommandChainValidationTest {
         fun `valid template chain for unclosed opening command that supports auto-closing`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
                 .build()
 
@@ -105,8 +105,8 @@ class KeywordCommandChainValidationTest {
         fun `throws for unclosed opening command that do not supports auto-closing`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addIfCommand()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addIfCommand().end()
                 .addText("here is the content of the if command")
                 .build()
 
@@ -119,13 +119,13 @@ class KeywordCommandChainValidationTest {
         fun `throws for invalid open and closing command mix`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addIfCommand("model.isSerializable()")
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addIfCommand("model.isSerializable()").end()
                 .addText("only if serializable")
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addEndIfCommand() // replace is inside of if and must be closed first
-                .addEndReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndIfCommand().end() // replace is inside of if and must be closed first
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -152,9 +152,9 @@ class KeywordCommandChainValidationTest {
         fun `throws for multiple template definition commands`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addTemplateRendererCommand()
-                .addTemplateModel()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateModel().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -166,9 +166,9 @@ class KeywordCommandChainValidationTest {
         fun `throws for multiple model commands with same model name`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addTemplateModel(modelName = "myModel")
-                .addTemplateModel(modelName = "myModel")
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addTemplateModel(modelName = "myModel").end()
+                .addTemplateComment().addTemplateModel(modelName = "myModel").end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -180,9 +180,9 @@ class KeywordCommandChainValidationTest {
         fun `throws if first command is not template definition`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addReplaceValueByExpressionCommand()
-                .addEndReplaceValueByExpressionCommand()
-                .addTemplateRendererCommand()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
+                .addTemplateComment().addTemplateRendererCommand().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -198,11 +198,11 @@ class KeywordCommandChainValidationTest {
         fun `throws for else command not in if statement`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addIfCommand("model.isSerializable()")
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addIfCommand("model.isSerializable()").end()
                 .addText("here is text where mySearchValue is replaced by the placeholder myFieldName")
-                .addEndIfCommand()
-                .addElseCommand()
+                .addTemplateComment().addEndIfCommand().end()
+                .addTemplateComment().addElseCommand().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -214,11 +214,11 @@ class KeywordCommandChainValidationTest {
         fun `throws for else if command not in if statement`() {
             val contentParts = ContentPartBuilder.create()
                 .addText("here is text")
-                .addTemplateRendererCommand()
-                .addIfCommand("model.isSerializable()")
+                .addTemplateComment().addTemplateRendererCommand().end()
+                .addTemplateComment().addIfCommand("model.isSerializable()").end()
                 .addText("only if serializable")
-                .addEndIfCommand()
-                .addElseIfCommand("model.isEnum()")
+                .addTemplateComment().addEndIfCommand().end()
+                .addTemplateComment().addElseIfCommand("model.isEnum()").end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
@@ -233,9 +233,9 @@ class KeywordCommandChainValidationTest {
         @Test
         fun `nested template-renderer without end-template-renderer throws`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
-                .addTemplateRendererCommand(templateRendererClassName = "InnerRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "InnerRenderer").end()
                 .addText("inner content")
                 .build()
 
@@ -247,7 +247,7 @@ class KeywordCommandChainValidationTest {
         @Test
         fun `end-template-renderer without opener throws`() {
             val contentParts = ContentPartBuilder.create()
-                .addEndTemplateRendererCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
                 .addText("some content")
                 .build()
 
@@ -259,12 +259,12 @@ class KeywordCommandChainValidationTest {
         @Test
         fun `commands after top-level end-template-renderer throws`() {
             val contentParts = ContentPartBuilder.create()
-                .addTemplateRendererCommand(templateRendererClassName = "OuterRenderer")
+                .addTemplateComment().addTemplateRendererCommand(templateRendererClassName = "OuterRenderer").end()
                 .addText("outer content")
-                .addEndTemplateRendererCommand()
-                .addReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndTemplateRendererCommand().end()
+                .addTemplateComment().addReplaceValueByExpressionCommand().end()
                 .addText("this should not be allowed")
-                .addEndReplaceValueByExpressionCommand()
+                .addTemplateComment().addEndReplaceValueByExpressionCommand().end()
                 .build()
 
             Assertions.assertThrows(TemplateParsingException::class.java) {
