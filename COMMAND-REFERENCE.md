@@ -344,4 +344,3 @@ Repeatable Group Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
-

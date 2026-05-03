@@ -1,6 +1,8 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -261,17 +263,17 @@ class CommandChainCreatorTest {
             assertEquals(1, templates.size)
             val chain = templates.single().templateChain
             assertEquals(3, chain.size)
-            assertEquals(CommandKey.REPLACE_VALUE_BY_EXPRESSION, (chain[0] as CommandChainItem).keywordCommand.commandKey)
-            assertEquals(true, chain[1] is PlainTextChainItem)
-            assertEquals(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION, (chain[2] as CommandChainItem).keywordCommand.commandKey)
+            assertEquals(CommandKey.REPLACE_VALUE_BY_EXPRESSION, (chain[0] as TemplateCommentContentPart).keywordCommands.single().commandKey)
+            assertEquals(true, chain[1] is TextContentPart)
+            assertEquals(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION, (chain[2] as TemplateCommentContentPart).keywordCommands.single().commandKey)
         }
     }
 
     @Nested
-    inner class MutuallyInfluencedChainItems {
+    inner class ChainItemTypes {
 
         @Test
-        fun `do not mark plain text item if no influencing commands are in the chain`() {
+        fun `text part produces TextContentPart in chain`() {
             val contentParts = ContentPartBuilder.create()
                 .addTemplateComment()
                     .addTemplateRendererCommand()
@@ -283,58 +285,11 @@ class CommandChainCreatorTest {
             assertEquals(1, templates.size)
             val template = templates.single()
             assertEquals(1, template.templateChain.size)
-            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
-
-            assertEquals(false, plainTextChainItem.removeFirstLineIfWhitespaces)
-            assertEquals(false, plainTextChainItem.removeLastLineIfWhitespaces)
+            assertEquals(true, template.templateChain.single() is TextContentPart)
         }
 
         @Test
-        fun `mark previous plain text item to remove last line on directly following strip-line-before command`() {
-            val contentParts = ContentPartBuilder.create()
-                .addTemplateComment()
-                    .addTemplateRendererCommand()
-                    .end()
-                .addText("here is text")
-                .addTemplateComment()
-                    .addStripLineBeforeCommentCommand()
-                    .end()
-                .build()
-
-            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
-            assertEquals(1, templates.size)
-            val template = templates.single()
-            assertEquals(1, template.templateChain.size)
-            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
-
-            assertEquals(false, plainTextChainItem.removeFirstLineIfWhitespaces)
-            assertEquals(true, plainTextChainItem.removeLastLineIfWhitespaces)
-        }
-
-        @Test
-        fun `mark next plain text item to remove first line on directly preceding strip-line-after command`() {
-            val contentParts = ContentPartBuilder.create()
-                .addTemplateComment()
-                    .addTemplateRendererCommand()
-                    .end()
-                .addTemplateComment()
-                    .addStripLineAfterCommentCommand()
-                    .end()
-                .addText("here is text")
-                .build()
-
-            val templates = CommandChainCreator.validateAndInterpretContentParts(contentParts)
-            assertEquals(1, templates.size)
-            val template = templates.single()
-            assertEquals(1, template.templateChain.size)
-            val plainTextChainItem = template.templateChain.single() as PlainTextChainItem
-
-            assertEquals(true, plainTextChainItem.removeFirstLineIfWhitespaces)
-            assertEquals(false, plainTextChainItem.removeLastLineIfWhitespaces)
-        }
-
-        @Test
-        fun `remove commands from chain without effects on text if no text is available`() {
+        fun `strip-line and template-renderer commands are removed from chain`() {
             val contentParts = ContentPartBuilder.create()
                 .addTemplateComment()
                     .addTemplateRendererCommand()

@@ -2,8 +2,8 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 
 object TemplateRendererClassContentCreator {
 
@@ -37,11 +37,12 @@ object TemplateRendererClassContentCreator {
         val modelImports = templateRendererDescription.modelClasses.map { it.modelClassDescription.fullQualifiedName }
 
         val rendererImports = templateRendererDescription.templateChain
-            .filterIsInstance<CommandChainItem>()
-            .filter { it.keywordCommand.commandKey == CommandKey.RENDER_TEMPLATE }
+            .filterIsInstance<TemplateCommentContentPart>()
+            .flatMap { it.keywordCommands }
+            .filter { it.commandKey == CommandKey.RENDER_TEMPLATE }
             .mapNotNull {
-                val className = it.keywordCommand.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME)
-                val packageName = it.keywordCommand.attributeOptional(0, CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME) ?: ""
+                val className = it.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME)
+                val packageName = it.attributeOptional(0, CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME) ?: ""
                 if (packageName.isNotBlank()) "$packageName.$className" else null
             }
 

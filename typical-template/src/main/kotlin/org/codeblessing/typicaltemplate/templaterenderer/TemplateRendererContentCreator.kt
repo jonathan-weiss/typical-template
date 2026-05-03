@@ -4,9 +4,9 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.RelativeFile
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainItem
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.PlainTextChainItem
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 
 object TemplateRendererContentCreator {
 
@@ -19,14 +19,8 @@ object TemplateRendererContentCreator {
         val sb = StringBuilder("|")
         templateRendererDescription.templateChain.forEach { chainItem ->
             when (chainItem) {
-                is PlainTextChainItem -> sb.append(rawContent(
-                    ctx = ctx,
-                    plainTextItem = chainItem,
-                ))
-                is CommandChainItem -> sb.append(commandContent(
-                    ctx = ctx,
-                    command = chainItem,
-                ))
+                is TextContentPart -> sb.append(rawContent(ctx, chainItem))
+                is TemplateCommentContentPart -> chainItem.keywordCommands.forEach { sb.append(commandContent(ctx, it)) }
             }
         }
         return KotlinTemplateRendererMethodContent(
@@ -35,19 +29,19 @@ object TemplateRendererContentCreator {
         )
     }
 
-    private fun rawContent(ctx: TemplateCreationContext, plainTextItem: PlainTextChainItem): String {
+    private fun rawContent(ctx: TemplateCreationContext, textContentPart: TextContentPart): String {
         if(ctx.nestingStack.isInIgnoreMode()) {
             return NO_CONTENT_TO_WRITE
         }
-        return ctx.nestingStack.replaceInString(plainTextItem.textWithoutRemoveLines.escapeKotlinSpecialCharacters()).addMargin(ctx)
+        return ctx.nestingStack.replaceInString(textContentPart.text.escapeKotlinSpecialCharacters()).addMargin(ctx)
     }
 
     private fun String.escapeKotlinSpecialCharacters(): String {
         return this.replace("$", $$"${\"$\"}")
     }
 
-    private fun commandContent(ctx: TemplateCreationContext, command: CommandChainItem): String {
-        val commandKey = command.keywordCommand.commandKey
+    private fun commandContent(ctx: TemplateCreationContext, keywordCommand: KeywordCommand): String {
+        val commandKey = keywordCommand.commandKey
         if(commandKey.isTriggerAutoclose) {
             ctx.nestingStack.triggerAutoclose(commandKey)
         }
@@ -57,21 +51,21 @@ object TemplateRendererContentCreator {
             CommandKey.STRIP_LINE_BEFORE_COMMENT,
             CommandKey.STRIP_LINE_AFTER_COMMENT,
                  -> throw IllegalArgumentException("Command '$commandKey' not allowed here")
-            CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, command.keywordCommand)
+            CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)
-            CommandKey.REPLACE_VALUE_BY_VALUE -> processReplaceValueByValue(ctx, command.keywordCommand)
+            CommandKey.REPLACE_VALUE_BY_VALUE -> processReplaceValueByValue(ctx, keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_VALUE -> processEndReplaceValueByValue(ctx)
-            CommandKey.IF_CONDITION -> processIfCondition(ctx, command.keywordCommand)
-            CommandKey.ELSE_IF_CONDITION -> processElseIfCondition(ctx, command.keywordCommand)
+            CommandKey.IF_CONDITION -> processIfCondition(ctx, keywordCommand)
+            CommandKey.ELSE_IF_CONDITION -> processElseIfCondition(ctx, keywordCommand)
             CommandKey.ELSE_CLAUSE -> processElseCondition(ctx)
             CommandKey.END_IF_CONDITION -> processEndIf(ctx)
-            CommandKey.FOREACH -> processForeach(ctx, command.keywordCommand)
+            CommandKey.FOREACH -> processForeach(ctx, keywordCommand)
             CommandKey.END_FOREACH -> processEndForeach(ctx)
-            CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, command.keywordCommand)
+            CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, keywordCommand)
             CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
-            CommandKey.PRINT_TEXT -> processPrintText(ctx, command.keywordCommand)
+            CommandKey.PRINT_TEXT -> processPrintText(ctx, keywordCommand)
             CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS -> processProvideModifiedFilename(ctx)
-            CommandKey.RENDER_TEMPLATE -> processRenderTemplate(ctx, command.keywordCommand)
+            CommandKey.RENDER_TEMPLATE -> processRenderTemplate(ctx, keywordCommand)
         }
     }
 

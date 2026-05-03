@@ -8,6 +8,7 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentC
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 
+
 /**
  * Semantic-interpretation layer that transforms a validated list of parsed template content parts
  * into a structured [TemplateRendererDescription] — converting all fragments into a flat command
@@ -22,10 +23,9 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  * - **Splits nested renderers:** Separates top-level fragments from nested
  *   `@template-renderer`...`@end-template-renderer` blocks, tracking depth to handle arbitrarily
  *   deep nesting.
- * - **Builds the chain:** Converts the remaining content parts into a flat list of [ChainItem]s —
- *   either [CommandChainItem] (for keyword commands) or [PlainTextChainItem] (for raw text).
- *   Strip-line commands are not added as chain items themselves but instead influence adjacent
- *   [PlainTextChainItem]s to trim leading/trailing whitespace-only lines.
+ * - **Builds the chain:** Filters the remaining content parts into a flat list of [TemplateContentPart]s,
+ *   omitting strip-line, template-renderer, and end-template-renderer commands from
+ *   [TemplateCommentContentPart]s. Empty comment parts are dropped entirely.
  * - **Maps to descriptions:** Converts [KeywordCommand] attributes into [ClassDescription],
  *   [ModelDescription], and [TemplateRendererDescription] data objects for downstream code
  *   generation.
@@ -124,54 +124,25 @@ object CommandChainCreator {
         return SplitResult(outerFragments, nestedSections)
     }
 
-    private fun adaptMutualInfluencedFragments(contentParts: List<TemplateContentPart>): List<ChainItem> {
-        val templateChainItems = mutableListOf<ChainItem>()
-        contentParts.forEachIndexed { index, templateFragment ->
+    private fun adaptMutualInfluencedFragments(contentParts: List<TemplateContentPart>): List<TemplateContentPart> {
+        val result = mutableListOf<TemplateContentPart>()
+        contentParts.forEach { templateFragment ->
             when (templateFragment) {
                 is TemplateCommentContentPart -> {
-                    templateFragment.keywordCommands.forEach { keywordCommand ->
-                        when (keywordCommand.commandKey) {
-                            CommandKey.STRIP_LINE_BEFORE_COMMENT,
-                            CommandKey.STRIP_LINE_AFTER_COMMENT,
-                            CommandKey.TEMPLATE_RENDERER,
-                            CommandKey.END_TEMPLATE_RENDERER -> Unit
-                            else -> templateChainItems.add(CommandChainItem(keywordCommand = keywordCommand))
-                        }
+                    val filteredCommands = templateFragment.keywordCommands.filter { cmd ->
+                        cmd.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT &&
+                        cmd.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT &&
+                        cmd.commandKey != CommandKey.TEMPLATE_RENDERER &&
+                        cmd.commandKey != CommandKey.END_TEMPLATE_RENDERER
+                    }
+                    if (filteredCommands.isNotEmpty()) {
+                        result.add(templateFragment.copy(keywordCommands = filteredCommands))
                     }
                 }
-                is TextContentPart -> {
-                    templateChainItems.add(createPlainTextChainItem(templateFragment, index, contentParts))
-                }
+                is TextContentPart -> result.add(templateFragment)
             }
         }
-        return templateChainItems
-    }
-
-    private fun createPlainTextChainItem(
-        templateFragment: TextContentPart,
-        index: Int,
-        contentParts: List<TemplateContentPart>
-    ): PlainTextChainItem {
-        val hasPrecedingStripLineAfterComment = contentParts
-            .subList(0, index)
-            .reversed()
-            .hasAnyFollowingCommandBeforeNextText(CommandKey.STRIP_LINE_AFTER_COMMENT)
-
-        val hasFollowingStripLineBeforeComment = contentParts
-            .subList(index + 1, contentParts.size)
-            .hasAnyFollowingCommandBeforeNextText(CommandKey.STRIP_LINE_BEFORE_COMMENT)
-
-        return PlainTextChainItem(
-            text = templateFragment.text,
-            removeFirstLineIfWhitespaces = hasPrecedingStripLineAfterComment,
-            removeLastLineIfWhitespaces = hasFollowingStripLineBeforeComment,
-        )
-    }
-
-    private fun List<TemplateContentPart>.hasAnyFollowingCommandBeforeNextText(commandKey: CommandKey): Boolean {
-        return this.takeWhile { it !is TextContentPart }
-            .filterIsInstance<TemplateCommentContentPart>()
-            .any { part -> part.keywordCommands.any { it.commandKey == commandKey } }
+        return result
     }
 
     private fun findTemplateRendererCommand(templateContentParts: List<TemplateContentPart>): KeywordCommand {
