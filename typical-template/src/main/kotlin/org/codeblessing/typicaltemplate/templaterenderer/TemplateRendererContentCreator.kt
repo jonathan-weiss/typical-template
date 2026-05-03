@@ -48,8 +48,6 @@ object TemplateRendererContentCreator {
         return when (commandKey) {
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.END_TEMPLATE_RENDERER,
-            CommandKey.STRIP_LINE_BEFORE_COMMENT,
-            CommandKey.STRIP_LINE_AFTER_COMMENT,
                  -> throw IllegalArgumentException("Command '$commandKey' not allowed here")
             CommandKey.REPLACE_VALUE_BY_EXPRESSION -> processReplaceValueByExpression(ctx, keywordCommand)
             CommandKey.END_REPLACE_VALUE_BY_EXPRESSION -> processEndReplaceValueByExpression(ctx)

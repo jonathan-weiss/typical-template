@@ -51,14 +51,6 @@ class ContentPartBuilder private constructor() {
             return contentPartBuilder
         }
 
-        fun addStripLineBeforeCommentCommand(): TemplateCommentBuilder {
-            return this.createCommand(CommandKey.STRIP_LINE_BEFORE_COMMENT).addCommandToChain()
-        }
-
-        fun addStripLineAfterCommentCommand(): TemplateCommentBuilder {
-            return this.createCommand(CommandKey.STRIP_LINE_AFTER_COMMENT).addCommandToChain()
-        }
-
         fun addTemplateRendererCommand(
             templateRendererClassName: String = "MyTemplateRendererClass",
             templateRendererPackageName: String = "org.example.template",

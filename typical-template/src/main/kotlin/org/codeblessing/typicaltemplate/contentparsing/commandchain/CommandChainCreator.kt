@@ -24,8 +24,8 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  *   `@template-renderer`...`@end-template-renderer` blocks, tracking depth to handle arbitrarily
  *   deep nesting.
  * - **Builds the chain:** Filters the remaining content parts into a flat list of [TemplateContentPart]s,
- *   omitting strip-line, template-renderer, and end-template-renderer commands from
- *   [TemplateCommentContentPart]s. Empty comment parts are dropped entirely.
+ *   omitting template-renderer and end-template-renderer commands from [TemplateCommentContentPart]s.
+ *   Empty comment parts are dropped entirely.
  * - **Maps to descriptions:** Converts [KeywordCommand] attributes into [ClassDescription],
  *   [ModelDescription], and [TemplateRendererDescription] data objects for downstream code
  *   generation.
@@ -130,8 +130,6 @@ object CommandChainCreator {
             when (templateFragment) {
                 is TemplateCommentContentPart -> {
                     val filteredCommands = templateFragment.keywordCommands.filter { cmd ->
-                        cmd.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT &&
-                        cmd.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT &&
                         cmd.commandKey != CommandKey.TEMPLATE_RENDERER &&
                         cmd.commandKey != CommandKey.END_TEMPLATE_RENDERER
                     }

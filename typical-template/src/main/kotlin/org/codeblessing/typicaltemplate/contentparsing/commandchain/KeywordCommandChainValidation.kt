@@ -96,22 +96,14 @@ object KeywordCommandChainValidation {
 
         val fragment = templateContentParts
             .filterIsInstance<TemplateCommentContentPart>()
-            .first { part ->
-                part.keywordCommands.any {
-                    it.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT
-                            && it.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT
-                }
-            }
+            .first { part -> part.keywordCommands.isNotEmpty() }
 
         if (!fragment.isTemplateDefinitionCommand()) {
-            val firstNonStripCommand = fragment.keywordCommands.first {
-                it.commandKey != CommandKey.STRIP_LINE_BEFORE_COMMENT
-                        && it.commandKey != CommandKey.STRIP_LINE_AFTER_COMMENT
-            }
+            val firstCommand = fragment.keywordCommands.first()
             throw TemplateParsingException(
                 lineNumbers = fragment.lineNumbers,
                 msg = "The first command in a file must be '${CommandKey.TEMPLATE_RENDERER.keyword}' " +
-                        "but was ${firstNonStripCommand.commandKey.keyword}. ",
+                        "but was ${firstCommand.commandKey.keyword}. ",
             )
         }
     }

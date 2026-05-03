@@ -289,12 +289,10 @@ class CommandChainCreatorTest {
         }
 
         @Test
-        fun `strip-line and template-renderer commands are removed from chain`() {
+        fun `template-renderer command is removed from chain`() {
             val contentParts = ContentPartBuilder.create()
                 .addTemplateComment()
                     .addTemplateRendererCommand()
-                    .addStripLineBeforeCommentCommand()
-                    .addStripLineAfterCommentCommand()
                     .end()
                 .build()
 

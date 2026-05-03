@@ -1,6 +1,6 @@
 package my.example.businessproject.dto
 
-/* @tt{{{ @slbc
+/* @tt{{{
 
   @template-renderer [
       templateRendererClassName="EntityDtoTemplateRenderer"
@@ -15,7 +15,7 @@ package my.example.businessproject.dto
     [ searchValue="Product" replaceByExpression="model.entityName" ]
     [ searchValue="productCode" replaceByExpression="field.fieldName" ]
     [ searchValue="String" replaceByExpression="field.fieldTypeNameWithNullability" ]
-  @slac }}}@ */
+  }}}@ */
 
 /**
  * The Product DTO (Data Transfer Object) class.
@@ -23,7 +23,7 @@ package my.example.businessproject.dto
 data class ProductDto(
 /* @tt{{{   @foreach [ iteratorExpression="model.fields" loopVariable="field" ] }}}@  */
     val productCode: String,
-/* @tt{{{ @slbc  @end-foreach  @ignore-text  @slac }}}@ */
+/* @tt{{{ @end-foreach  @ignore-text  }}}@ */
     val productName: String,
-/* @tt{{{ @slbc  @end-ignore-text  @end-replace-value-by-expression }}}@ */
+/* @tt{{{ @end-ignore-text  @end-replace-value-by-expression }}}@ */
 )

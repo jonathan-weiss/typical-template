@@ -25,8 +25,6 @@ object MarkdownCreator {
         CommandKey.IGNORE_TEXT to "Ignores the text from the content and does not output it in the template renderer.",
         CommandKey.END_IGNORE_TEXT to "",
         CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
-        CommandKey.STRIP_LINE_AFTER_COMMENT to "slac (=**s**trip **l**ine **a**fter **c**omment) removes all characters and the line break (newline) after the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
-        CommandKey.STRIP_LINE_BEFORE_COMMENT to "slbc (=**s**trip **l**ine **b**efore **c**omment) removes all characters and the line break (newline) before the comment. This is useful if you don't want to have empty lines in your template result due to the typical templates comments.",
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
         CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
     )
