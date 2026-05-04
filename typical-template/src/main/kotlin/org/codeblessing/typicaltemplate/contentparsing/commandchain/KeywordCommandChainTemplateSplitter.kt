@@ -10,11 +10,13 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_IN
 import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME
 import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
+import org.codeblessing.typicaltemplate.toEnum
 
 /**
  * Splits a flat list of [TemplateContentPart]s into one [TemplateRendererDescription] per
@@ -163,7 +165,10 @@ object KeywordCommandChainTemplateSplitter {
                     packageNameAttribute = TEMPLATE_MODEL_PACKAGE_NAME,
                 ),
                 modelName = attribute(groupId = groupIndex, key = TEMPLATE_MODEL_NAME),
-                isList = attributeOptional(groupId = groupIndex, key = TEMPLATE_MODEL_IS_LIST)?.toBoolean() ?: false,
+                isList = attributeOptional(
+                    groupId = groupIndex,
+                    key = TEMPLATE_MODEL_IS_LIST
+                )?.let { it.toEnum<IsListValue>() == IsListValue.TRUE } ?: false,
             )
         }
     }

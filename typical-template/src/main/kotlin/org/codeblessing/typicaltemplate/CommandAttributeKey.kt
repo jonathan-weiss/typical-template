@@ -2,7 +2,7 @@ package org.codeblessing.typicaltemplate
 
 enum class CommandAttributeKey(
     val keyAsString: String,
-    val allowedValues: List<AttributeValue>? = null,
+    val allowedValues: List<AllowedValue>? = null,
     val requireNotEmpty: Boolean = true,
 ) {
     TEMPLATE_RENDERER_CLASS_NAME("templateRendererClassName"),
@@ -12,7 +12,7 @@ enum class CommandAttributeKey(
     TEMPLATE_MODEL_CLASS_NAME("modelClassName"),
     TEMPLATE_MODEL_PACKAGE_NAME("modelPackageName"),
     TEMPLATE_MODEL_NAME("modelName"),
-    TEMPLATE_MODEL_IS_LIST("isList", listOf("true", "false")),
+    TEMPLATE_MODEL_IS_LIST("isList", IsListValue.entries.toList()),
     REPLACE_BY_EXPRESSION("replaceByExpression"),
     REPLACE_BY_VALUE("replaceByValue"),
     SEARCH_VALUE("searchValue"),
@@ -21,7 +21,7 @@ enum class CommandAttributeKey(
     LOOP_VARIABLE_NAME("loopVariable"),
     TEXT("text"),
     MODEL_EXPRESSION("modelExpression"),
-    DIRECTION("direction", allowedValues = listOf("forward", "backward")),
+    DIRECTION("direction", allowedValues = DirectionValue.entries.toList()),
     BEFORE_FIRST_OCCURRENCE_OF("beforeFirstOccurrenceOf"),
     AFTER_FIRST_OCCURRENCE_OF("afterFirstOccurrenceOf"),
     BEFORE_LAST_OCCURRENCE_OF("beforeLastOccurrenceOf"),

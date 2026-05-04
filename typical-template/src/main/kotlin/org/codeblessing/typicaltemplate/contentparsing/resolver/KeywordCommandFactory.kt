@@ -71,12 +71,12 @@ object KeywordCommandFactory {
                                         "allowed: ${commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }}.",
                             )
                         }
-                        if (attributeKey.allowedValues != null && attributeValue !in attributeKey.allowedValues) {
+                        if (attributeKey.allowedValues != null && attributeValue !in attributeKey.allowedValues.map { it.value }) {
                             throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
                                 msg = "Not allowed attribute value '$attributeValue' for " +
                                         "key '${attributeKey.keyAsString}' in attributes group #${groupIndex + 1}. " +
-                                        "Only the following attributes are allowed: ${attributeKey.allowedValues}.",
+                                        "Only the following attributes are allowed: ${attributeKey.allowedValues.map { it.value }}.",
                             )
                         }
                         if (attributeKey.requireNotEmpty && attributeValue.isBlank()) {

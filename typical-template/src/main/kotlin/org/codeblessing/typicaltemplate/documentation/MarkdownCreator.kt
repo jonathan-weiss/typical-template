@@ -3,6 +3,7 @@ package org.codeblessing.typicaltemplate.documentation
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.IsListValue
 
 object MarkdownCreator {
 
@@ -39,7 +40,7 @@ object MarkdownCreator {
         CommandAttributeKey.TEMPLATE_MODEL_NAME to "The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.",
         CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
         CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
-        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```true```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.",
+        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```${IsListValue.TRUE.value}```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.",
         CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
         CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
         CommandAttributeKey.REPLACE_BY_VALUE to "The plain value the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
@@ -128,7 +129,7 @@ object MarkdownCreator {
                     * *${attributeKey.keyAsString}*: $attributeDocumentation
                       * Required attribute: ${(attributeKey in requiredAttributes).yesOrNo()}
                       * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
-                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",") { "```$it```"}}
+                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",") { "```${it.value}```"}}
                       * Mutually exclusive with: ${if(mutualExclusiveWith.isEmpty()) "none" else mutualExclusiveWith.joinToString(", ") { "```${it.keyAsString}```" }}
                     """.trimIndent()
             )
@@ -142,7 +143,7 @@ object MarkdownCreator {
             for (constraint in attributeGroupConstraints) {
                 sb.append(" [ ")
                 constraint.allowedAttributes.forEach { attribute ->
-                    val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|")
+                    val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|") { it.value }
                     sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
                 }
                 sb.append("]")
