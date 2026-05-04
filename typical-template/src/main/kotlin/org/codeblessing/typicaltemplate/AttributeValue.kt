@@ -15,6 +15,6 @@ enum class IsListValue(override val value: AttributeValue): AllowedValue {
 }
 
 enum class DirectionValue(override val value: AttributeValue): AllowedValue {
-    BACKWARD("forward"),
-    FORWARD("backward"),
+    BACKWARD("backward"),
+    FORWARD("forward"),
 }

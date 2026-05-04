@@ -6,6 +6,8 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.ContentPartResol
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainNestingHandler
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainTemplateSplitter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsPreprocessor
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
 
@@ -24,13 +26,20 @@ object ContentParser {
             }
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
-            val validatedTemplateContentParts = KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(templateContentParts)
+                .pipe(ContentPartsPreprocessor::runPreprocessing)
+                .pipe(KeywordCommandChainNestingHandler::validateAndHandleNestingStructure)
             // TODO Add further custom validation
-            return KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(validatedTemplateContentParts)
+            return KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(templateContentParts)
         } catch (ex: TemplateParsingException) {
             throw TypicalTemplateException(
                 "Failed to parse at line ${ex.lineNumbers.formattedDescription}: ${ex.message}"
             )
         }
+    }
+
+    private fun List<TemplateContentPart>.pipe(
+        function: (templateContentParts: List<TemplateContentPart>) -> List<TemplateContentPart>,
+    ): List<TemplateContentPart> {
+        return function(this)
     }
 }

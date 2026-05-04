@@ -343,7 +343,7 @@ Repeatable Group Attributes:
 
 ## move-comment
 
-Syntax: ```@move-comment [ direction="forward|backward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: ```@move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
 Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.
 
@@ -357,7 +357,7 @@ Attributes:
 * *direction*: The direction in which the comment is moved.
   * Required attribute: Yes
   * Required not empty: Yes
-  * Allowed values: ```forward```,```backward```
+  * Allowed values: ```backward```,```forward```
   * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
 * *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
   * Required attribute: No

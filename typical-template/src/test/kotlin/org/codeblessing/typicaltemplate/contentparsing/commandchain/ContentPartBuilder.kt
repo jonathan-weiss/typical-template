@@ -4,6 +4,7 @@ import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.AttributeValue
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.DirectionValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -143,6 +144,22 @@ class ContentPartBuilder private constructor() {
 
         fun addEndTemplateRendererCommand(): TemplateCommentBuilder {
             return this.createCommand(CommandKey.END_TEMPLATE_RENDERER).addCommandToChain()
+        }
+
+        fun addMoveCommentCommand(
+            direction: DirectionValue = DirectionValue.FORWARD,
+            beforeFirstOccurrenceOf: String? = null,
+            afterFirstOccurrenceOf: String? = null,
+            beforeLastOccurrenceOf: String? = null,
+            afterLastOccurrenceOf: String? = null,
+        ): TemplateCommentBuilder {
+            var builder = createCommand(CommandKey.MOVE_COMMENT)
+                .withAttribute(CommandAttributeKey.DIRECTION, direction.value)
+            beforeFirstOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF, it) }
+            afterFirstOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF, it) }
+            beforeLastOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF, it) }
+            afterLastOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF, it) }
+            return builder.addCommandToChain()
         }
 
         fun addPrintTextCommand(text: String): TemplateCommentBuilder {
