@@ -45,7 +45,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello World")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().end()
                 .build()
 
             val result = ContentPartsPreprocessor.runPreprocessing(input)
@@ -86,7 +86,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello ")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText("World Bye World")
                 .build()
 
@@ -104,7 +104,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().end()
                 .addText(" World Hello")
                 .build()
 
@@ -122,7 +122,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello World Bye ")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeLastOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText("World End")
                 .build()
 
@@ -140,7 +140,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello World Bye World")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText(" End")
                 .build()
 
@@ -157,7 +157,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             val expected = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().end()
                 .addText("Hello World")
                 .build()
 
@@ -176,7 +176,7 @@ class ContentPartsPreprocessorTest {
             // "World" ends at index 11 (end of string), so right part is empty and omitted
             val expected = ContentPartBuilder.create()
                 .addText("Hello World")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .build()
 
             val result = ContentPartsPreprocessor.runPreprocessing(input)
@@ -196,7 +196,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             val expected = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().end()
                 .addText("Hello World")
                 .build()
 
@@ -238,7 +238,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello ")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeFirstOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText("World Bye World")
                 .build()
 
@@ -256,7 +256,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().end()
                 .addText(" World Hello")
                 .build()
 
@@ -274,7 +274,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello World Bye ")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeLastOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText("World End")
                 .build()
 
@@ -292,7 +292,7 @@ class ContentPartsPreprocessorTest {
 
             val expected = ContentPartBuilder.create()
                 .addText("Hello World Bye World")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().end()
                 .addText(" End")
                 .build()
 

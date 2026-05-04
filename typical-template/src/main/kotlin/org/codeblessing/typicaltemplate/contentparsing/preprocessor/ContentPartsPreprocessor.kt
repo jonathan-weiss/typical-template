@@ -56,6 +56,10 @@ object ContentPartsPreprocessor {
         textPart: TextContentPart,
         direction: DirectionValue,
     ): List<TemplateContentPart> {
+        val processedComment = commentPart.copy(
+            keywordCommands = commentPart.keywordCommands.filter { it.commandKey != CommandKey.MOVE_COMMENT }
+        )
+
         val beforeFirstOf = moveCommand.attributeOptional(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF)
         val afterFirstOf = moveCommand.attributeOptional(CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF)
         val beforeLastOf = moveCommand.attributeOptional(CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF)
@@ -77,7 +81,7 @@ object ContentPartsPreprocessor {
             splitIndex = idx + afterLastOf.length
         } else {
             // all are null
-            return if (direction == DirectionValue.FORWARD) listOf(textPart, commentPart) else listOf(commentPart, textPart)
+            return if (direction == DirectionValue.FORWARD) listOf(textPart, processedComment) else listOf(processedComment, textPart)
         }
 
         val leftText = text.substring(0, splitIndex)
@@ -85,7 +89,7 @@ object ContentPartsPreprocessor {
 
         return listOfNotNull(
             TextContentPart(textPart.lineNumbers, leftText).takeIf { leftText.isNotEmpty() },
-            commentPart,
+            processedComment,
             TextContentPart(textPart.lineNumbers, rightText).takeIf { rightText.isNotEmpty() }
         )
     }
