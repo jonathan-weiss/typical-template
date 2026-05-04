@@ -346,6 +346,54 @@ class KeywordCommandFactoryTest {
         }
     }
 
+    @Test
+    fun `valid move-comment with direction only`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @move-comment [
+                    direction="forward"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.MOVE_COMMENT, keywordCommand.commandKey)
+        Assertions.assertEquals("forward", keywordCommand.attribute(CommandAttributeKey.DIRECTION))
+    }
+
+    @Test
+    fun `valid move-comment with direction and one occurrence attribute`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @move-comment [
+                    direction="backward"
+                    beforeFirstOccurrenceOf="someText"
+                ]
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.MOVE_COMMENT, keywordCommand.commandKey)
+        Assertions.assertEquals("someText", keywordCommand.attribute(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF))
+    }
+
+    @Test
+    fun `throws when move-comment has two mutually exclusive occurrence attributes`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @move-comment [
+                    direction="forward"
+                    beforeFirstOccurrenceOf="someText"
+                    afterFirstOccurrenceOf="otherText"
+                ]
+            """.trimIndent()
+        )
+
+        assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+    }
+
     private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS
 
     private fun createSingleTemplateComment(comment: String): CommandStructure {
