@@ -8,6 +8,7 @@ import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordComma
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainTemplateSplitter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsPreprocessor
+import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsPreprocessorValidator
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
@@ -27,6 +28,7 @@ object ContentParser {
             }
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
+                .pipe(ContentPartsPreprocessorValidator::validatePreprocessing)
                 .pipe(ContentPartsPreprocessor::runPreprocessing)
                 .pipe(KeywordCommandChainNestingHandler::validateAndHandleNestingStructure)
                 .pipe( KeywordCommandChainCustomValidation::validate )
