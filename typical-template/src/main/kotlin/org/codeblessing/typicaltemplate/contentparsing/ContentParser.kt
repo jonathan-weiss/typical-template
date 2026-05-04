@@ -3,8 +3,8 @@ package org.codeblessing.typicaltemplate.contentparsing
 import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.TypicalTemplateException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.ContentPartResolver
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.CommandChainCreator
-import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainValidation
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainNestingHandler
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainTemplateSplitter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
@@ -24,8 +24,12 @@ object ContentParser {
             }
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
-            KeywordCommandChainValidation.validate(templateContentParts)
-            return CommandChainCreator.validateAndInterpretContentParts(templateContentParts)
+            val validatedTemplateContentParts = KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(templateContentParts)
+            return KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(validatedTemplateContentParts)
+
+
+//            KeywordCommandChainValidation.validate(templateContentParts)
+//            return CommandChainCreator.validateAndInterpretContentParts(templateContentParts)
         } catch (ex: TemplateParsingException) {
             throw TypicalTemplateException(
                 "Failed to parse at line ${ex.lineNumbers.formattedDescription}: ${ex.message}"
