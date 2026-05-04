@@ -18,6 +18,7 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
+* [move-comment](#move-comment)
 
 
 
@@ -38,36 +39,44 @@ Primary Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *templateRendererPackageName*: The name of the package where the class defined with ```templateRendererClassName``` resides in.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *templateRendererInterfaceName*: The name of an optional interface class name that is added to the class defined with the ```templateRendererClassName```.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *templateRendererInterfacePackageName*: The name of the package where the interface defined with ```templateRendererInterfaceName``` resides in.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 Repeatable Group Attributes:
 * *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *modelClassName*: The name of the model class. This class provides all the fields in the template.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *modelPackageName*: The name of the package where the model class defined with ```modelClassName``` resides in.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *isList*: When set to ```true```, the model parameter is declared as a list of the model class defined with ```modelClassName```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: ```true```,```false```
+  * Mutually exclusive with: none
 
 ## end-template-renderer
 
@@ -98,10 +107,12 @@ Repeatable Group Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *replaceByExpression*: The expression accessing the model class with which the token defined with the attribute ```searchValue``` is replaced.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## end-replace-value-by-expression
 
@@ -130,10 +141,12 @@ Repeatable Group Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *replaceByValue*: The plain value the attribute ```searchValue``` is replaced.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## end-replace-value-by-value
 
@@ -162,6 +175,7 @@ Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## else-if
 
@@ -180,6 +194,7 @@ Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## else
 
@@ -220,10 +235,12 @@ Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *loopVariable*: The name of the loop variable, similar to the model variable from ```modelName```. The variable holds the current instance of the loop iterable defined with ```iteratorExpression```.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## end-foreach
 
@@ -274,6 +291,7 @@ Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 ## modify-provided-filename-by-replacements
 
@@ -304,17 +322,60 @@ Primary Attributes:
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *templateRendererPackageName*: The name of the package where the class defined with ```templateRendererClassName``` resides in.
   * Required attribute: No
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 
 Repeatable Group Attributes:
 * *modelName*: The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
 * *modelExpression*: The expression that provides the value for the model parameter specified by ```modelName``` when calling the template renderer.
   * Required attribute: Yes
   * Required not empty: Yes
   * Allowed values: <unrestricted>
+  * Mutually exclusive with: none
+
+## move-comment
+
+Syntax: ```@move-comment [ direction="forward|backward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+
+Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword must have exactly one group of attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+Attributes:
+* *direction*: The direction in which the comment is moved.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: ```forward```,```backward```
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
+* *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+  * Mutually exclusive with: ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
+* *afterFirstOccurrenceOf*: Positions the comment after the first occurrence of the given text in the surrounding content.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
+* *beforeLastOccurrenceOf*: Positions the comment before the last occurrence of the given text in the surrounding content.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```afterLastOccurrenceOf```
+* *afterLastOccurrenceOf*: Positions the comment after the last occurrence of the given text in the surrounding content.
+  * Required attribute: No
+  * Required not empty: Yes
+  * Allowed values: <unrestricted>
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```

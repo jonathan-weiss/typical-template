@@ -134,6 +134,17 @@ enum class CommandKey(
             ),
         ),
     ),
+    MOVE_COMMENT(
+        keyword = "move-comment",
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(DIRECTION),
+                optionalAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
+                mutualExclusiveAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
+            )
+        ),
+    ),
     ;
 
     companion object {
@@ -167,6 +178,9 @@ enum class CommandKey(
 
     fun allowedAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> =
         constraintForGroup(groupIndex).allowedAttributes
+
+    fun mutualExclusiveAttributesForGroup(groupIndex: Int): Set<CommandAttributeKey> =
+        constraintForGroup(groupIndex).mutualExclusiveAttributes
 
     fun missingRequiredAttributesForGroup(groupIndex: Int, presentAttributes: Set<CommandAttributeKey>): Set<CommandAttributeKey> {
         val required = requiredAttributesForGroup(groupIndex)

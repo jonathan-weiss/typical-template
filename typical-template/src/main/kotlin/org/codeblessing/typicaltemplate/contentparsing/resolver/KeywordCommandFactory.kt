@@ -107,6 +107,17 @@ object KeywordCommandFactory {
                                     "${unallowedAttributes.joinToString { it.keyAsString }} ",
                         )
                     }
+                    val mutualExclusiveAttributes = commandKey.mutualExclusiveAttributesForGroup(groupIndex)
+                    val presentMutualExclusiveAttributes = attributeGroup.attributes.keys.intersect(mutualExclusiveAttributes)
+                    if (presentMutualExclusiveAttributes.size > 1) {
+                        throw TemplateParsingException(
+                            lineNumbers = lineNumbers,
+                            msg = "Only one of the following mutually exclusive attributes may be present for " +
+                                    "command '${commandKey.keyword}' in attributes group #${groupIndex + 1}: " +
+                                    "${mutualExclusiveAttributes.joinToString { it.keyAsString }}. " +
+                                    "Found: ${presentMutualExclusiveAttributes.joinToString { it.keyAsString }}.",
+                        )
+                    }
                 }
             }
 

@@ -27,6 +27,7 @@ object MarkdownCreator {
         CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
         CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
+        CommandKey.MOVE_COMMENT to "Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.",
     )
 
     // linked map to preserve the order of the keys
@@ -47,6 +48,11 @@ object MarkdownCreator {
         CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
         CommandAttributeKey.TEXT to "Text that is to print as-is into the template renderer.",
         CommandAttributeKey.MODEL_EXPRESSION to "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
+        CommandAttributeKey.DIRECTION to "The direction in which the comment is moved.",
+        CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF to "Positions the comment before the first occurrence of the given text in the surrounding content.",
+        CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF to "Positions the comment after the first occurrence of the given text in the surrounding content.",
+        CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF to "Positions the comment before the last occurrence of the given text in the surrounding content.",
+        CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF to "Positions the comment after the last occurrence of the given text in the surrounding content.",
     )
 
     private fun CommandKey.createMarkDownChapterLink(): String {
@@ -104,7 +110,7 @@ object MarkdownCreator {
                     """.trimIndent()
                 )
                 val attributesDocumentation = commandAttributeKeyDocumentation.filter { it.key in constraint.allowedAttributes }
-                createAttributeDocumentation(attributesDocumentation, constraint.requiredAttributes, sb)
+                createAttributeDocumentation(attributesDocumentation, constraint.requiredAttributes, constraint.mutualExclusiveAttributes, sb)
             }
         }
         return sb.toString()
@@ -113,14 +119,17 @@ object MarkdownCreator {
     private fun createAttributeDocumentation(
         attributesDocumentation: Map<CommandAttributeKey, String>,
         requiredAttributes: Set<CommandAttributeKey>,
+        mutualExclusiveAttributes: Set<CommandAttributeKey>,
         sb: StringBuilder
     ) {
         for((attributeKey, attributeDocumentation) in attributesDocumentation) {
+            val mutualExclusiveWith = mutualExclusiveAttributes - attributeKey
             sb.appendLine("""
                     * *${attributeKey.keyAsString}*: $attributeDocumentation
                       * Required attribute: ${(attributeKey in requiredAttributes).yesOrNo()}
                       * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
                       * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",") { "```$it```"}}
+                      * Mutually exclusive with: ${if(mutualExclusiveWith.isEmpty()) "none" else mutualExclusiveWith.joinToString(", ") { "```${it.keyAsString}```" }}
                     """.trimIndent()
             )
         }
