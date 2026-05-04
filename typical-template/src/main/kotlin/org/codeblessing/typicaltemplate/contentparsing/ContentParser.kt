@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing
 
 import org.codeblessing.typicaltemplate.CommentStyle
 import org.codeblessing.typicaltemplate.TypicalTemplateException
+import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainCustomValidation
 import org.codeblessing.typicaltemplate.contentparsing.resolver.ContentPartResolver
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainNestingHandler
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainTemplateSplitter
@@ -28,7 +29,7 @@ object ContentParser {
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
                 .pipe(ContentPartsPreprocessor::runPreprocessing)
                 .pipe(KeywordCommandChainNestingHandler::validateAndHandleNestingStructure)
-            // TODO Add further custom validation
+                .pipe( KeywordCommandChainCustomValidation::validate )
             return KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(templateContentParts)
         } catch (ex: TemplateParsingException) {
             throw TypicalTemplateException(
