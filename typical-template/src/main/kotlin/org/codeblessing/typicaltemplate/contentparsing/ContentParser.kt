@@ -25,11 +25,8 @@ object ContentParser {
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
             val validatedTemplateContentParts = KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(templateContentParts)
+            // TODO Add further custom validation
             return KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(validatedTemplateContentParts)
-
-
-//            KeywordCommandChainValidation.validate(templateContentParts)
-//            return CommandChainCreator.validateAndInterpretContentParts(templateContentParts)
         } catch (ex: TemplateParsingException) {
             throw TypicalTemplateException(
                 "Failed to parse at line ${ex.lineNumbers.formattedDescription}: ${ex.message}"
