@@ -148,8 +148,9 @@ class KeywordCommandChainTemplateSplitterTest {
         fun `TEMPLATE_RENDERER block with a model creates model description`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                    .addTemplateRendererCommand()
-                    .addTemplateModel("model", "MyModel", "org.model")
+                    .addTemplateRendererCommandWithTemplateModel()
+                        .addTemplateModel("model", "MyModel", "org.model")
+                    .end()
                     .end()
                 .addTemplateComment()
                     .addEndTemplateRendererCommand()
