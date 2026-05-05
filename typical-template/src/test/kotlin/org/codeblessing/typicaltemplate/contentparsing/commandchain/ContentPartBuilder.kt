@@ -5,6 +5,7 @@ import org.codeblessing.typicaltemplate.AttributeValue
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue
+import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -160,6 +161,16 @@ class ContentPartBuilder private constructor() {
             beforeLastOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF, it) }
             afterLastOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF, it) }
             return builder.addCommandToChain()
+        }
+
+        fun addExpandCommentCommand(
+            direction: DirectionValue = DirectionValue.FORWARD,
+            stripMode: ExpandModeValue = ExpandModeValue.BLANKS,
+        ): TemplateCommentBuilder {
+            return createCommand(CommandKey.EXPAND_COMMENT)
+                .withAttribute(CommandAttributeKey.EXPAND_DIRECTION, direction.value)
+                .withAttribute(CommandAttributeKey.STRIP_MODE, stripMode.value)
+                .addCommandToChain()
         }
 
         fun addPrintTextCommand(text: String): TemplateCommentBuilder {

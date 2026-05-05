@@ -29,6 +29,7 @@ object MarkdownCreator {
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
         CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
         CommandKey.MOVE_COMMENT to "Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.",
+        CommandKey.EXPAND_COMMENT to "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.",
     )
 
     // linked map to preserve the order of the keys
@@ -54,6 +55,8 @@ object MarkdownCreator {
         CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF to "Positions the comment after the first occurrence of the given text in the surrounding content.",
         CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF to "Positions the comment before the last occurrence of the given text in the surrounding content.",
         CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF to "Positions the comment after the last occurrence of the given text in the surrounding content.",
+        CommandAttributeKey.EXPAND_DIRECTION to "The direction in which the comment expands into the adjacent text (```${org.codeblessing.typicaltemplate.DirectionValue.FORWARD.value}``` or ```${org.codeblessing.typicaltemplate.DirectionValue.BACKWARD.value}```).",
+        CommandAttributeKey.STRIP_MODE to "Controls how much whitespace is stripped from the adjacent text. ```${org.codeblessing.typicaltemplate.ExpandModeValue.BLANKS.value}``` removes only spaces and tabs; ```${org.codeblessing.typicaltemplate.ExpandModeValue.LINEBREAK.value}``` also removes the immediately adjacent line-ending.",
     )
 
     private fun CommandKey.createMarkDownChapterLink(): String {

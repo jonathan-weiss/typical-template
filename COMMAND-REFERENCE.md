@@ -19,6 +19,7 @@ The following keywords/commands are supported:
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
 * [move-comment](#move-comment)
+* [expand-comment](#expand-comment)
 
 
 
@@ -379,3 +380,27 @@ Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
   * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```
+
+## expand-comment
+
+Syntax: ```@expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
+
+Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword must have exactly one group of attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+Attributes:
+* *expandDirection*: The direction in which the comment expands into the adjacent text (```forward``` or ```backward```).
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: ```backward```,```forward```
+  * Mutually exclusive with: none
+* *strip*: Controls how much whitespace is stripped from the adjacent text. ```blanks``` removes only spaces and tabs; ```linebreak``` also removes the immediately adjacent line-ending.
+  * Required attribute: Yes
+  * Required not empty: Yes
+  * Allowed values: ```blanks```,```linebreak```
+  * Mutually exclusive with: none

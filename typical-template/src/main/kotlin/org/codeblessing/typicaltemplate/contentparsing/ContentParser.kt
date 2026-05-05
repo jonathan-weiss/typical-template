@@ -7,6 +7,7 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.ContentPartResol
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainNestingHandler
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.KeywordCommandChainTemplateSplitter
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
+import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsExpandCommentPreprocessor
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsMoveCommentPreprocessor
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsPreprocessorValidator
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -29,6 +30,7 @@ object ContentParser {
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
                 .pipe(ContentPartsPreprocessorValidator::validatePreprocessing)
+                .pipe(ContentPartsExpandCommentPreprocessor::runPreprocessing)
                 .pipe(ContentPartsMoveCommentPreprocessor::runPreprocessing)
                 .pipe(KeywordCommandChainNestingHandler::validateAndHandleNestingStructure)
                 .pipe( KeywordCommandChainCustomValidation::validate )
