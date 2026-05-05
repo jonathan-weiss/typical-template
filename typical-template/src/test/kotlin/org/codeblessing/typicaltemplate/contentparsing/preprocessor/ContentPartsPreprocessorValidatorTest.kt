@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
 import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
 import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -66,9 +67,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -81,9 +83,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -110,9 +113,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -188,9 +192,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -202,9 +207,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -217,9 +223,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
@@ -246,9 +253,10 @@ class ContentPartsPreprocessorValidatorTest {
                 .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
         }
     }
 }

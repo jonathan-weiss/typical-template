@@ -5,6 +5,7 @@ import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.C
 
 class TemplateParsingException(
     val lineNumbers: LineNumbers = EMPTY_LINE_NUMBERS,
+    val errorCode: TemplateParsingErrorCode,
     val msg: String,
     cause: Exception? = null
 ): RuntimeException(msg, cause) {
@@ -13,7 +14,7 @@ class TemplateParsingException(
             try {
                 return block()
             } catch (e: TemplateParsingException) {
-                throw TemplateParsingException(lineNumbers = lineNumbers, msg = e.msg, cause = e)
+                throw TemplateParsingException(lineNumbers = lineNumbers, errorCode = e.errorCode, msg = e.msg, cause = e)
             }
         }
     }

@@ -12,6 +12,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey.TEMPLATE_RENDERER_PA
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -53,7 +54,11 @@ object KeywordCommandChainTemplateSplitter {
         } catch (e: TemplateParsingException) {
             throw e
         } catch (e: Exception) {
-            throw TemplateParsingException(msg = "Error splitting template content: ${e.message}", cause = e)
+            throw TemplateParsingException(
+                errorCode = TemplateParsingErrorCode.ERROR_SPLITTING_TEMPLATE,
+                msg = TemplateParsingErrorCode.ERROR_SPLITTING_TEMPLATE.resolve("message" to (e.message ?: "")),
+                cause = e,
+            )
         }
     }
 
@@ -109,7 +114,8 @@ object KeywordCommandChainTemplateSplitter {
 
         throw TemplateParsingException(
             lineNumbers = parts[startIndex].lineNumbers,
-            msg = "TEMPLATE_RENDERER block is not closed with END_TEMPLATE_RENDERER",
+            errorCode = TemplateParsingErrorCode.TEMPLATE_RENDERER_BLOCK_NOT_CLOSED,
+            msg = TemplateParsingErrorCode.TEMPLATE_RENDERER_BLOCK_NOT_CLOSED.resolve(),
         )
     }
 

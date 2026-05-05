@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
 import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
 import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -312,9 +313,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
 
         @Test
@@ -324,9 +326,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
 
         @Test
@@ -336,9 +339,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
 
         @Test
@@ -348,9 +352,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
 
         @Test
@@ -360,9 +365,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeFirstOccurrenceOf = "Missing").end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
 
         @Test
@@ -372,9 +378,10 @@ class ContentPartsMoveCommentPreprocessorTest {
                 .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterLastOccurrenceOf = "Missing").end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
+            assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
         }
     }
 }

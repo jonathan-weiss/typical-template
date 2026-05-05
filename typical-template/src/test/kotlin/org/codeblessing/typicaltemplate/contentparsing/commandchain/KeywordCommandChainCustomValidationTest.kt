@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -71,9 +72,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME, exception.errorCode)
         }
 
         @Test
@@ -84,9 +86,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME, exception.errorCode)
         }
     }
 
@@ -122,9 +125,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME, exception.errorCode)
         }
     }
 
@@ -152,9 +156,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_PACKAGE_NAME, exception.errorCode)
         }
     }
 
@@ -190,9 +195,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_PACKAGE_NAME, exception.errorCode)
         }
     }
 
@@ -224,9 +230,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME, exception.errorCode)
         }
     }
 
@@ -258,9 +265,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_PACKAGE_NAME, exception.errorCode)
         }
     }
 
@@ -292,9 +300,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_PARAMETER_NAME, exception.errorCode)
         }
 
         @Test
@@ -307,9 +316,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_JAVA_PARAMETER_NAME, exception.errorCode)
         }
     }
 
@@ -343,9 +353,10 @@ class KeywordCommandChainCustomValidationTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainCustomValidation.validate(input)
             }
+            assertEquals(TemplateParsingErrorCode.DUPLICATE_MODEL_NAME, exception.errorCode)
         }
 
         @Test

@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers.Companion.EMPTY_LINE_NUMBERS
@@ -80,8 +81,11 @@ object KeywordCommandChainNestingHandler {
             if (!commandKey.isAutoclosingSupported) {
                 throw TemplateParsingException(
                     lineNumbers = EMPTY_LINE_NUMBERS,
-                    msg = "The opening command '${commandKey.keyword}' is missing its " +
-                            "closing command '${commandKey.correspondingClosingCommandKey?.keyword}'.",
+                    errorCode = TemplateParsingErrorCode.UNCLOSED_OPENING_COMMAND,
+                    msg = TemplateParsingErrorCode.UNCLOSED_OPENING_COMMAND.resolve(
+                        "openingCommand" to commandKey.keyword,
+                        "closingCommand" to commandKey.correspondingClosingCommandKey?.keyword.toString(),
+                    ),
                 )
             }
             val closingKey = requireNotNull(commandKey.correspondingClosingCommandKey)
@@ -101,8 +105,11 @@ object KeywordCommandChainNestingHandler {
         if (lastCommandKey == null || lastCommandKey != correspondingOpeningCommandKey) {
             throw TemplateParsingException(
                 lineNumbers = commandFragment.lineNumbers,
-                msg = "The closing command '${closingCommandKey.keyword}' has no corresponding " +
-                        "opening command '${correspondingOpeningCommandKey.keyword}' on the same nesting level.",
+                errorCode = TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND,
+                msg = TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND.resolve(
+                    "closingCommand" to closingCommandKey.keyword,
+                    "openingCommand" to correspondingOpeningCommandKey.keyword,
+                ),
             )
         }
     }
@@ -117,8 +124,11 @@ object KeywordCommandChainNestingHandler {
         if (openingCommandKeysStack.lastOrNull() != requiredEnclosingCommandKey) {
             throw TemplateParsingException(
                 lineNumbers = commandFragment.lineNumbers,
-                msg = "The command '${commandKey.keyword}' must be directly nested inside " +
-                        "'${requiredEnclosingCommandKey.keyword}'.",
+                errorCode = TemplateParsingErrorCode.COMMAND_NOT_DIRECTLY_NESTED,
+                msg = TemplateParsingErrorCode.COMMAND_NOT_DIRECTLY_NESTED.resolve(
+                    "command" to commandKey.keyword,
+                    "enclosingCommand" to requiredEnclosingCommandKey.keyword,
+                ),
             )
         }
     }

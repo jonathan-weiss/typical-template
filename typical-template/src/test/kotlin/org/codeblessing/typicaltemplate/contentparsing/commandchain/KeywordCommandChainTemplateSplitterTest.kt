@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -358,9 +359,10 @@ class KeywordCommandChainTemplateSplitterTest {
                 .addText("content without closing")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(input)
             }
+            assertEquals(TemplateParsingErrorCode.TEMPLATE_RENDERER_BLOCK_NOT_CLOSED, exception.errorCode)
         }
 
         @Test
@@ -378,9 +380,10 @@ class KeywordCommandChainTemplateSplitterTest {
                 // Missing END_TEMPLATE_RENDERER for outer
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainTemplateSplitter.splitIntoTemplateRendererDescriptions(input)
             }
+            assertEquals(TemplateParsingErrorCode.TEMPLATE_RENDERER_BLOCK_NOT_CLOSED, exception.errorCode)
         }
     }
 }

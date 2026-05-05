@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.resolver
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.TemplateCommentParser
@@ -38,28 +39,29 @@ class KeywordCommandFactoryTest {
     @Test
     fun `throws for unknown keyword`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @unknown
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.UNKNOWN_KEYWORD, exception.errorCode)
     }
 
     @Test
     fun `throws for too few attribute groups`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @template-renderer
             """.trimIndent()
         )
 
-
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.TOO_FEW_ATTRIBUTE_GROUPS, exception.errorCode)
     }
 
     @Test
@@ -96,15 +98,16 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.ATTRIBUTE_KEY_NOT_ALLOWED, exception.errorCode)
     }
 
     @Test
     fun `throws for unknown attribute key`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @template-renderer [
                             templateRendererClassNameUnknown="MyTemplate"
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
@@ -112,15 +115,16 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.UNKNOWN_ATTRIBUTE_KEY, exception.errorCode)
     }
 
     @Test
     fun `throws for unallowed attribute key`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @template-renderer [
                             templateRendererClassName="MyTemplate"
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
@@ -129,9 +133,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.UNKNOWN_ATTRIBUTE_KEY, exception.errorCode)
     }
 
     @Test
@@ -150,15 +155,16 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.ATTRIBUTE_VALUE_NOT_ALLOWED, exception.errorCode)
     }
 
     @Test
     fun `throws for blank attribute value when not allowed`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """ 
+            comment = """
                         @template-renderer [
                             templateRendererClassName=""
                             templateRendererPackageName="org.codeblessing.typicaltemplate.examples"
@@ -166,9 +172,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.BLANK_ATTRIBUTE_VALUE, exception.errorCode)
     }
 
     @Test
@@ -181,9 +188,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.MISSING_REQUIRED_ATTRIBUTES, exception.errorCode)
     }
 
     @Test
@@ -289,9 +297,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.TOO_FEW_ATTRIBUTE_GROUPS, exception.errorCode)
     }
 
     @Test
@@ -307,9 +316,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.ATTRIBUTE_KEY_NOT_ALLOWED, exception.errorCode)
     }
 
     @Test
@@ -324,9 +334,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.ATTRIBUTE_KEY_NOT_ALLOWED, exception.errorCode)
     }
 
     @Test
@@ -341,9 +352,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.MISSING_REQUIRED_ATTRIBUTES, exception.errorCode)
     }
 
     @Test
@@ -389,9 +401,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.MUTUALLY_EXCLUSIVE_ATTRIBUTES, exception.errorCode)
     }
 
     @Test
@@ -420,9 +433,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX, exception.errorCode)
     }
 
     @Test
@@ -435,9 +449,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        assertThrows<TemplateParsingException> {
+        val exception = assertThrows<TemplateParsingException> {
             KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         }
+        Assertions.assertEquals(TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX, exception.errorCode)
     }
 
     private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS

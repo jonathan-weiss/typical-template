@@ -3,6 +3,7 @@ package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -24,7 +25,11 @@ object ContentPartsPreprocessorValidator {
         if (moveCommentCount > 1) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
-                msg = "A template comment must not have more than one '${CommandKey.MOVE_COMMENT.keyword}' command, but found $moveCommentCount.",
+                errorCode = TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS,
+                msg = TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS.resolve(
+                    "command" to CommandKey.MOVE_COMMENT.keyword,
+                    "count" to moveCommentCount.toString(),
+                ),
             )
         }
     }
@@ -38,7 +43,12 @@ object ContentPartsPreprocessorValidator {
             if (count > 1) {
                 throw TemplateParsingException(
                     lineNumbers = part.lineNumbers,
-                    msg = "A template comment must not have more than one '${CommandKey.EXPAND_COMMENT.keyword}' command with direction '${direction.value}', but found $count.",
+                    errorCode = TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS,
+                    msg = TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS.resolve(
+                        "command" to CommandKey.EXPAND_COMMENT.keyword,
+                        "direction" to direction.value,
+                        "count" to count.toString(),
+                    ),
                 )
             }
         }

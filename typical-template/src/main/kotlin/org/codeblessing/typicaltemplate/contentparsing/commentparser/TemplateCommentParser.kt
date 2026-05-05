@@ -1,6 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
 import org.codeblessing.typicaltemplate.KeywordType
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 
 /**
@@ -27,10 +28,8 @@ object TemplateCommentParser {
     fun parseComment(comment: String): List<CommandStructure> {
         if(!multiCommandValidationPattern.matches(comment)) {
             throw TemplateParsingException(
-                msg = "Invalid comment structure. " +
-                        "Content of comment must be one or many commands of this structure (without the < and > characters): " +
-                        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute3>=\"<value3>\"] " +
-                        "(use '@' or '#' as the keyword prefix)"
+                errorCode = TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE,
+                msg = TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE.resolve(),
             )
         }
 
@@ -69,10 +68,16 @@ object TemplateCommentParser {
             val attributeValue = attributePairMatch.groupValues[2]
 
             if(attributeName.isEmpty()) {
-                throw TemplateParsingException(msg = "Key can not be empty.")
+                throw TemplateParsingException(
+                    errorCode = TemplateParsingErrorCode.EMPTY_ATTRIBUTE_KEY,
+                    msg = TemplateParsingErrorCode.EMPTY_ATTRIBUTE_KEY.resolve(),
+                )
             }
             if(attributeName in keyValuePairs) {
-                throw TemplateParsingException(msg = "Duplicate use of '$attributeName'.")
+                throw TemplateParsingException(
+                    errorCode = TemplateParsingErrorCode.DUPLICATE_ATTRIBUTE_KEY,
+                    msg = TemplateParsingErrorCode.DUPLICATE_ATTRIBUTE_KEY.resolve("attributeName" to attributeName),
+                )
             }
             keyValuePairs[attributeName] = decodeAttributeValue(attributeValue)
         }

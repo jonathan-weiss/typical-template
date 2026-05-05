@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -255,9 +256,10 @@ class KeywordCommandChainNestingHandlerTest {
                 .addText("inside if")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.UNCLOSED_OPENING_COMMAND, exception.errorCode)
         }
 
         @Test
@@ -269,9 +271,10 @@ class KeywordCommandChainNestingHandlerTest {
                 .addText("inside foreach")
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.UNCLOSED_OPENING_COMMAND, exception.errorCode)
         }
     }
 
@@ -298,9 +301,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND, exception.errorCode)
         }
 
         @Test
@@ -311,9 +315,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.COMMAND_NOT_DIRECTLY_NESTED, exception.errorCode)
         }
     }
 
@@ -328,9 +333,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND, exception.errorCode)
         }
 
         @Test
@@ -341,9 +347,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND, exception.errorCode)
         }
 
         @Test
@@ -360,9 +367,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND, exception.errorCode)
         }
 
         @Test
@@ -373,9 +381,10 @@ class KeywordCommandChainNestingHandlerTest {
                     .end()
                 .build()
 
-            assertThrows(TemplateParsingException::class.java) {
+            val exception = assertThrows(TemplateParsingException::class.java) {
                 KeywordCommandChainNestingHandler.validateAndHandleNestingStructure(input)
             }
+            assertEquals(TemplateParsingErrorCode.MISMATCHED_CLOSING_COMMAND, exception.errorCode)
         }
     }
 }

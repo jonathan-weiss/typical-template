@@ -2,6 +2,7 @@ package org.codeblessing.typicaltemplate.contentparsing.commandchain
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -51,8 +52,12 @@ object KeywordCommandChainCustomValidation {
         if (!isValidJavaClassName(value)) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
-                msg = "The value '$value' for attribute '${attributeKey.keyAsString}' in command " +
-                        "'${keywordCommand.commandKey.keyword}' is not a valid Java class name.",
+                errorCode = TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME,
+                msg = TemplateParsingErrorCode.INVALID_JAVA_CLASS_NAME.resolve(
+                    "value" to value,
+                    "attributeKey" to attributeKey.keyAsString,
+                    "command" to keywordCommand.commandKey.keyword,
+                ),
             )
         }
     }
@@ -67,8 +72,12 @@ object KeywordCommandChainCustomValidation {
         if (!isValidJavaPackageName(value)) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
-                msg = "The value '$value' for attribute '${attributeKey.keyAsString}' in command " +
-                        "'${keywordCommand.commandKey.keyword}' is not a valid Java package name.",
+                errorCode = TemplateParsingErrorCode.INVALID_JAVA_PACKAGE_NAME,
+                msg = TemplateParsingErrorCode.INVALID_JAVA_PACKAGE_NAME.resolve(
+                    "value" to value,
+                    "attributeKey" to attributeKey.keyAsString,
+                    "command" to keywordCommand.commandKey.keyword,
+                ),
             )
         }
     }
@@ -83,8 +92,12 @@ object KeywordCommandChainCustomValidation {
         if (!isValidJavaParameterName(value)) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
-                msg = "The value '$value' for attribute '${attributeKey.keyAsString}' in command " +
-                        "'${keywordCommand.commandKey.keyword}' is not a valid Java parameter name.",
+                errorCode = TemplateParsingErrorCode.INVALID_JAVA_PARAMETER_NAME,
+                msg = TemplateParsingErrorCode.INVALID_JAVA_PARAMETER_NAME.resolve(
+                    "value" to value,
+                    "attributeKey" to attributeKey.keyAsString,
+                    "command" to keywordCommand.commandKey.keyword,
+                ),
             )
         }
     }
@@ -99,8 +112,11 @@ object KeywordCommandChainCustomValidation {
             if (!seen.add(modelName)) {
                 throw TemplateParsingException(
                     lineNumbers = part.lineNumbers,
-                    msg = "The model name '$modelName' is used more than once in command " +
-                            "'${keywordCommand.commandKey.keyword}'. Model names must be unique.",
+                    errorCode = TemplateParsingErrorCode.DUPLICATE_MODEL_NAME,
+                    msg = TemplateParsingErrorCode.DUPLICATE_MODEL_NAME.resolve(
+                        "modelName" to modelName,
+                        "command" to keywordCommand.commandKey.keyword,
+                    ),
                 )
             }
         }

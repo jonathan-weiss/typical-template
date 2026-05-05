@@ -5,6 +5,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.KeywordType
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
 import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
@@ -31,7 +32,8 @@ object KeywordCommandFactory {
         val keyword = commandStructure.keyword
         val commandKey = CommandKey.fromKeyword(keyword) ?: throw TemplateParsingException(
             lineNumbers = lineNumbers,
-            msg = "Invalid keyword '$keyword'.",
+            errorCode = TemplateParsingErrorCode.UNKNOWN_KEYWORD,
+            msg = TemplateParsingErrorCode.UNKNOWN_KEYWORD.resolve("keyword" to keyword),
         )
 
         if (commandStructure.keywordType != commandKey.keywordType) {
@@ -39,7 +41,12 @@ object KeywordCommandFactory {
             val actualPrefix = if (commandStructure.keywordType == KeywordType.PREPROCESSOR_COMMAND) "#" else "@"
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
-                msg = "Keyword '$keyword' must be prefixed with '$expectedPrefix' but was prefixed with '$actualPrefix'.",
+                errorCode = TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX,
+                msg = TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX.resolve(
+                    "keyword" to keyword,
+                    "expectedPrefix" to expectedPrefix,
+                    "actualPrefix" to actualPrefix,
+                ),
             )
         }
 
@@ -47,16 +54,22 @@ object KeywordCommandFactory {
         if (numberOfAttributeGroups < commandKey.minNumberOfAttributeGroups) {
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
-                msg = "Invalid number of attributes groups. " +
-                        "Must be at least ${commandKey.minNumberOfAttributeGroups} but was ${numberOfAttributeGroups}.",
+                errorCode = TemplateParsingErrorCode.TOO_FEW_ATTRIBUTE_GROUPS,
+                msg = TemplateParsingErrorCode.TOO_FEW_ATTRIBUTE_GROUPS.resolve(
+                    "min" to commandKey.minNumberOfAttributeGroups.toString(),
+                    "actual" to numberOfAttributeGroups.toString(),
+                ),
             )
         }
 
         if (numberOfAttributeGroups > commandKey.maxNumberOfAttributeGroups) {
             throw TemplateParsingException(
                 lineNumbers = lineNumbers,
-                msg = "Invalid number of attributes groups. " +
-                        "Only ${commandKey.maxNumberOfAttributeGroups} are allowed but was ${numberOfAttributeGroups}.",
+                errorCode = TemplateParsingErrorCode.TOO_MANY_ATTRIBUTE_GROUPS,
+                msg = TemplateParsingErrorCode.TOO_MANY_ATTRIBUTE_GROUPS.resolve(
+                    "max" to commandKey.maxNumberOfAttributeGroups.toString(),
+                    "actual" to numberOfAttributeGroups.toString(),
+                ),
             )
         }
 
@@ -67,33 +80,46 @@ object KeywordCommandFactory {
                         CommandAttributeKey.fromString(keyString)
                             ?: throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
-                                msg = "Unknown attribute key '$keyString' in attributes group #${groupIndex + 1}. " +
-                                        "Only the following attributes are allowed: ${commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }}.",
+                                errorCode = TemplateParsingErrorCode.UNKNOWN_ATTRIBUTE_KEY,
+                                msg = TemplateParsingErrorCode.UNKNOWN_ATTRIBUTE_KEY.resolve(
+                                    "key" to keyString,
+                                    "groupIndex" to (groupIndex + 1).toString(),
+                                    "allowedAttributes" to commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }.toString(),
+                                ),
                             )
                     }
                     .onEach { (attributeKey, attributeValue) ->
                         if (attributeKey !in commandKey.allowedAttributesForGroup(groupIndex)) {
                             throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
-                                msg = "Not allowed attribute key '${attributeKey.keyAsString}' " +
-                                        "in attributes group #${groupIndex + 1}. " +
-                                        "Only the following attributes are " +
-                                        "allowed: ${commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }}.",
+                                errorCode = TemplateParsingErrorCode.ATTRIBUTE_KEY_NOT_ALLOWED,
+                                msg = TemplateParsingErrorCode.ATTRIBUTE_KEY_NOT_ALLOWED.resolve(
+                                    "key" to attributeKey.keyAsString,
+                                    "groupIndex" to (groupIndex + 1).toString(),
+                                    "allowedAttributes" to commandKey.allowedAttributesForGroup(groupIndex).map { it.keyAsString }.toString(),
+                                ),
                             )
                         }
                         if (attributeKey.allowedValues != null && attributeValue !in attributeKey.allowedValues.map { it.value }) {
                             throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
-                                msg = "Not allowed attribute value '$attributeValue' for " +
-                                        "key '${attributeKey.keyAsString}' in attributes group #${groupIndex + 1}. " +
-                                        "Only the following attributes are allowed: ${attributeKey.allowedValues.map { it.value }}.",
+                                errorCode = TemplateParsingErrorCode.ATTRIBUTE_VALUE_NOT_ALLOWED,
+                                msg = TemplateParsingErrorCode.ATTRIBUTE_VALUE_NOT_ALLOWED.resolve(
+                                    "value" to attributeValue,
+                                    "key" to attributeKey.keyAsString,
+                                    "groupIndex" to (groupIndex + 1).toString(),
+                                    "allowedValues" to attributeKey.allowedValues.map { it.value }.toString(),
+                                ),
                             )
                         }
                         if (attributeKey.requireNotEmpty && attributeValue.isBlank()) {
                             throw TemplateParsingException(
                                 lineNumbers = lineNumbers,
-                                msg = "The attribute value for key '${attributeKey.keyAsString}' " +
-                                        "in attributes group #${groupIndex + 1} must not be blank."
+                                errorCode = TemplateParsingErrorCode.BLANK_ATTRIBUTE_VALUE,
+                                msg = TemplateParsingErrorCode.BLANK_ATTRIBUTE_VALUE.resolve(
+                                    "key" to attributeKey.keyAsString,
+                                    "groupIndex" to (groupIndex + 1).toString(),
+                                ),
                             )
                         }
 
@@ -103,18 +129,24 @@ object KeywordCommandFactory {
                     if(missingAttributes.isNotEmpty()) {
                         throw TemplateParsingException(
                             lineNumbers = lineNumbers,
-                            msg = "Not all required attributes are present for command '${commandKey.keyword}'. " +
-                                    "The following attributes are missing in attributes group #${groupIndex + 1}: " +
-                                    "${missingAttributes.joinToString { it.keyAsString }} ",
+                            errorCode = TemplateParsingErrorCode.MISSING_REQUIRED_ATTRIBUTES,
+                            msg = TemplateParsingErrorCode.MISSING_REQUIRED_ATTRIBUTES.resolve(
+                                "command" to commandKey.keyword,
+                                "groupIndex" to (groupIndex + 1).toString(),
+                                "missingAttributes" to missingAttributes.joinToString { it.keyAsString },
+                            ),
                         )
                     }
                     val unallowedAttributes = commandKey.unallowedAttributesForGroup(groupIndex, attributeGroup.attributes.keys)
                     if(unallowedAttributes.isNotEmpty()) {
                         throw TemplateParsingException(
                             lineNumbers = lineNumbers,
-                            msg = "The following attributes are not allowed for " +
-                                    "command '${commandKey.keyword}' in attributes group #${groupIndex + 1}: " +
-                                    "${unallowedAttributes.joinToString { it.keyAsString }} ",
+                            errorCode = TemplateParsingErrorCode.UNALLOWED_ATTRIBUTES,
+                            msg = TemplateParsingErrorCode.UNALLOWED_ATTRIBUTES.resolve(
+                                "command" to commandKey.keyword,
+                                "groupIndex" to (groupIndex + 1).toString(),
+                                "unallowedAttributes" to unallowedAttributes.joinToString { it.keyAsString },
+                            ),
                         )
                     }
                     val mutualExclusiveAttributes = commandKey.mutualExclusiveAttributesForGroup(groupIndex)
@@ -122,10 +154,13 @@ object KeywordCommandFactory {
                     if (presentMutualExclusiveAttributes.size > 1) {
                         throw TemplateParsingException(
                             lineNumbers = lineNumbers,
-                            msg = "Only one of the following mutually exclusive attributes may be present for " +
-                                    "command '${commandKey.keyword}' in attributes group #${groupIndex + 1}: " +
-                                    "${mutualExclusiveAttributes.joinToString { it.keyAsString }}. " +
-                                    "Found: ${presentMutualExclusiveAttributes.joinToString { it.keyAsString }}.",
+                            errorCode = TemplateParsingErrorCode.MUTUALLY_EXCLUSIVE_ATTRIBUTES,
+                            msg = TemplateParsingErrorCode.MUTUALLY_EXCLUSIVE_ATTRIBUTES.resolve(
+                                "command" to commandKey.keyword,
+                                "groupIndex" to (groupIndex + 1).toString(),
+                                "mutualExclusiveAttributes" to mutualExclusiveAttributes.joinToString { it.keyAsString },
+                                "foundAttributes" to presentMutualExclusiveAttributes.joinToString { it.keyAsString },
+                            ),
                         )
                     }
                 }

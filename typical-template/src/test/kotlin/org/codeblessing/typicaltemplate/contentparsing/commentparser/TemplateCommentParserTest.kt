@@ -1,6 +1,7 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
 import org.codeblessing.typicaltemplate.KeywordType
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
@@ -244,144 +245,160 @@ class TemplateCommentParserTest {
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for empty string`(keywordPrefix: String) {
             val commentText = ""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception with empty brackets`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception with multiple empty brackets`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[][foo="bar"][]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for duplicate keys`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar" foo="bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.DUPLICATE_ATTRIBUTE_KEY, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for whitespaces between key and equal sign`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo  ="bar"][fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for whitespaces between equal sign and value`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo=  "bar"][fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for whitespaces between key and value`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo  =  "bar"][fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for key-value pairs with comma as separator`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar",far="baz"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for key-value pairs missing a space as separator`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar"far="baz"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for unquoted values`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo=bar]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for value with quote character`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="ba"r"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for key-value pairs with missing quote at start`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo=bar"][fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for key-value pairs with missing quote at the end`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar][fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for missing closing bracket`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar"[fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for missing opening bracket`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword [foo="bar"]fox="bar2 bar2"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for attribute key with special characters`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword [foo*="bar"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         fun parseCommentExpectingSingeResult(comment: String): CommandStructure {
@@ -470,18 +487,20 @@ class TemplateCommentParserTest {
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for unescaped double quote inside value`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="ba"r"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         @ParameterizedTest(name = "prefix=''{0}''")
         @ValueSource(strings = ["@", "#"])
         fun `parseComment throws exception for trailing backslash that is not an escape sequence`(keywordPrefix: String) {
             val commentText = """${keywordPrefix}my-keyword[foo="bar\"]"""
-            assertThrows<TemplateParsingException> {
+            val exception = assertThrows<TemplateParsingException> {
                 TemplateCommentParser.parseComment(commentText)
             }
+            assertEquals(TemplateParsingErrorCode.INVALID_COMMENT_STRUCTURE, exception.errorCode)
         }
 
         private fun parseCommentExpectingSingleResult(comment: String): CommandStructure {

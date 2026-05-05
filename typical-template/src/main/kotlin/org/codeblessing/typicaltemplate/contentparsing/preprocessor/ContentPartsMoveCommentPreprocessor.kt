@@ -4,6 +4,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
+import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -96,7 +97,8 @@ object ContentPartsMoveCommentPreprocessor {
 
     private fun Int.indexOrException(searchToken: String): Int {
         if (this < 0) throw TemplateParsingException(
-            msg = "Occurrence of '$searchToken' not found in text"
+            errorCode = TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND,
+            msg = TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND.resolve("searchToken" to searchToken),
         )
         return this
     }
