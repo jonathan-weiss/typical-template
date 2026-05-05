@@ -4,10 +4,12 @@ import org.codeblessing.typicaltemplate.AttributeGroupOccurrence
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.IsListValue
+import org.codeblessing.typicaltemplate.KeywordType
 
 object MarkdownCreator {
 
     private const val COMMAND_PREFIX = "@"
+    private const val PREPROCESSOR_COMMAND_PREFIX = "#"
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
@@ -141,7 +143,7 @@ object MarkdownCreator {
 
     private fun CommandKey.commandSyntax(): String {
         val sb = StringBuilder()
-        sb.append("${COMMAND_PREFIX}${keyword}")
+        sb.append("${commandPrefix()}${keyword}")
         if (!isClosingCommand) {
             for (constraint in attributeGroupConstraints) {
                 sb.append(" [ ")
@@ -156,7 +158,7 @@ object MarkdownCreator {
                 }
             }
             correspondingClosingCommandKey?.let { closingKey ->
-                sb.append(" .... ${COMMAND_PREFIX}${closingKey.keyword}")
+                sb.append(" .... ${closingKey.commandPrefix()}${closingKey.keyword}")
             }
         }
         return sb.toString()
@@ -210,5 +212,10 @@ object MarkdownCreator {
 
     private fun Boolean.yesOrNo(): String {
         return if (this) "Yes" else "No"
+    }
+
+    private fun CommandKey.commandPrefix(): String = when (keywordType) {
+        KeywordType.PREPROCESSOR_COMMAND -> PREPROCESSOR_COMMAND_PREFIX
+        KeywordType.COMMAND -> COMMAND_PREFIX
     }
 }

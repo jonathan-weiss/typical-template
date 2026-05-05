@@ -344,7 +344,7 @@ Repeatable Group Attributes:
 
 ## move-comment
 
-Syntax: ```@move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: ```#move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
 Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.
 
@@ -383,7 +383,7 @@ Attributes:
 
 ## expand-comment
 
-Syntax: ```@expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
+Syntax: ```#expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
 
 Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.
 
