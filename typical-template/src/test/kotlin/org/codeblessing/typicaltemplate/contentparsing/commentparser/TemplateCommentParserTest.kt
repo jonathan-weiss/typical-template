@@ -392,6 +392,106 @@ class TemplateCommentParserTest {
     }
 
     @Nested
+    inner class EscapingAndDecoding {
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped double quote in value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="ba\"r"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("""ba"r""", commandStructure.brackets[0]["foo"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped double quote as entire value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="\""]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("\"", commandStructure.brackets[0]["foo"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped backslash in value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="ba\\r"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("""ba\r""", commandStructure.brackets[0]["foo"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped backslash at end of value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="bar\\"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("""bar\""", commandStructure.brackets[0]["foo"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes multiple escaped characters in value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="a\"b\\c\"d"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("""a"b\c"d""", commandStructure.brackets[0]["foo"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped characters across multiple key-value pairs`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="say \"hello\"" bar="path\\to\\file"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals("""say "hello"""", commandStructure.brackets[0]["foo"])
+            assertEquals("""path\to\file""", commandStructure.brackets[0]["bar"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment decodes escaped characters across multiple brackets`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="\"quoted\""][bar="back\\slash"]"""
+            val commandStructure = parseCommentExpectingSingleResult(commentText)
+
+            assertEquals("my-keyword", commandStructure.keyword)
+            assertEquals(""""quoted"""", commandStructure.brackets[0]["foo"])
+            assertEquals("""back\slash""", commandStructure.brackets[1]["bar"])
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment throws exception for unescaped double quote inside value`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="ba"r"]"""
+            assertThrows<TemplateParsingException> {
+                TemplateCommentParser.parseComment(commentText)
+            }
+        }
+
+        @ParameterizedTest(name = "prefix=''{0}''")
+        @ValueSource(strings = ["@", "#"])
+        fun `parseComment throws exception for trailing backslash that is not an escape sequence`(keywordPrefix: String) {
+            val commentText = """${keywordPrefix}my-keyword[foo="bar\"]"""
+            assertThrows<TemplateParsingException> {
+                TemplateCommentParser.parseComment(commentText)
+            }
+        }
+
+        private fun parseCommentExpectingSingleResult(comment: String): CommandStructure {
+            val commands = TemplateCommentParser.parseComment(comment)
+            assertEquals(1, commands.size, "Expected comment to have exactly one command")
+            return commands.single()
+        }
+    }
+
+    @Nested
     inner class MultipleCommandsComment {
 
         @ParameterizedTest(name = "prefix=''{0}''")

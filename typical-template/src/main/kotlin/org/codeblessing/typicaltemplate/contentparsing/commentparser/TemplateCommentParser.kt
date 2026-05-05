@@ -12,7 +12,7 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 object TemplateCommentParser {
 
     private val attributeKeyPattern = Regex("""[a-zA-Z]+""")
-    private val attributeValuePattern = Regex("""[^"]*""")
+    private val attributeValuePattern = Regex("""(?:[^"\\]|\\.)*""")
 
     private val attributePairPattern = Regex("""${attributeKeyPattern}="$attributeValuePattern"""")
 
@@ -74,9 +74,27 @@ object TemplateCommentParser {
             if(attributeName in keyValuePairs) {
                 throw TemplateParsingException(msg = "Duplicate use of '$attributeName'.")
             }
-            keyValuePairs[attributeName] = attributeValue
+            keyValuePairs[attributeName] = decodeAttributeValue(attributeValue)
         }
         
         return keyValuePairs
+    }
+
+    private fun decodeAttributeValue(rawValue: String): String {
+        val sb = StringBuilder()
+        var i = 0
+        while (i < rawValue.length) {
+            if (rawValue[i] == '\\' && i + 1 < rawValue.length) {
+                when (rawValue[i + 1]) {
+                    '"'  -> { sb.append('"');  i += 2 }
+                    '\\' -> { sb.append('\\'); i += 2 }
+                    else -> { sb.append('\\'); sb.append(rawValue[i + 1]); i += 2 }
+                }
+            } else {
+                sb.append(rawValue[i])
+                i++
+            }
+        }
+        return sb.toString()
     }
 }
