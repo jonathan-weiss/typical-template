@@ -10,7 +10,7 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 import org.codeblessing.typicaltemplate.toEnum
 
-object ContentPartsPreprocessor {
+object ContentPartsMoveCommentPreprocessor {
 
     fun runPreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {
         val result = mutableListOf<TemplateContentPart>()

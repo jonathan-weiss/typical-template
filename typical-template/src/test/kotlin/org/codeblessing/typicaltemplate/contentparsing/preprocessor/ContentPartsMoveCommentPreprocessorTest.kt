@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class ContentPartsPreprocessorTest {
+class ContentPartsMoveCommentPreprocessorTest {
 
     @Test
     fun `empty list returns empty list`() {
         val input = ContentPartBuilder.create().build()
 
-        val result = ContentPartsPreprocessor.runPreprocessing(input)
+        val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
         assertEquals(emptyList<Any>(), result)
     }
@@ -28,7 +28,7 @@ class ContentPartsPreprocessorTest {
             .addText("more text")
             .build()
 
-        val result = ContentPartsPreprocessor.runPreprocessing(input)
+        val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
         assertEquals(input, result)
     }
@@ -48,7 +48,7 @@ class ContentPartsPreprocessorTest {
                 .addTemplateComment().end()
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -60,7 +60,7 @@ class ContentPartsPreprocessorTest {
                 .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(input, result)
         }
@@ -72,7 +72,7 @@ class ContentPartsPreprocessorTest {
                 .addTemplateComment().addIfCommand().end()
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(input, result)
         }
@@ -90,7 +90,7 @@ class ContentPartsPreprocessorTest {
                 .addText("World Bye World")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -108,7 +108,7 @@ class ContentPartsPreprocessorTest {
                 .addText(" World Hello")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -126,7 +126,7 @@ class ContentPartsPreprocessorTest {
                 .addText("World End")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -144,7 +144,7 @@ class ContentPartsPreprocessorTest {
                 .addText(" End")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -161,7 +161,7 @@ class ContentPartsPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -179,7 +179,7 @@ class ContentPartsPreprocessorTest {
                 .addTemplateComment().end()
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -200,7 +200,7 @@ class ContentPartsPreprocessorTest {
                 .addText("Hello World")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -212,7 +212,7 @@ class ContentPartsPreprocessorTest {
                 .addText("after")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(input, result)
         }
@@ -224,7 +224,7 @@ class ContentPartsPreprocessorTest {
                 .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(input, result)
         }
@@ -242,7 +242,7 @@ class ContentPartsPreprocessorTest {
                 .addText("World Bye World")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -260,7 +260,7 @@ class ContentPartsPreprocessorTest {
                 .addText(" World Hello")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -278,7 +278,7 @@ class ContentPartsPreprocessorTest {
                 .addText("World End")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -296,7 +296,7 @@ class ContentPartsPreprocessorTest {
                 .addText(" End")
                 .build()
 
-            val result = ContentPartsPreprocessor.runPreprocessing(input)
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(expected, result)
         }
@@ -313,7 +313,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
 
@@ -325,7 +325,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
 
@@ -337,7 +337,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
 
@@ -349,7 +349,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
 
@@ -361,7 +361,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
 
@@ -373,7 +373,7 @@ class ContentPartsPreprocessorTest {
                 .build()
 
             assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessor.runPreprocessing(input)
+                ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
         }
     }
