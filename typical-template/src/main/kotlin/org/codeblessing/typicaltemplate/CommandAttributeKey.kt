@@ -26,6 +26,8 @@ enum class CommandAttributeKey(
     AFTER_FIRST_OCCURRENCE_OF("afterFirstOccurrenceOf"),
     BEFORE_LAST_OCCURRENCE_OF("beforeLastOccurrenceOf"),
     AFTER_LAST_OCCURRENCE_OF("afterLastOccurrenceOf"),
+    EXPAND_DIRECTION("expandDirection", allowedValues = DirectionValue.entries.toList()),
+    STRIP_MODE("strip", allowedValues = ExpandModeValue.entries.toList()),
     ;
 
     companion object {

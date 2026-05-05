@@ -145,6 +145,15 @@ enum class CommandKey(
             )
         ),
     ),
+    EXPAND_COMMENT(
+        keyword = "expand-comment",
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(EXPAND_DIRECTION, STRIP_MODE),
+            )
+        ),
+    ),
     ;
 
     companion object {

@@ -47,6 +47,7 @@ object TemplateRendererContentCreator {
         }
         return when (commandKey) {
             CommandKey.MOVE_COMMENT,
+            CommandKey.EXPAND_COMMENT,
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.END_TEMPLATE_RENDERER,
                  -> throw IllegalArgumentException("Command '$commandKey' not allowed here")
