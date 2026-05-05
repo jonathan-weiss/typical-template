@@ -346,7 +346,7 @@ Repeatable Group Attributes:
 
 Syntax: ```#move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
-Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.
+Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous/next comment or to the beginning or end of the file.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
