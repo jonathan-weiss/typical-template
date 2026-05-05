@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
+import org.codeblessing.typicaltemplate.KeywordType
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
@@ -232,7 +233,7 @@ class TemplateCommentParserTest {
             val commentText = "${keywordPrefix}my-keyword"
             val commandStructure = parseCommentExpectingSingeResult(commentText)
             val expectedKeywordType = if (keywordPrefix == "#") {
-                KeywordType.PREPROCESSING
+                KeywordType.PREPROCESSOR_COMMAND
             } else {
                 KeywordType.COMMAND
             }

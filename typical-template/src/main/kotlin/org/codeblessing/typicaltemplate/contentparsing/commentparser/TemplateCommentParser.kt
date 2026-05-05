@@ -1,5 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
+import org.codeblessing.typicaltemplate.KeywordType
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 
 /**
@@ -44,7 +45,7 @@ object TemplateCommentParser {
         val match = requireNotNull(singleCommandKeywordAndAttributesGroupingPattern.find(command))
         val keyword = match.groupValues[1]
         val bracketsString = match.groupValues[2]
-        val keywordType = if (match.value.trimStart().startsWith("#")) KeywordType.PREPROCESSING else KeywordType.COMMAND
+        val keywordType = if (match.value.trimStart().startsWith("#")) KeywordType.PREPROCESSOR_COMMAND else KeywordType.COMMAND
 
         val bracketsContent = bracketsGroupingPattern
             .findAll(bracketsString)
