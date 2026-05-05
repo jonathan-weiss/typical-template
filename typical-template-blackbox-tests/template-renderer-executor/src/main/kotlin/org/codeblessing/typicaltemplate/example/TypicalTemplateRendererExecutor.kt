@@ -2,9 +2,15 @@ package org.codeblessing.typicaltemplate.example
 
 import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
 import org.codeblessing.typicaltemplate.example.renderer.HtmlListPageRenderer
+import org.codeblessing.typicaltemplate.example.renderer.StatusEnumRenderer
+import org.codeblessing.typicaltemplate.example.renderer.SummaryClassRenderer
+import org.codeblessing.typicaltemplate.example.renderer.SummaryExtensionRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoFieldRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
+import org.codeblessing.typicaltemplate.example.renderer.model.StatusEnumRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.SummaryFieldRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.SummaryRenderModel
 import java.nio.file.Paths
 import java.util.Locale.getDefault
 import kotlin.io.path.createDirectories
@@ -48,6 +54,70 @@ fun main(args: Array<String>) {
 
         kotlinFilePath.parent.createDirectories()
         kotlinFilePath.writeText(kotlinContent)
+    }
+
+    // GENERATE KOTLIN ENUM FILES
+    val statusEnumRenderModels = listOf(
+        StatusEnumRenderModel(
+            enumName = "PaymentStatus",
+            statusValues = listOf("PENDING", "PAID", "REFUNDED"),
+        ),
+    )
+
+    statusEnumRenderModels.forEach { enumRenderModel ->
+        val kotlinContent = StatusEnumRenderer.renderTemplate(model = enumRenderModel)
+        if(PRINT_GENERATED_CONTENT) {
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(" ${enumRenderModel.enumName} enum ")
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(kotlinContent)
+        }
+        val kotlinFilePath = pathToGeneratedKotlinFiles.resolve(StatusEnumRenderer.filePath(enumRenderModel))
+        kotlinFilePath.parent.createDirectories()
+        kotlinFilePath.writeText(kotlinContent)
+    }
+
+    // GENERATE KOTLIN SUMMARY FILES
+    val summaryRenderModels = listOf(
+        SummaryRenderModel(
+            summaryClassName = "PaymentSummary",
+            fields = listOf(
+                SummaryFieldRenderModel(
+                    fieldName = "paymentId",
+                    fieldType = "String",
+                    validationRules = listOf("must not be blank", "max 64 chars"),
+                ),
+                SummaryFieldRenderModel(fieldName = "amount", fieldType = "Long"),
+                SummaryFieldRenderModel(fieldName = "notes", fieldType = "String", isNullable = true),
+                SummaryFieldRenderModel(fieldName = "tags", fieldType = "String", isList = true),
+            ),
+        ),
+    )
+
+    summaryRenderModels.forEach { summaryRenderModel ->
+        val classContent = SummaryClassRenderer.renderTemplate(model = summaryRenderModel)
+        if(PRINT_GENERATED_CONTENT) {
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(" ${summaryRenderModel.summaryClassName} summary class ")
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(classContent)
+        }
+        val classFilePath = pathToGeneratedKotlinFiles.resolve(SummaryClassRenderer.filePath(summaryRenderModel))
+        classFilePath.parent.createDirectories()
+        classFilePath.writeText(classContent)
+
+        val extensionContent = SummaryExtensionRenderer.renderTemplate(model = summaryRenderModel)
+        if(PRINT_GENERATED_CONTENT) {
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(" ${summaryRenderModel.summaryClassName} extensions ")
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(extensionContent)
+        }
+        val extensionFilePath = pathToGeneratedKotlinFiles
+            .resolve(summaryRenderModel.summaryPackageDirectory)
+            .resolve(summaryRenderModel.summaryExtensionsFileName)
+        extensionFilePath.parent.createDirectories()
+        extensionFilePath.writeText(extensionContent)
     }
 
     // GENERATE HTML FILES

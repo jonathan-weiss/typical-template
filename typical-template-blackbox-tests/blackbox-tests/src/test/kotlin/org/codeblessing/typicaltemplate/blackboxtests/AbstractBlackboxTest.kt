@@ -30,6 +30,14 @@ abstract class AbstractBlackboxTest {
         return baseProjectPath().resolve("src/webapp-generated")
     }
 
+    fun kotlinSourcePath(): Path {
+        return baseProjectPath().resolve("src/main/kotlin")
+    }
+
+    fun kotlinGeneratedPath(): Path {
+        return baseProjectPath().resolve("src/generated/kotlin")
+    }
+
     fun assertSameContent(fileWithTypicalTemplateSyntax: Path, generatedFile: Path, expectedContentResourceName: String) {
         assertTrue(fileWithTypicalTemplateSyntax.exists(), "$generatedFile doesn't exist")
 
