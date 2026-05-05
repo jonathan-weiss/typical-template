@@ -385,7 +385,7 @@ Attributes:
 
 Syntax: ```#expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
 
-Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.
+Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part. This is useful if you don't want to have empty lines in your template result due to the typical templates comments or spaces/ident if the comments typical template comments have to follow some ident rules.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.

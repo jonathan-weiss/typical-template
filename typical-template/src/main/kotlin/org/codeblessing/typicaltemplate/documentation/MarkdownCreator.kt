@@ -31,8 +31,9 @@ object MarkdownCreator {
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
         CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
         CommandKey.MOVE_COMMENT to "Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content.",
-        CommandKey.EXPAND_COMMENT to "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.",
+        CommandKey.EXPAND_COMMENT to "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part. This is useful if you don't want to have empty lines in your template result due to the typical templates comments or spaces/ident if the comments typical template comments have to follow some ident rules.",
     )
+
 
     // linked map to preserve the order of the keys
     private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = linkedMapOf(
