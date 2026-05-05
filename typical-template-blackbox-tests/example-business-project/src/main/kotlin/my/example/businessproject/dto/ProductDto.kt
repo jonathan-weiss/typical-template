@@ -1,7 +1,7 @@
 package my.example.businessproject.dto
 
 /* @tt{{{
-  @move-comment [direction="backward"]
+  #move-comment [direction="backward"]
   @template-renderer [
       templateRendererClassName="EntityDtoTemplateRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"

@@ -3,6 +3,7 @@ package org.codeblessing.typicaltemplate.contentparsing.resolver
 import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.KeywordType
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commentparser.CommandStructure
@@ -32,6 +33,15 @@ object KeywordCommandFactory {
             lineNumbers = lineNumbers,
             msg = "Invalid keyword '$keyword'.",
         )
+
+        if (commandStructure.keywordType != commandKey.keywordType) {
+            val expectedPrefix = if (commandKey.keywordType == KeywordType.PREPROCESSOR_COMMAND) "#" else "@"
+            val actualPrefix = if (commandStructure.keywordType == KeywordType.PREPROCESSOR_COMMAND) "#" else "@"
+            throw TemplateParsingException(
+                lineNumbers = lineNumbers,
+                msg = "Keyword '$keyword' must be prefixed with '$expectedPrefix' but was prefixed with '$actualPrefix'.",
+            )
+        }
 
         val numberOfAttributeGroups = commandStructure.brackets.size
         if (numberOfAttributeGroups < commandKey.minNumberOfAttributeGroups) {
