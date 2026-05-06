@@ -119,8 +119,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project("org.codeblessing.typical-template:typical-template-api:1.0.0"))
-    runtimeOnly(project("org.codeblessing.typical-template:typical-template:1.0.0"))
+    implementation(project("org.codeblessing.typical-template:typical-template-api:0.0.3"))
+    runtimeOnly(project("org.codeblessing.typical-template:typical-template:0.0.3"))
 }
 // ...
 ```

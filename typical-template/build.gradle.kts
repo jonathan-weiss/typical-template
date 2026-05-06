@@ -24,11 +24,11 @@ tasks.register<JavaExec>("generateMainFunctionUsageDocumentation") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("org.codeblessing.typicaltemplate.documentation.MainFunctionMarkdownCreatorMainKt")
 
-    val outputFile = rootProject.file("MAIN-FUNCTION-USAGE.md")
-    outputs.file(outputFile)
+    val mainFunctionUsageMdFile: File = rootProject.file("MAIN-FUNCTION-USAGE.md")
+    outputs.file(mainFunctionUsageMdFile)
 
     doFirst {
-        standardOutput = outputFile.outputStream()
+        standardOutput = mainFunctionUsageMdFile.outputStream()
     }
 }
 
@@ -37,10 +37,11 @@ tasks.register<JavaExec>("generateCommandReferenceDocumentation") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("org.codeblessing.typicaltemplate.documentation.CommandReferenceMarkdownCreatorMainKt")
 
-    val outputFile = rootProject.file("COMMAND-REFERENCE.md")
-    outputs.file(outputFile)
+    val commandReferenceMdFile: File = rootProject.file("COMMAND-REFERENCE.md")
+    outputs.file(commandReferenceMdFile)
 
     doFirst {
-        standardOutput = outputFile.outputStream()
+        standardOutput = commandReferenceMdFile.outputStream()
     }
 }
+
