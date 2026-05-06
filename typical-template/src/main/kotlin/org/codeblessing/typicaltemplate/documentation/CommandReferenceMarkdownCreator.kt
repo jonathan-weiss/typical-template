@@ -7,6 +7,8 @@ import org.codeblessing.typicaltemplate.DirectionValue
 import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.KeywordType
+import org.codeblessing.typicaltemplate.KeywordType.COMMAND
+import org.codeblessing.typicaltemplate.KeywordType.PREPROCESSOR_COMMAND
 
 object CommandReferenceMarkdownCreator {
 
@@ -167,15 +169,32 @@ object CommandReferenceMarkdownCreator {
         val sb = StringBuilder()
         sb.appendLine("""
             # Keyword/Command reference
+        """.trimIndent())
 
+        sb.appendLine("""
+            
             The following keywords/commands are supported:
         """.trimIndent())
-        for ((commandKey, _) in commandKeyDocumentation) {
+        for ((commandKey, _) in commandKeyDocumentation.filter { it.key.keywordType == COMMAND }) {
             sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
         }
-        sb.appendLine("")
-        sb.appendLine("")
-
+        sb.appendLine("""
+            
+            Commands always starts with a `$`.
+            
+        """.trimIndent())
+        sb.appendLine("""
+            The following _preprocessing_ keywords/commands are supported:
+        """.trimIndent())
+        for ((commandKey, _) in commandKeyDocumentation.filter { it.key.keywordType == PREPROCESSOR_COMMAND }) {
+            sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
+        }
+        sb.appendLine("""
+            
+            Preprocessing commands always starts with a `#`.
+            
+            
+        """.trimIndent())
 
         for ((commandKey, docLines) in commandKeyDocumentation) {
             sb.appendLine("""
@@ -324,7 +343,7 @@ object CommandReferenceMarkdownCreator {
     }
 
     private fun CommandKey.commandPrefix(): String = when (keywordType) {
-        KeywordType.PREPROCESSOR_COMMAND -> PREPROCESSOR_COMMAND_PREFIX
-        KeywordType.COMMAND -> COMMAND_PREFIX
+        PREPROCESSOR_COMMAND -> PREPROCESSOR_COMMAND_PREFIX
+        COMMAND -> COMMAND_PREFIX
     }
 }

@@ -18,8 +18,14 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
+
+Commands always starts with a `$`.
+
+The following _preprocessing_ keywords/commands are supported:
 * [move-comment](#move-comment)
 * [expand-comment](#expand-comment)
+
+Preprocessing commands always starts with a `#`.
 
 
 

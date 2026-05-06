@@ -105,6 +105,7 @@ Of course, the comment style depends on the language of the source file.
 All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax 
 for typical template.
 Inside the magic brackets, write one or many typical-template commands (see [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)).
+Preprocessed commands starts with a `#`, the "real" commands with a `$`.
 
 ## Let typical template generate the renderer classes
 
@@ -162,14 +163,13 @@ When the function ``executeTypicalTemplateAndCreateRenderers`` is called, typica
 
 ## Varia
 
-### Configuration
-All supported comment styles are defined in a [configuration file](typical-template/src/main/resources/typical-template-config.properties) 
-that can be extended/overwritten by providing a resource file ```typical-template-config-overwrite.properties``` in your JVM. 
+* No external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
+* The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled via ServiceLoader (see ``META-INF/services/`` in the typical-template module).
+* All supported comment styles are defined in a [configuration file](typical-template/src/main/resources/typical-template-config.properties)
+  that can be extended/overwritten by providing a resource file ```typical-template-config-overwrite.properties``` in your JVM.
+* For a full example, see the Gradle subproject [typical-template-blackbox-tests](typical-template-blackbox-tests).
 
-### Full Example
-For a full example, see the Gradle subproject [typical-template-blackbox-tests](typical-template-blackbox-tests).
-
-### License
+## License
 
 The source code is licensed under the MIT license, which you can find in
 the [LICENSE](LICENSE) file.
