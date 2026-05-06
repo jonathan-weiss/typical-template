@@ -3,6 +3,8 @@ package org.codeblessing.typicaltemplate.documentation
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.DirectionValue
+import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.KeywordType
 
@@ -12,54 +14,149 @@ object MarkdownCreator {
     private const val PREPROCESSOR_COMMAND_PREFIX = "#"
 
     // linked map to preserve the order of the keys
-    private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
-        CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into, and optionally declares model instances passed to the renderer. The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.",
-        CommandKey.END_TEMPLATE_RENDERER to "Closes a template-renderer block. If a file produces only one template renderer, then this one is omitted to signal that the template stretches the whole file.",
-        CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Replaces a value by a kotlin expression in a multiline string. The expression is often accessing properties or functions on a model instance declared on the ${CommandKey.TEMPLATE_RENDERER.keyword} command.",
-        CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to "",
-        CommandKey.REPLACE_VALUE_BY_VALUE to "Replaces a value by another value.",
-        CommandKey.END_REPLACE_VALUE_BY_VALUE to "",
-        CommandKey.IF_CONDITION to "Render the enclosed content only if the condition is true.",
-        CommandKey.ELSE_IF_CONDITION to "Render the enclosed content only if the condition inside a previously defined if block is true.",
-        CommandKey.ELSE_CLAUSE to "Render the enclosed content only if not any of the if/else-if clauses evaluates to true.",
-        CommandKey.END_IF_CONDITION to "",
-        CommandKey.FOREACH to "Iterates/Loops over a collection of items (=iterable). In each loop, the current item is hold in a loop variable.",
-        CommandKey.END_FOREACH to "",
-        CommandKey.IGNORE_TEXT to "Ignores the text from the content and does not output it in the template renderer.",
-        CommandKey.END_IGNORE_TEXT to "",
-        CommandKey.PRINT_TEXT to "Print text as output of the template renderer.",
-        CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to "Each template provide the path of the source file. By using this command, the name will be modified with all replacements provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
-        CommandKey.RENDER_TEMPLATE to "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
-        CommandKey.MOVE_COMMENT to "Moves the comment in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous/next comment or to the beginning or end of the file.",
-        CommandKey.EXPAND_COMMENT to "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part. This is useful if you don't want to have empty lines in your template result due to the typical templates comments or spaces/ident if the comments typical template comments have to follow some ident rules.",
+    private val commandKeyDocumentation: Map<CommandKey, List<String>> = linkedMapOf(
+        CommandKey.TEMPLATE_RENDERER to listOf(
+            "Defines the template renderer kotlin class in which the content of the given file is put into. Optionally declares model instances (kotlin function parameters) passed to the renderer. ",
+            "The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter.",
+            "Additional ${CommandKey.TEMPLATE_RENDERER.keyword} commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and is closed with ${CommandKey.END_TEMPLATE_RENDERER.keyword}." +
+                "A nested template renderer is completely independent (and its content therefore removed from) the parent template renderer." +
+                "Also all other commands defined in the parent template (models, if..else, replacements, etc.) will not affect the child template renderer, as each template renderer resides in its own class.",
+        ),
+        CommandKey.END_TEMPLATE_RENDERER to emptyList(),
+        CommandKey.REPLACE_VALUE_BY_EXPRESSION to listOf(
+            "Replaces a value by a kotlin expression in a multiline string. The expression is often accessing properties or functions on a model instance declared with the ${CommandKey.TEMPLATE_RENDERER.keyword} command.",
+        ),
+        CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to emptyList(),
+        CommandKey.REPLACE_VALUE_BY_VALUE to listOf(
+            "Replaces a value by another (fixed) value.",
+        ),
+        CommandKey.END_REPLACE_VALUE_BY_VALUE to emptyList(),
+        CommandKey.IF_CONDITION to listOf(
+            "Render the enclosed content only if the condition expression evaluates to true.",
+        ),
+        CommandKey.ELSE_IF_CONDITION to listOf(
+            "Render the enclosed content only if the condition expression evaluates to true and all previous conditions of the ${CommandKey.IF_CONDITION.keyword}/${CommandKey.ELSE_IF_CONDITION.keyword} conditions evaluates to false.",
+        ),
+        CommandKey.ELSE_CLAUSE to listOf(
+            "Render the enclosed content only if all previous ${CommandKey.IF_CONDITION.keyword}/${CommandKey.ELSE_IF_CONDITION.keyword} conditions evaluates to false",
+        ),
+        CommandKey.END_IF_CONDITION to emptyList(),
+        CommandKey.FOREACH to listOf(
+            "Iterates/Loops over a collection of items (=iterable). In each loop, the current item is hold in a loop variable.",
+        ),
+        CommandKey.END_FOREACH to emptyList(),
+        CommandKey.IGNORE_TEXT to listOf(
+            "Ignores the text and does not output it in the template renderer.",
+        ),
+        CommandKey.END_IGNORE_TEXT to emptyList(),
+        CommandKey.PRINT_TEXT to listOf(
+            "Print additional text as output of the template renderer.",
+        ),
+        CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to listOf(
+            "Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements " +
+                "provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}```.",
+            "The intention of this command is that the filename and path can also take part of the replacements without having to handle them " +
+                    "separately outside of the template renderer. " +
+                    "If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file " +
+                    "e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.",
+        ),
+        CommandKey.RENDER_TEMPLATE to listOf(
+            "Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.",
+            "This command's syntax has a lot of similarity to ${CommandKey.TEMPLATE_RENDERER.keyword}, as it calls a " +
+                    "template renderer defined by the ${CommandKey.TEMPLATE_RENDERER.keyword} block."
+        ),
+        CommandKey.MOVE_COMMENT to listOf(
+            "Moves the whole comment in which this command is written in the specified direction. " +
+                    "Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. " +
+                    "The comment will be moved at most to the previous/next comment or to the beginning or end of the file.",
+            "This is useful as some file formats do not allow to put a comment as first line of the file.",
+            "Example:  XML starts with a preamble like ```<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>``` and this " +
+                    "text should be part of the template renderer's output. But it is not possible to write a XML comment before " +
+                    "this preamble. To still span the template from the beginning of the file, you can move the comment to the " +
+                    "beginning of the file using this command " +
+                    "(```${CommandKey.MOVE_COMMENT.commandPrefix()}${CommandKey.MOVE_COMMENT.keyword}" +
+                    "[${CommandAttributeKey.DIRECTION.keyAsString}=${DirectionValue.BACKWARD.value}]```)",
+        ),
+        CommandKey.EXPAND_COMMENT to listOf(
+            "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) " +
+                    "from the neighboring text part.",
+            "This is useful if you don't want to have empty lines in your template output due to the typical templates comments or dangling spaces/idents if the " +
+                    "typical template comments itself have to follow some ident rules (e.g. by your linter).",
+        ),
     )
 
 
     // linked map to preserve the order of the keys
-    private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, String> = linkedMapOf(
-        CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to "The name of the template class that will generate this template.",
-        CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to "The name of the package where the class defined with ```${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}``` resides in.",
-        CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_NAME to "The name of an optional interface class name that is added to the class defined with the ```${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}```.",
-        CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME to "The name of the package where the interface defined with ```${CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_NAME.keyAsString}``` resides in.",
-        CommandAttributeKey.TEMPLATE_MODEL_NAME to "The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.",
-        CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
-        CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
-        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```${IsListValue.YES.value}```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```${IsListValue.NO.value}```.",
-        CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
-        CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
-        CommandAttributeKey.REPLACE_BY_VALUE to "The plain value the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
-        CommandAttributeKey.CONDITION_EXPRESSION to "The condition returning a boolean value that is used for the if statement or else-if statement.",
-        CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to "The condition returning a boolean value that is used for the if statement.",
-        CommandAttributeKey.LOOP_VARIABLE_NAME to "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
-        CommandAttributeKey.TEXT to "Text that is to print as-is into the template renderer.",
-        CommandAttributeKey.MODEL_EXPRESSION to "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
-        CommandAttributeKey.DIRECTION to "The direction in which the comment is moved.",
-        CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF to "Positions the comment before the first occurrence of the given text in the surrounding content.",
-        CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF to "Positions the comment after the first occurrence of the given text in the surrounding content.",
-        CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF to "Positions the comment before the last occurrence of the given text in the surrounding content.",
-        CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF to "Positions the comment after the last occurrence of the given text in the surrounding content.",
-        CommandAttributeKey.EXPAND_DIRECTION to "The direction in which the comment expands into the adjacent text (```${org.codeblessing.typicaltemplate.DirectionValue.FORWARD.value}``` or ```${org.codeblessing.typicaltemplate.DirectionValue.BACKWARD.value}```).",
-        CommandAttributeKey.STRIP_MODE to "Controls how much whitespace is stripped from the adjacent text. ```${org.codeblessing.typicaltemplate.ExpandModeValue.BLANKS.value}``` removes only spaces and tabs; ```${org.codeblessing.typicaltemplate.ExpandModeValue.LINEBREAK.value}``` also removes the immediately adjacent line-ending.",
+    private val commandAttributeKeyDocumentation: Map<CommandAttributeKey, List<String>> = linkedMapOf(
+        CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to listOf(
+            "The name of the template class that will generate this template.",
+        ),
+        CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to listOf(
+            "The name of the package where the class defined with ```${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}``` resides in.",
+        ),
+        CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_NAME to listOf(
+            "The name of an optional interface class name that is added to the class defined with the ```${CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME.keyAsString}```.",
+        ),
+        CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME to listOf(
+            "The name of the package where the interface defined with ```${CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_NAME.keyAsString}``` resides in.",
+        ),
+        CommandAttributeKey.TEMPLATE_MODEL_NAME to listOf(
+            "The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.",
+        ),
+        CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to listOf(
+            "The name of the model class. This class provides all the fields in the template.",
+        ),
+        CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to listOf(
+            "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
+        ),
+        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to listOf(
+            "When set to ```${IsListValue.YES.value}```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```${IsListValue.NO.value}```.",
+        ),
+        CommandAttributeKey.SEARCH_VALUE to listOf(
+            "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
+        ),
+        CommandAttributeKey.REPLACE_BY_EXPRESSION to listOf(
+            "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
+        ),
+        CommandAttributeKey.REPLACE_BY_VALUE to listOf(
+            "The plain value the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
+        ),
+        CommandAttributeKey.CONDITION_EXPRESSION to listOf(
+            "The condition returning a boolean value that is used for the if statement or else-if statement.",
+        ),
+        CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to listOf(
+            "The condition returning a boolean value that is used for the if statement.",
+        ),
+        CommandAttributeKey.LOOP_VARIABLE_NAME to listOf(
+            "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
+        ),
+        CommandAttributeKey.TEXT to listOf(
+            "Text that is to print as-is into the template renderer.",
+        ),
+        CommandAttributeKey.MODEL_EXPRESSION to listOf(
+            "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
+        ),
+        CommandAttributeKey.DIRECTION to listOf(
+            "The direction in which the comment is moved.",
+        ),
+        CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF to listOf(
+            "Positions the comment before the first occurrence of the given text in the surrounding content.",
+        ),
+        CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF to listOf(
+            "Positions the comment after the first occurrence of the given text in the surrounding content.",
+        ),
+        CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF to listOf(
+            "Positions the comment before the last occurrence of the given text in the surrounding content.",
+        ),
+        CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF to listOf(
+            "Positions the comment after the last occurrence of the given text in the surrounding content.",
+        ),
+        CommandAttributeKey.EXPAND_DIRECTION to listOf(
+            "The direction in which the comment expands into the adjacent text (```${DirectionValue.FORWARD.value}``` or ```${DirectionValue.BACKWARD.value}```).",
+        ),
+        CommandAttributeKey.STRIP_MODE to listOf(
+            "Controls how much whitespace is stripped from the adjacent text. ```${ExpandModeValue.BLANKS.value}``` removes only spaces and tabs; ```${ExpandModeValue.LINEBREAK.value}``` also removes the immediately adjacent line-ending.",
+        ),
     )
 
     private fun CommandKey.createMarkDownChapterLink(): String {
@@ -80,7 +177,7 @@ object MarkdownCreator {
         sb.appendLine("")
 
 
-        for ((commandKey, commandKeyDocumentation) in commandKeyDocumentation) {
+        for ((commandKey, docLines) in commandKeyDocumentation) {
             sb.appendLine("""
 
                     ## ${commandKey.keyword}
@@ -88,10 +185,10 @@ object MarkdownCreator {
                     Syntax: ```${commandKey.commandSyntax()}```
                 """.trimIndent()
             )
-            if(commandKeyDocumentation.isNotBlank()) {
+            for (line in docLines) {
                 sb.appendLine("""
 
-                        $commandKeyDocumentation
+                        $line
                     """.trimIndent()
                 )
             }
@@ -124,22 +221,33 @@ object MarkdownCreator {
     }
 
     private fun createAttributeDocumentation(
-        attributesDocumentation: Map<CommandAttributeKey, String>,
+        attributesDocumentation: Map<CommandAttributeKey, List<String>>,
         requiredAttributes: Set<CommandAttributeKey>,
         mutualExclusiveAttributes: Set<CommandAttributeKey>,
         sb: StringBuilder
     ) {
-        for((attributeKey, attributeDocumentation) in attributesDocumentation) {
-            val mutualExclusiveWith = mutualExclusiveAttributes - attributeKey
+        for((attributeKey, attributeDocLines) in attributesDocumentation) {
+            val mutualExclusiveWith = calculateMutualExclusiveAttributes(attributeKey, mutualExclusiveAttributes)
+            val descriptionText = attributeDocLines.joinToString("\n\n  ")
             sb.appendLine("""
-                    * *${attributeKey.keyAsString}*: $attributeDocumentation
-                      * Required attribute: ${(attributeKey in requiredAttributes).yesOrNo()}
-                      * Required not empty: ${attributeKey.requireNotEmpty.yesOrNo()}
-                      * Allowed values: ${if(attributeKey.allowedValues == null) "<unrestricted>" else attributeKey.allowedValues.joinToString(",") { "```${it.value}```"}}
+                    * *${attributeKey.keyAsString}*: $descriptionText
+                      * Required attribute: _${(attributeKey in requiredAttributes).yesOrNo()}_
+                      * Required not empty: _${attributeKey.requireNotEmpty.yesOrNo()}_
+                      * Allowed values: ${if(attributeKey.allowedValues == null) "_\\<unrestricted\\>_" else attributeKey.allowedValues.joinToString(",") { "```${it.value}```"}}
                       * Mutually exclusive with: ${if(mutualExclusiveWith.isEmpty()) "none" else mutualExclusiveWith.joinToString(", ") { "```${it.keyAsString}```" }}
                     """.trimIndent()
             )
         }
+    }
+
+    private fun calculateMutualExclusiveAttributes(
+        attribute: CommandAttributeKey,
+        mutualExclusiveAttributes: Set<CommandAttributeKey>
+    ): Set<CommandAttributeKey> {
+        if(attribute !in mutualExclusiveAttributes) {
+            return emptySet()
+        }
+        return mutualExclusiveAttributes - attribute
     }
 
     private fun CommandKey.commandSyntax(): String {

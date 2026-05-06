@@ -1,6 +1,7 @@
 <html lang="en">
 
-<!-- @tt{{{
+<!--
+@tt{{{
   #move-comment [ direction="backward" ]
   @template-renderer [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
               [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
@@ -8,17 +9,20 @@
     [ searchValue="News" replaceByExpression="listPageModel.pageTitle" ]
     [ searchValue="news" replaceByExpression="listPageModel.pageTitle.lowercase()" ]
 
-}}}@ -->
+}}}@
+-->
 
 <head><title>News</title></head>
 <body>
 <p>Here are the news:</p>
-<ul><!-- @tt{{{
+<ul><!--
+@tt{{{
 
   @foreach [iteratorExpression="listPageModel.allListEntries" loopVariable="pageArticleTitle"]
   @replace-value-by-expression [ searchValue="How to make your garden ready in the spring" replaceByExpression="pageArticleTitle" ]
 
-}}}@ -->
+}}}@
+-->
     <li>How to make your garden ready in the spring</li><!-- @tt{{{ @end-replace-value-by-expression @end-foreach @ignore-text }}}@ -->
     <li>Five keys to become rich in one year</li>
     <li>What's up with Prince Charles?</li><!-- @tt{{{ @end-ignore-text }}}@ -->
