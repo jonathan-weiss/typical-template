@@ -8,7 +8,7 @@ import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.KeywordType
 
-object MarkdownCreator {
+object CommandReferenceMarkdownCreator {
 
     private const val COMMAND_PREFIX = "@"
     private const val PREPROCESSOR_COMMAND_PREFIX = "#"

@@ -2,7 +2,7 @@ package org.codeblessing.typicaltemplate
 
 import java.nio.file.Paths
 
-private val USAGE = """
+val MAIN_FUNCTION_USAGE = """
 Usage: typical-template --template-render <path> --search <path>:<pattern> [--search <path>:<pattern> ...]
 
 Options:
@@ -17,7 +17,7 @@ Examples:
 
 fun main(args: Array<String>) {
     if (args.isEmpty() || args.contains("--help")) {
-        println(USAGE)
+        println(MAIN_FUNCTION_USAGE)
         return
     }
 

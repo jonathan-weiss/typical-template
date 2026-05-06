@@ -124,7 +124,7 @@ dependencies {
 // ...
 ```
 
-Then, call the typical-template main method ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` or
+Then, call the typical-template main method ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` (see [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)) or
 call typical-template directly with a code snippet like the following in your kotlin or java code:
 ```kotlin
 
