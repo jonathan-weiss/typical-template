@@ -10,8 +10,8 @@ inline fun <reified T : Enum<T>> AttributeValue.toEnum(): T =
     enumValues<T>().single() { it is AllowedValue && it.value == this }
 
 enum class IsListValue(override val value: AttributeValue): AllowedValue {
-    TRUE("true"),
-    FALSE("false"),
+    YES("yes"),
+    NO("no"),
 }
 
 enum class DirectionValue(override val value: AttributeValue): AllowedValue {

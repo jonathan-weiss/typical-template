@@ -174,7 +174,7 @@ object KeywordCommandChainTemplateSplitter {
                 isList = attributeOptional(
                     groupId = groupIndex,
                     key = TEMPLATE_MODEL_IS_LIST
-                )?.let { it.toEnum<IsListValue>() == IsListValue.TRUE } ?: false,
+                )?.let { it.toEnum<IsListValue>() == IsListValue.YES } ?: false,
             )
         }
     }

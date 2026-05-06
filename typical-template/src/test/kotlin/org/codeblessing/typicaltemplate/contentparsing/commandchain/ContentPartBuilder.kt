@@ -6,6 +6,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue
 import org.codeblessing.typicaltemplate.ExpandModeValue
+import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
@@ -198,7 +199,7 @@ class ContentPartBuilder private constructor() {
                     CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to modelPackageName,
                 )
                 if (isList) {
-                    modelAttributes[CommandAttributeKey.TEMPLATE_MODEL_IS_LIST] = "true"
+                    modelAttributes[CommandAttributeKey.TEMPLATE_MODEL_IS_LIST] = IsListValue.YES.value
                 }
                 modelAttributeGroups.add(AttributeGroup(modelAttributes))
                 return this

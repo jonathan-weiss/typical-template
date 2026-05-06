@@ -25,7 +25,7 @@ The following keywords/commands are supported:
 
 ## template-renderer
 
-Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ] [ modelClassName="..." modelName="..." modelPackageName="..." isList="true|false" ] [ ... ] .... @end-template-renderer```
+Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ] [ modelClassName="..." modelName="..." modelPackageName="..." isList="yes|no" ] [ ... ] .... @end-template-renderer```
 
 Defines in which template the content of the given file is put into, and optionally declares model instances passed to the renderer. The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.
 
@@ -73,10 +73,10 @@ Repeatable Group Attributes:
   * Required not empty: Yes
   * Allowed values: <unrestricted>
   * Mutually exclusive with: none
-* *isList*: When set to ```true```, the model parameter is declared as a list of the model class defined with ```modelClassName```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.
+* *isList*: When set to ```yes```, the model parameter is declared as a list of the model class defined with ```modelClassName```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```no```.
   * Required attribute: No
   * Required not empty: Yes
-  * Allowed values: ```true```,```false```
+  * Allowed values: ```yes```,```no```
   * Mutually exclusive with: none
 
 ## end-template-renderer

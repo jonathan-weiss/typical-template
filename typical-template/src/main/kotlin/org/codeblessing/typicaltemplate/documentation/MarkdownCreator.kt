@@ -14,8 +14,8 @@ object MarkdownCreator {
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, String> = linkedMapOf(
         CommandKey.TEMPLATE_RENDERER to "Defines in which template the content of the given file is put into, and optionally declares model instances passed to the renderer. The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter. This command must be the first command and can only occur one time per file. Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and must be closed with end-template-renderer.",
-        CommandKey.END_TEMPLATE_RENDERER to "Closes a nested template-renderer block. Required for nested template-renderers; optional for the top-level template-renderer.",
-        CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Replaces a value by a kotlin expression in a multiline string.",
+        CommandKey.END_TEMPLATE_RENDERER to "Closes a template-renderer block. If a file produces only one template renderer, then this one is omitted to signal that the template stretches the whole file.",
+        CommandKey.REPLACE_VALUE_BY_EXPRESSION to "Replaces a value by a kotlin expression in a multiline string. The expression is often accessing properties or functions on a model instance declared on the ${CommandKey.TEMPLATE_RENDERER.keyword} command.",
         CommandKey.END_REPLACE_VALUE_BY_EXPRESSION to "",
         CommandKey.REPLACE_VALUE_BY_VALUE to "Replaces a value by another value.",
         CommandKey.END_REPLACE_VALUE_BY_VALUE to "",
@@ -44,7 +44,7 @@ object MarkdownCreator {
         CommandAttributeKey.TEMPLATE_MODEL_NAME to "The name of the model variable. The variable can later be used to access fields and functions on the model e.g. in conditions or as replacement values.",
         CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME to "The name of the model class. This class provides all the fields in the template.",
         CommandAttributeKey.TEMPLATE_MODEL_PACKAGE_NAME to "The name of the package where the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}``` resides in.",
-        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```${IsListValue.TRUE.value}```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```false```.",
+        CommandAttributeKey.TEMPLATE_MODEL_IS_LIST to "When set to ```${IsListValue.YES.value}```, the model parameter is declared as a list of the model class defined with ```${CommandAttributeKey.TEMPLATE_MODEL_CLASS_NAME.keyAsString}```, i.e. ```List<ModelClass>``` instead of ```ModelClass```. Defaults to ```${IsListValue.NO.value}```.",
         CommandAttributeKey.SEARCH_VALUE to "The token that has to be searched in the enclosed block of content. The search is case-sensitive.",
         CommandAttributeKey.REPLACE_BY_EXPRESSION to "The expression accessing the model class with which the token defined with the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
         CommandAttributeKey.REPLACE_BY_VALUE to "The plain value the attribute ```${CommandAttributeKey.SEARCH_VALUE.keyAsString}``` is replaced.",
