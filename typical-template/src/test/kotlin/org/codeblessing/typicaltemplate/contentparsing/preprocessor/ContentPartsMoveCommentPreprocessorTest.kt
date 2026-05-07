@@ -57,27 +57,37 @@ class ContentPartsMoveCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward with no following element leaves comment in place`() {
+        fun `forward with no following element keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
                 .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addText("before")
+                .addTemplateComment().end()
+                .build()
+
             val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
-        fun `forward with following comment as neighbor leaves comment in place`() {
+        fun `forward with following comment as neighbor keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
                 .addTemplateComment().addIfCommand().end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addTemplateComment().addIfCommand().end()
+                .build()
+
             val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
@@ -209,27 +219,37 @@ class ContentPartsMoveCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward with no preceding element leaves comment in place`() {
+        fun `backward with no preceding element keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
                 .addText("after")
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addText("after")
+                .build()
+
             val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
-        fun `backward with preceding comment as neighbor leaves comment in place`() {
+        fun `backward with preceding comment as neighbor keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addIfCommand().end()
                 .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().addIfCommand().end()
+                .addTemplateComment().end()
+                .build()
+
             val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test

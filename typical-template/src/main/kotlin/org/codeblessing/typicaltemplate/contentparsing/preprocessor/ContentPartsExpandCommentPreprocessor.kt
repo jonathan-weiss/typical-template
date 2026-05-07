@@ -53,6 +53,8 @@ object ContentPartsExpandCommentPreprocessor {
                             continue
                         }
                     }
+                    result.add(processedComment)
+                    continue
                 }
             }
             result.add(part)

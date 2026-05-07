@@ -359,51 +359,71 @@ class ContentPartsExpandCommentPreprocessorTest {
     inner class DoNothingCases {
 
         @Test
-        fun `forward with no following element leaves comment unchanged`() {
+        fun `forward with no following element keeps content in place but strips expand-comment command`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
                 .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addText("before")
+                .addTemplateComment().end()
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
-        fun `forward with following comment as neighbor leaves comment unchanged`() {
+        fun `forward with following comment as neighbor keeps content in place but strips expand-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
                 .addTemplateComment().addIfCommand().end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addTemplateComment().addIfCommand().end()
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
-        fun `backward with no preceding element leaves comment unchanged`() {
+        fun `backward with no preceding element keeps content in place but strips expand-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
                 .addText("after")
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addText("after")
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
-        fun `backward with preceding comment as neighbor leaves comment unchanged`() {
+        fun `backward with preceding comment as neighbor keeps content in place but strips expand-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addIfCommand().end()
                 .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
                 .build()
 
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().addIfCommand().end()
+                .addTemplateComment().end()
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
     }
 

@@ -43,6 +43,8 @@ object ContentPartsMoveCommentPreprocessor {
                             continue
                         }
                     }
+                    result.add(stripMoveCommand(part))
+                    continue
                 }
             }
             result.add(part)
@@ -51,15 +53,19 @@ object ContentPartsMoveCommentPreprocessor {
         return result
     }
 
+    private fun stripMoveCommand(commentPart: TemplateCommentContentPart): TemplateCommentContentPart {
+        return commentPart.copy(
+            keywordCommands = commentPart.keywordCommands.filter { it.commandKey != CommandKey.MOVE_COMMENT }
+        )
+    }
+
     private fun applyMove(
         commentPart: TemplateCommentContentPart,
         moveCommand: KeywordCommand,
         textPart: TextContentPart,
         direction: DirectionValue,
     ): List<TemplateContentPart> {
-        val processedComment = commentPart.copy(
-            keywordCommands = commentPart.keywordCommands.filter { it.commandKey != CommandKey.MOVE_COMMENT }
-        )
+        val processedComment = stripMoveCommand(commentPart)
 
         val beforeFirstOf = moveCommand.attributeOptional(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF)
         val afterFirstOf = moveCommand.attributeOptional(CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF)
