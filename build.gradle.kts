@@ -1,3 +1,6 @@
+tasks.register("build") {
+    dependsOn("generateDocumentation")
+}
 
 tasks.register("generateDocumentation") {
     dependsOn("updateVersionString")

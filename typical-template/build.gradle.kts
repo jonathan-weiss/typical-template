@@ -14,6 +14,11 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter-params")
 }
+
+tasks.named("build") {
+    dependsOn("generateDocumentation")
+}
+
 tasks.register("generateDocumentation") {
     dependsOn("generateCommandReferenceDocumentation")
     dependsOn("generateMainFunctionUsageDocumentation")
