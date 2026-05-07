@@ -6,8 +6,11 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.SummaryRenderModel
 
 /**
- * Generate the content for the template SummaryExtensionRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `SummaryExtensionRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `OrderSummary.kt`
+ * - path: `my/example/businessproject/summary/OrderSummary.kt`
  */
 object SummaryExtensionRenderer {
 

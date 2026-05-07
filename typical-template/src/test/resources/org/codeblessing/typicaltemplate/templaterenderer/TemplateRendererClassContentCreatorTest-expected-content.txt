@@ -6,8 +6,11 @@ package org.codeblessing.typicaltemplate.template
 import org.codeblessing.typicaltemplate.template.model.TemplateModel
 
 /**
- * Generate the content for the template TemplateTest filled up
- * with the content of the passed models.
+ * Generate the content for the template `TemplateTest`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `dummy.txt`
+ * - path: `dum-dir/dum-sub-dir/dummy.txt`
  */
 object TemplateTest {
 

@@ -6,8 +6,11 @@ package examples.deep
 import examples.deep.DeepModel
 
 /**
- * Generate the content for the template DeepRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `DeepRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `deep.txt`
+ * - path: `dummy-dir/deep.txt`
  */
 object DeepRenderer {
 

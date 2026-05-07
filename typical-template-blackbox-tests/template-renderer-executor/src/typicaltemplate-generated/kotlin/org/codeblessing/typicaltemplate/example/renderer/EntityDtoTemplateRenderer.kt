@@ -6,8 +6,11 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 
 /**
- * Generate the content for the template EntityDtoTemplateRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `EntityDtoTemplateRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `ProductDto.kt`
+ * - path: `my/example/businessproject/dto/ProductDto.kt`
  */
 object EntityDtoTemplateRenderer {
 

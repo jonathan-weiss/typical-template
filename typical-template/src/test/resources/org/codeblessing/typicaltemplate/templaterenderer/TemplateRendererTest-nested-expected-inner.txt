@@ -6,8 +6,11 @@ package examples.inner
 import examples.inner.InnerModel
 
 /**
- * Generate the content for the template InnerRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `InnerRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `inner.txt`
+ * - path: `dummy-dir/inner.txt`
  */
 object InnerRenderer {
 

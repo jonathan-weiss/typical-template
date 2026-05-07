@@ -6,8 +6,11 @@ package examples.outer
 import examples.outer.OuterModel
 
 /**
- * Generate the content for the template OuterRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `OuterRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `dummy-Author.txt`
+ * - path: `dummy-dir/author-subdir/dummy-Author.txt`
  */
 object OuterRenderer {
 

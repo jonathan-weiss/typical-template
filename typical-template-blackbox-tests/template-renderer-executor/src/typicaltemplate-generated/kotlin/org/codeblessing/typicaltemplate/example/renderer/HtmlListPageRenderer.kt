@@ -6,8 +6,11 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
 
 /**
- * Generate the content for the template HtmlListPageRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `HtmlListPageRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `news.html`
+ * - path: `news.html`
  */
 object HtmlListPageRenderer {
 

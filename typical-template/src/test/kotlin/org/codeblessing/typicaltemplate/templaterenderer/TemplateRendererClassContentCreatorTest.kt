@@ -1,6 +1,7 @@
 package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.ClasspathResourceLoader
+import org.codeblessing.typicaltemplate.RelativeFile
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ClassDescription
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ModelDescription
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
@@ -41,7 +42,11 @@ class TemplateRendererClassContentCreatorTest {
             rendererCode = "| hello world",
             filepath = "dum-dir/dum-sub-dir/dummy.txt",
         )
-        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateRendererMethodContent)
+        val kotlinClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(
+            RelativeFile.fromRelativeString("dum-dir/dum-sub-dir/dummy.txt"),
+            templateRendererDescription,
+            kotlinTemplateRendererMethodContent,
+        )
 
         val expectedContent = ClasspathResourceLoader.loadClasspathResource(
             classpathResourcePath = "org/codeblessing/typicaltemplate/templaterenderer/TemplateRendererClassContentCreatorTest-expected-content.txt"

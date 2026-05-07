@@ -55,7 +55,7 @@ class TypicalTemplateProcessor: TypicalTemplateProcessorApi {
         val templates = ContentParser.parseContent(contentToParse, supportedCommentStyles)
         return templates.map { templateRendererDescription ->
             val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepath, templateRendererDescription)
-            val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(templateRendererDescription, kotlinTemplateContent)
+            val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(filepath, templateRendererDescription, kotlinTemplateContent)
             val kotlinFilePath = templateRendererDescription.templateRendererClass.classFilePath(targetBasePath)
 
             TemplateRendererClass(

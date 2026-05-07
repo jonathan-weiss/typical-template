@@ -6,8 +6,11 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.StatusEnumRenderModel
 
 /**
- * Generate the content for the template StatusEnumRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `StatusEnumRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `OrderStatusEnum.kt`
+ * - path: `my/example/businessproject/domain/OrderStatusEnum.kt`
  */
 object StatusEnumRenderer {
 

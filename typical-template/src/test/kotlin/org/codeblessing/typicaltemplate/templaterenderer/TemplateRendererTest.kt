@@ -6,6 +6,7 @@ import org.codeblessing.typicaltemplate.contentparsing.ContentParser
 import org.codeblessing.typicaltemplate.CommentStyles.KOTLIN_COMMENT_STYLES
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 class TemplateRendererTest {
 
@@ -27,7 +28,7 @@ class TemplateRendererTest {
         val template = templates.single()
         val filepath = RelativeFile.fromRelativeString("dummy-dir/author-subdir/dummy-Author.txt")
         val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepath, template)
-        val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(template, kotlinTemplateContent)
+        val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(filepath, template, kotlinTemplateContent)
 
         println("--- Kotlin Template ------------------")
         println(kotlinTemplateRendererClassContent)
@@ -58,7 +59,7 @@ class TemplateRendererTest {
 
         templates.forEachIndexed { index, template ->
             val kotlinTemplateContent = TemplateRendererContentCreator.createMultilineStringTemplateContent(filepathStrings[index], template)
-            val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(template, kotlinTemplateContent)
+            val kotlinTemplateRendererClassContent = TemplateRendererClassContentCreator.wrapInKotlinClassContent(filepathStrings[index], template, kotlinTemplateContent)
 
             println("--- Kotlin Template [${template.templateRendererClass.className}] ------------------")
             println(kotlinTemplateRendererClassContent)

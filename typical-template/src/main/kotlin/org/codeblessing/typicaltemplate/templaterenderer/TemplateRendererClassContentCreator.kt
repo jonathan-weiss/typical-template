@@ -2,14 +2,20 @@ package org.codeblessing.typicaltemplate.templaterenderer
 
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
+import org.codeblessing.typicaltemplate.RelativeFile
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRendererDescription
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
+import java.nio.file.Path
 
 object TemplateRendererClassContentCreator {
 
     private const val MULTILINE_STRING_DELIMITER = "\"\"\""
 
-    fun wrapInKotlinClassContent(templateRendererDescription: TemplateRendererDescription, kotlinTemplateRendererMethodContent: KotlinTemplateRendererMethodContent): String {
+    fun wrapInKotlinClassContent(
+        baseFile: RelativeFile,
+        templateRendererDescription: TemplateRendererDescription,
+        kotlinTemplateRendererMethodContent: KotlinTemplateRendererMethodContent
+    ): String {
         val sourceContent = kotlinTemplateRendererMethodContent.rendererCode
         val templateRendererPackageName = templateRendererDescription.templateRendererClass.classPackageName
         val templateRendererClassName = templateRendererDescription.templateRendererClass.className
@@ -73,8 +79,11 @@ package $templateRendererPackageName
 $allImports
 
 /**
- * Generate the content for the template $templateRendererClassName filled up
- * with the content of the passed models.
+ * Generate the content for the template `$templateRendererClassName`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `${baseFile.filePath.fileName}`
+ * - path: `${baseFile.relativeToRootDirectory()}`
  */
 object $templateRendererClassName $extendsStatement{
 

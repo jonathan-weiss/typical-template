@@ -7,8 +7,11 @@ import examples.DtoModel
 import examples.sub.SubRenderer
 
 /**
- * Generate the content for the template EntityDto filled up
- * with the content of the passed models.
+ * Generate the content for the template `EntityDto`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `dummy-Author.txt`
+ * - path: `dummy-dir/author-subdir/dummy-Author.txt`
  */
 object EntityDto {
 
