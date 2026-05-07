@@ -73,11 +73,11 @@ class ContentPartBuilder private constructor() {
 
         fun addReplaceValueByExpressionCommand(
             searchValue: String = "search",
-            fieldName: String = "myField",
+            replaceByExpression: String = "myField",
         ): TemplateCommentBuilder {
             return this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
                 .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-                .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
+                .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, replaceByExpression)
                 .addCommandToChain()
         }
 

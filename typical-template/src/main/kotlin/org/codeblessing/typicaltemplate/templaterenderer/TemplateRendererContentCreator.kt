@@ -41,11 +41,7 @@ object TemplateRendererContentCreator {
     }
 
     private fun commandContent(ctx: TemplateCreationContext, keywordCommand: KeywordCommand): String {
-        val commandKey = keywordCommand.commandKey
-        if(commandKey.isTriggerAutoclose) {
-            ctx.nestingStack.triggerAutoclose(commandKey)
-        }
-        return when (commandKey) {
+        return when (val commandKey = keywordCommand.commandKey) {
             CommandKey.MOVE_COMMENT,
             CommandKey.EXPAND_COMMENT,
             CommandKey.TEMPLATE_RENDERER,
@@ -82,7 +78,7 @@ object TemplateRendererContentCreator {
     }
 
     private fun processEndReplaceValueByExpression(ctx: TemplateCreationContext): String {
-        ctx.nestingStack.popNestingContextWithAutoclose(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
+        ctx.nestingStack.popNestingContext(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION)
         return NO_CONTENT_TO_WRITE
     }
 
@@ -97,7 +93,7 @@ object TemplateRendererContentCreator {
     }
 
     private fun processEndReplaceValueByValue(ctx: TemplateCreationContext): String {
-        ctx.nestingStack.popNestingContextWithAutoclose(CommandKey.END_REPLACE_VALUE_BY_VALUE)
+        ctx.nestingStack.popNestingContext(CommandKey.END_REPLACE_VALUE_BY_VALUE)
         return NO_CONTENT_TO_WRITE
     }
 
@@ -136,7 +132,7 @@ object TemplateRendererContentCreator {
         ctx: TemplateCreationContext,
     ): String {
         val hasElseClause = ctx.nestingStack.hasElseClause()
-        ctx.nestingStack.popNestingContextWithAutoclose(CommandKey.END_IF_CONDITION)
+        ctx.nestingStack.popNestingContext(CommandKey.END_IF_CONDITION)
         if(hasElseClause) {
             return endStatementInMultilineText(ctx = ctx, statement = "}")
         } else {
@@ -164,7 +160,7 @@ object TemplateRendererContentCreator {
     private fun processEndForeach(
         ctx: TemplateCreationContext,
     ): String {
-        ctx.nestingStack.popNestingContextWithAutoclose(CommandKey.END_FOREACH)
+        ctx.nestingStack.popNestingContext(CommandKey.END_FOREACH)
         return endStatementInMultilineText(ctx = ctx, statement = "}")
     }
 
@@ -208,7 +204,7 @@ object TemplateRendererContentCreator {
     private fun processEndIgnoreText(
         ctx: TemplateCreationContext,
     ): String {
-        ctx.nestingStack.popNestingContextWithAutoclose(CommandKey.END_IGNORE_TEXT)
+        ctx.nestingStack.popNestingContext(CommandKey.END_IGNORE_TEXT)
         return NO_CONTENT_TO_WRITE
     }
 
@@ -288,23 +284,7 @@ object TemplateRendererContentCreator {
             nestingStack.add(ctx)
         }
 
-        fun triggerAutoclose(commandKey: CommandKey) {
-            val correspondingOpeningCommandKey = requireNotNull(commandKey.correspondingOpeningCommandKeyForAutoclose)
-            while (nestingStack.isNotEmpty()) {
-                val lastCommandKey = nestingStack.last().command.commandKey
-                if(lastCommandKey == correspondingOpeningCommandKey) {
-                    return
-                }
-                if(lastCommandKey.isAutoclosingSupported) {
-                    nestingStack.removeLast()
-                } else {
-                    throw IllegalStateException("No corresponding closing command key for " +
-                            "'${lastCommandKey.keyword}' and autoclosing is not supported..")
-                }
-            }
-        }
-
-        fun popNestingContextWithAutoclose(closingCommandKey: CommandKey) {
+        fun popNestingContext(closingCommandKey: CommandKey) {
             val correspondingOpeningCommandKey = requireNotNull(closingCommandKey.correspondingOpeningCommandKey)
             while (nestingStack.isNotEmpty()) {
                 val last = nestingStack.removeLast()
@@ -312,13 +292,7 @@ object TemplateRendererContentCreator {
                 if(lastCommandKey == correspondingOpeningCommandKey) {
                     return
                 }
-                if(!lastCommandKey.isAutoclosingSupported) {
-                    throw IllegalStateException("No corresponding closing command key for " +
-                            "'${lastCommandKey.keyword}' and autoclosing is not supported..")
-                }
             }
-
-            throw IllegalStateException("No corresponding opening command key in nesting stack for '${closingCommandKey.keyword}'.")
         }
 
         fun replaceInString(text: String): String {
