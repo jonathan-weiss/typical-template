@@ -13,6 +13,11 @@ tasks.register<Delete>("cleanGeneratedSource") {
     delete(file(directoryForTemplateRendererGeneratedSource))
 }
 
-tasks.named("clean") {
+tasks.clean {
     dependsOn("cleanGeneratedSource")
+}
+
+val taskNameExecuteTypicalTemplateRenderers = ":typical-template-blackbox-tests:template-renderer-executor:executeTypicalTemplateRenderers"
+tasks.compileKotlin {
+    dependsOn(taskNameExecuteTypicalTemplateRenderers)
 }

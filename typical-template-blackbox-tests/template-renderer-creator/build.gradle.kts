@@ -16,14 +16,18 @@ tasks.register<JavaExec>("createTypicalTemplateRenderers") {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass.set("org.codeblessing.typicaltemplate.TypicalTemplateKt")
 
-    val pathToKotlinSourceFiles = exampleBusinessProjectPath.resolve("src/main/kotlin").absolutePath
-    val pathToHtmlSourceFiles = exampleBusinessProjectPath.resolve("src/webapp").absolutePath
+    val pathToKotlinSourceFiles = exampleBusinessProjectPath.resolve("src/main/kotlin")
+    val pathToHtmlSourceFiles = exampleBusinessProjectPath.resolve("src/webapp")
     args(
         "--template-render",
         targetDirectoryForTemplateRenderer.absolutePath,  // Path to the base directory where the template renderers are written to
         "--search",
-        "$pathToKotlinSourceFiles:*.kt",
+        "${pathToKotlinSourceFiles.absolutePath}:*.kt",
         "--search",
-        "$pathToHtmlSourceFiles:*.html",
+        "${pathToHtmlSourceFiles.absolutePath}:*.html",
     )
+
+    inputs.dir(pathToKotlinSourceFiles)
+    inputs.dir(pathToHtmlSourceFiles)
+    outputs.dir(targetDirectoryForTemplateRenderer)
 }
