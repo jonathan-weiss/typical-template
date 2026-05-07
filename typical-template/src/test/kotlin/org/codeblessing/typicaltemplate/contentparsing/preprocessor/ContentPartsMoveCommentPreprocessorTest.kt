@@ -1,10 +1,12 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
+import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
 import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Nested
@@ -382,6 +384,42 @@ class ContentPartsMoveCommentPreprocessorTest {
                 ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
             }
             assertEquals(TemplateParsingErrorCode.SEARCH_TOKEN_NOT_FOUND, exception.errorCode)
+        }
+    }
+
+    @Nested
+    inner class CommandRemoval {
+
+        @Test
+        fun `move-comment command is removed from result when move has an effect`() {
+            val input = ContentPartBuilder.create()
+                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addText("Hello World")
+                .build()
+
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
+
+            val remainingMoveCommentCommands = result
+                .filterIsInstance<TemplateCommentContentPart>()
+                .flatMap { it.keywordCommands }
+                .filter { it.commandKey == CommandKey.MOVE_COMMENT }
+            assertEquals(emptyList<Any>(), remainingMoveCommentCommands)
+        }
+
+        @Test
+        fun `move-comment command is removed from result when move has no effect`() {
+            val input = ContentPartBuilder.create()
+                .addText("before")
+                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .build()
+
+            val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
+
+            val remainingMoveCommentCommands = result
+                .filterIsInstance<TemplateCommentContentPart>()
+                .flatMap { it.keywordCommands }
+                .filter { it.commandKey == CommandKey.MOVE_COMMENT }
+            assertEquals(emptyList<Any>(), remainingMoveCommentCommands)
         }
     }
 }

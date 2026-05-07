@@ -1,10 +1,12 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
+import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
 import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
 import org.codeblessing.typicaltemplate.ExpandModeValue.BLANKS
 import org.codeblessing.typicaltemplate.ExpandModeValue.LINEBREAK
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
+import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -402,6 +404,42 @@ class ContentPartsExpandCommentPreprocessorTest {
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
             assertEquals(input, result)
+        }
+    }
+
+    @Nested
+    inner class CommandRemoval {
+
+        @Test
+        fun `expand-comment command is removed from result when expand has an effect`() {
+            val input = ContentPartBuilder.create()
+                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addText("   Hello")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            val remainingExpandCommentCommands = result
+                .filterIsInstance<TemplateCommentContentPart>()
+                .flatMap { it.keywordCommands }
+                .filter { it.commandKey == CommandKey.EXPAND_COMMENT }
+            assertEquals(emptyList<Any>(), remainingExpandCommentCommands)
+        }
+
+        @Test
+        fun `expand-comment command is removed from result when expand has no effect`() {
+            val input = ContentPartBuilder.create()
+                .addText("before")
+                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            val remainingExpandCommentCommands = result
+                .filterIsInstance<TemplateCommentContentPart>()
+                .flatMap { it.keywordCommands }
+                .filter { it.commandKey == CommandKey.EXPAND_COMMENT }
+            assertEquals(emptyList<Any>(), remainingExpandCommentCommands)
         }
     }
 }
