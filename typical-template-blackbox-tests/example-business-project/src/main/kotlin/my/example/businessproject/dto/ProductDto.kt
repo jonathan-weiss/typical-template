@@ -21,9 +21,20 @@ package my.example.businessproject.dto
  * The Product DTO (Data Transfer Object) class.
  */
 data class ProductDto(
-/* @tt{{{   @foreach [ iteratorExpression="model.fields" loopVariable="field" ] }}}@  */
+/* @tt{{{
+    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @foreach [ iteratorExpression="model.fields" loopVariable="field" ]
+}}}@  */
     val productCode: String,
-/* @tt{{{ @end-foreach  @ignore-text  }}}@ */
+/* @tt{{{
+    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @end-foreach
+    @ignore-text
+}}}@ */
     val productName: String,
-/* @tt{{{ @end-ignore-text  @end-replace-value-by-expression }}}@ */
+/* @tt{{{
+    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @end-ignore-text
+    @end-replace-value-by-expression
+}}}@ */
 )
