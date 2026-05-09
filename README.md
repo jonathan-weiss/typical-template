@@ -20,7 +20,7 @@ Here is an example source code file (here it is HTML, the file is named ```news.
 <!-- 
 
 @tt{{{
-  #move-comment[direction=backward]
+  @move-comment[direction=backward]
   
   @template-renderer 
      [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]

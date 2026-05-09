@@ -1,7 +1,7 @@
 package my.example.businessproject.summary
 
 /* @tt{{{
-  #move-comment [direction="backward"]
+  @move-comment [direction="backward"]
   @template-renderer [
       templateRendererClassName="SummaryClassRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
@@ -30,12 +30,12 @@ package my.example.businessproject.summary
     [ searchValue="OrderSummary" replaceByExpression="model.summaryClassName" ]
 }}}@ */
 /* @tt{{{ @print-text [ text="// Auto-generated extensions - do not modify" ] }}}@ */
-/* @tt{{{ #expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
+/* @tt{{{ @expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
 
 fun OrderSummary.label(): String = "Summary: OrderSummary"
 /* @tt{{{ @end-template-renderer }}}@ */
 /* @tt{{{ @print-text [ text="// Auto-generated summary class - do not modify" ] }}}@ */
-/* @tt{{{ #expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
+/* @tt{{{ @expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
 
 @Suppress("SUPPRESS_VALUE")
 data class OrderSummary(

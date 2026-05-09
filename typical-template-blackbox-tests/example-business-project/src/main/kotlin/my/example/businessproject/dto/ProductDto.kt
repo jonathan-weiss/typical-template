@@ -1,7 +1,7 @@
 package my.example.businessproject.dto
 
 /* @tt{{{
-  #move-comment [direction="backward"]
+  @move-comment [direction="backward"]
   @template-renderer [
       templateRendererClassName="EntityDtoTemplateRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
@@ -22,18 +22,18 @@ package my.example.businessproject.dto
  */
 data class ProductDto(
 /* @tt{{{
-    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @expand-comment [ expandDirection="backward" strip="linebreak" ]
     @foreach [ iteratorExpression="model.fields" loopVariable="field" ]
 }}}@  */
     val productCode: String,
 /* @tt{{{
-    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @expand-comment [ expandDirection="backward" strip="linebreak" ]
     @end-foreach
     @ignore-text
 }}}@ */
     val productName: String,
 /* @tt{{{
-    #expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @expand-comment [ expandDirection="backward" strip="linebreak" ]
     @end-ignore-text
     @end-replace-value-by-expression
 }}}@ */

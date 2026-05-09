@@ -1,6 +1,5 @@
 package org.codeblessing.typicaltemplate.contentparsing.commentparser
 
-import org.codeblessing.typicaltemplate.KeywordType
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 
@@ -8,7 +7,6 @@ import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
  * Transform a template comment string (a list of keywords with attributes) to its structure.
  * A valid structure is something like one or many of
  * @<keyword>[<attribute1>="<value1>" <attribute2>="<value2>"][<attribute1>="<value3>"]
- * or using '#' as the prefix instead of '@'.
  */
 object TemplateCommentParser {
 
@@ -20,7 +18,7 @@ object TemplateCommentParser {
     private val attributePairsGroupingPattern = Regex("""(${attributeKeyPattern})="($attributeValuePattern)"""")
     private val keywordPattern = Regex("""[a-z][a-z\\-]+""")
 
-    private val singleCommandKeywordAndAttributesGroupingPattern = Regex("""\s*[@#](${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)""", RegexOption.MULTILINE)
+    private val singleCommandKeywordAndAttributesGroupingPattern = Regex("""\s*@(${keywordPattern})\s*((?:\[(?:\s*$attributePairPattern\s+)*\s*$attributePairPattern\s*]\s*)*)""", RegexOption.MULTILINE)
     private val bracketsGroupingPattern = Regex("""\[((?:\s*$attributePairPattern\s*)*)]\s*""", RegexOption.MULTILINE)
 
     private val multiCommandValidationPattern = Regex("""\s*(${singleCommandKeywordAndAttributesGroupingPattern.pattern}\s*)+\s*""", RegexOption.MULTILINE)
@@ -44,7 +42,6 @@ object TemplateCommentParser {
         val match = requireNotNull(singleCommandKeywordAndAttributesGroupingPattern.find(command))
         val keyword = match.groupValues[1]
         val bracketsString = match.groupValues[2]
-        val keywordType = if (match.value.trimStart().startsWith("#")) KeywordType.PREPROCESSOR_COMMAND else KeywordType.COMMAND
 
         val bracketsContent = bracketsGroupingPattern
             .findAll(bracketsString)
@@ -55,7 +52,6 @@ object TemplateCommentParser {
             keyword = keyword,
             brackets = bracketsContent
                 .map { parseBracketContent(it) },
-            keywordType = keywordType,
         )
     }
 

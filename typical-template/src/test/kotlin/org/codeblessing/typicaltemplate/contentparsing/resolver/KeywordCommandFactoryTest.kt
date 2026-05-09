@@ -362,7 +362,7 @@ class KeywordCommandFactoryTest {
     fun `valid move-comment with direction only`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                #move-comment [
+                @move-comment [
                     direction="forward"
                 ]
             """.trimIndent()
@@ -377,7 +377,7 @@ class KeywordCommandFactoryTest {
     fun `valid move-comment with direction and one occurrence attribute`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                #move-comment [
+                @move-comment [
                     direction="backward"
                     beforeFirstOccurrenceOf="someText"
                 ]
@@ -393,7 +393,7 @@ class KeywordCommandFactoryTest {
     fun `throws when move-comment has two mutually exclusive occurrence attributes`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                #move-comment [
+                @move-comment [
                     direction="forward"
                     beforeFirstOccurrenceOf="someText"
                     afterFirstOccurrenceOf="otherText"
@@ -408,10 +408,10 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `valid expand-comment with hash prefix`() {
+    fun `valid expand-comment`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                #expand-comment [
+                @expand-comment [
                     expandDirection="forward"
                     strip="blanks"
                 ]
@@ -421,38 +421,6 @@ class KeywordCommandFactoryTest {
         val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
         Assertions.assertEquals(CommandKey.EXPAND_COMMENT, keywordCommand.commandKey)
         Assertions.assertEquals("forward", keywordCommand.attribute(CommandAttributeKey.EXPAND_DIRECTION))
-    }
-
-    @Test
-    fun `throws when preprocessor command is prefixed with @`() {
-        val commandStructure = createSingleTemplateComment(
-            comment = """
-                @move-comment [
-                    direction="forward"
-                ]
-            """.trimIndent()
-        )
-
-        val exception = assertThrows<TemplateParsingException> {
-            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        }
-        Assertions.assertEquals(TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX, exception.errorCode)
-    }
-
-    @Test
-    fun `throws when regular command is prefixed with #`() {
-        val commandStructure = createSingleTemplateComment(
-            comment = """
-                #template-renderer [
-                    templateRendererClassName="MyTemplate"
-                ]
-            """.trimIndent()
-        )
-
-        val exception = assertThrows<TemplateParsingException> {
-            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        }
-        Assertions.assertEquals(TemplateParsingErrorCode.WRONG_KEYWORD_PREFIX, exception.errorCode)
     }
 
     private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS

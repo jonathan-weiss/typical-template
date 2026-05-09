@@ -31,8 +31,7 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
     INVALID_COMMENT_STRUCTURE(
         "Invalid comment structure. " +
         "Content of comment must be one or many commands of this structure (without the < and > characters): " +
-        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute3>=\"<value3>\"] " +
-        "(use '@' or '#' as the keyword prefix)"
+        "@<keyword>[<attribute1>=\"<value1>\" <attribute2>=\"<value2>\"][<attribute3>=\"<value3>\"]"
     ),
     EMPTY_ATTRIBUTE_KEY(
         "Key can not be empty."
@@ -51,9 +50,6 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
     ),
     UNKNOWN_KEYWORD(
         "Invalid keyword '{keyword}'."
-    ),
-    WRONG_KEYWORD_PREFIX(
-        "Keyword '{keyword}' must be prefixed with '{expectedPrefix}' but was prefixed with '{actualPrefix}'."
     ),
     TOO_FEW_ATTRIBUTE_GROUPS(
         "Invalid number of attributes groups. Must be at least {min} but was {actual}."

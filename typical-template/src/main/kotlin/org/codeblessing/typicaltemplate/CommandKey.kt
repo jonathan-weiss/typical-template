@@ -7,7 +7,6 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
     val keyword: String,
-    val keywordType: KeywordType = KeywordType.COMMAND,
     val attributeGroupConstraints: List<AttributeGroupConstraint> = emptyList(),
     val correspondingOpeningCommandKey: CommandKey? = null,
     val directlyNestedInsideCommandKey: CommandKey? = null,
@@ -137,7 +136,6 @@ enum class CommandKey(
     ),
     MOVE_COMMENT(
         keyword = "move-comment",
-        keywordType = KeywordType.PREPROCESSOR_COMMAND,
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
                 occurrence = ONE_ATTRIBUTE_GROUP,
@@ -149,7 +147,6 @@ enum class CommandKey(
     ),
     EXPAND_COMMENT(
         keyword = "expand-comment",
-        keywordType = KeywordType.PREPROCESSOR_COMMAND,
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
                 occurrence = ONE_ATTRIBUTE_GROUP,

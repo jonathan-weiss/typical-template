@@ -18,14 +18,10 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
-
-Commands always starts with a `$`.
-
-The following _preprocessing_ keywords/commands are supported:
 * [move-comment](#move-comment)
 * [expand-comment](#expand-comment)
 
-Preprocessing commands always starts with a `#`.
+Commands always starts with a `@`.
 
 
 
@@ -360,13 +356,13 @@ Repeatable Group Attributes:
 
 ## move-comment
 
-Syntax: ```#move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: ```@move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
 Moves the whole comment in which this command is written in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous/next comment or to the beginning or end of the file.
 
 This is useful as some file formats do not allow to put a comment as first line of the file.
 
-Example:  XML starts with a preamble like ```<?xml version="1.0" encoding="iso-8859-1"?>``` and this text should be part of the template renderer's output. But it is not possible to write a XML comment before this preamble. To still span the template from the beginning of the file, you can move the comment to the beginning of the file using this command (```#move-comment[direction=backward]```)
+Example:  XML starts with a preamble like ```<?xml version="1.0" encoding="iso-8859-1"?>``` and this text should be part of the template renderer's output. But it is not possible to write a XML comment before this preamble. To still span the template from the beginning of the file, you can move the comment to the beginning of the file using this command (```@move-comment[direction=backward]```)
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
@@ -403,7 +399,7 @@ Attributes:
 
 ## expand-comment
 
-Syntax: ```#expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
+Syntax: ```@expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
 
 Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.
 

@@ -6,14 +6,10 @@ import org.codeblessing.typicaltemplate.CommandKey
 import org.codeblessing.typicaltemplate.DirectionValue
 import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
-import org.codeblessing.typicaltemplate.KeywordType
-import org.codeblessing.typicaltemplate.KeywordType.COMMAND
-import org.codeblessing.typicaltemplate.KeywordType.PREPROCESSOR_COMMAND
 
 object CommandReferenceMarkdownCreator {
 
     private const val COMMAND_PREFIX = "@"
-    private const val PREPROCESSOR_COMMAND_PREFIX = "#"
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, List<String>> = linkedMapOf(
@@ -176,28 +172,17 @@ object CommandReferenceMarkdownCreator {
         """.trimIndent())
 
         sb.appendLine("""
-            
+
             The following keywords/commands are supported:
         """.trimIndent())
-        for ((commandKey, _) in commandKeyDocumentation.filter { it.key.keywordType == COMMAND }) {
+        for ((commandKey, _) in commandKeyDocumentation) {
             sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
         }
         sb.appendLine("""
-            
-            Commands always starts with a `$`.
-            
-        """.trimIndent())
-        sb.appendLine("""
-            The following _preprocessing_ keywords/commands are supported:
-        """.trimIndent())
-        for ((commandKey, _) in commandKeyDocumentation.filter { it.key.keywordType == PREPROCESSOR_COMMAND }) {
-            sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
-        }
-        sb.appendLine("""
-            
-            Preprocessing commands always starts with a `#`.
-            
-            
+
+            Commands always starts with a `$COMMAND_PREFIX`.
+
+
         """.trimIndent())
 
         for ((commandKey, docLines) in commandKeyDocumentation) {
@@ -350,8 +335,5 @@ object CommandReferenceMarkdownCreator {
         return if (this) "Yes" else "No"
     }
 
-    private fun CommandKey.commandPrefix(): String = when (keywordType) {
-        PREPROCESSOR_COMMAND -> PREPROCESSOR_COMMAND_PREFIX
-        COMMAND -> COMMAND_PREFIX
-    }
+    private fun CommandKey.commandPrefix(): String = COMMAND_PREFIX
 }
