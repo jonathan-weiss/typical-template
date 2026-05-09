@@ -55,18 +55,30 @@ class ContentPartBuilder private constructor() {
         fun addTemplateRendererCommand(
             templateRendererClassName: String = "MyTemplateRendererClass",
             templateRendererPackageName: String = "org.example.template",
+            templateRendererInterfaceName: String? = null,
+            templateRendererInterfacePackageName: String? = null,
         ): TemplateCommentBuilder {
             return addTemplateRendererCommandWithTemplateModel(
                 templateRendererClassName = templateRendererClassName,
                 templateRendererPackageName = templateRendererPackageName,
+                templateRendererInterfaceName = templateRendererInterfaceName,
+                templateRendererInterfacePackageName = templateRendererInterfacePackageName,
             ).end()
         }
 
         fun addTemplateRendererCommandWithTemplateModel(
             templateRendererClassName: String = "MyTemplateRendererClass",
             templateRendererPackageName: String = "org.example.template",
+            templateRendererInterfaceName: String? = null,
+            templateRendererInterfacePackageName: String? = null,
         ): TemplateRendererBuilder {
-            return TemplateRendererBuilder(this, templateRendererClassName, templateRendererPackageName)
+            return TemplateRendererBuilder(
+                this,
+                templateRendererClassName,
+                templateRendererPackageName,
+                templateRendererInterfaceName,
+                templateRendererInterfacePackageName,
+            )
         }
 
         fun addReplaceValueByExpressionCommand(
@@ -83,10 +95,10 @@ class ContentPartBuilder private constructor() {
             vararg replacements: Pair<String, String>,
         ): TemplateCommentBuilder {
             var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_EXPRESSION)
-            replacements.forEach { (searchValue, fieldName) ->
+            replacements.forEach { (searchValue, replaceByExpression) ->
                 builder = builder
                     .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
-                    .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, fieldName)
+                    .withAttribute(CommandAttributeKey.REPLACE_BY_EXPRESSION, replaceByExpression)
                     .nextAttributeGroup()
             }
             return builder.addCommandToChain()
@@ -94,6 +106,33 @@ class ContentPartBuilder private constructor() {
 
         fun addEndReplaceValueByExpressionCommand(): TemplateCommentBuilder {
             return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_EXPRESSION).addCommandToChain()
+        }
+
+        fun addReplaceValueByValueCommand(
+            searchValue: String = "search",
+            replaceByValue: String = "replacement",
+        ): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.REPLACE_VALUE_BY_VALUE)
+                .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
+                .withAttribute(CommandAttributeKey.REPLACE_BY_VALUE, replaceByValue)
+                .addCommandToChain()
+        }
+
+        fun addReplaceValueByValueCommand(
+            vararg replacements: Pair<String, String>,
+        ): TemplateCommentBuilder {
+            var builder = this.createCommand(CommandKey.REPLACE_VALUE_BY_VALUE)
+            replacements.forEach { (searchValue, replaceByValue) ->
+                builder = builder
+                    .withAttribute(CommandAttributeKey.SEARCH_VALUE, searchValue)
+                    .withAttribute(CommandAttributeKey.REPLACE_BY_VALUE, replaceByValue)
+                    .nextAttributeGroup()
+            }
+            return builder.addCommandToChain()
+        }
+
+        fun addEndReplaceValueByValueCommand(): TemplateCommentBuilder {
+            return this.createCommand(CommandKey.END_REPLACE_VALUE_BY_VALUE).addCommandToChain()
         }
 
         fun addIfCommand(
@@ -122,11 +161,11 @@ class ContentPartBuilder private constructor() {
 
         fun addForeachCommand(
             loopVariable: String = "item",
-            loopIterable: String = "myList",
+            iteratorExpression: String = "myList",
         ): TemplateCommentBuilder {
             return this.createCommand(CommandKey.FOREACH)
                 .withAttribute(CommandAttributeKey.LOOP_VARIABLE_NAME, loopVariable)
-                .withAttribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION, loopIterable)
+                .withAttribute(CommandAttributeKey.LOOP_ITERABLE_EXPRESSION, iteratorExpression)
                 .addCommandToChain()
         }
 
@@ -203,16 +242,29 @@ class ContentPartBuilder private constructor() {
             return createCommand(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT).addCommandToChain()
         }
 
+        fun addModifyProvidedFilenameByReplacementsCommand(): TemplateCommentBuilder {
+            return createCommand(CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS).addCommandToChain()
+        }
+
         fun addPrintTextCommand(text: String): TemplateCommentBuilder {
             return this.createCommand(CommandKey.PRINT_TEXT)
                 .withAttribute(CommandAttributeKey.TEXT, text)
                 .addCommandToChain()
         }
 
+        fun addRenderTemplateCommand(
+            templateRendererClassName: String = "MyTemplateRendererClass",
+            templateRendererPackageName: String? = "org.example.template",
+        ): RenderTemplateBuilder {
+            return RenderTemplateBuilder(this, templateRendererClassName, templateRendererPackageName)
+        }
+
         class TemplateRendererBuilder(
             private val templateCommentBuilder: TemplateCommentBuilder,
-            private val rendererClassName: String,
-            private val rendererPackageName: String,
+            private val templateRendererClassName: String,
+            private val templateRendererPackageName: String,
+            private val templateRendererInterfaceName: String?,
+            private val templateRendererInterfacePackageName: String?,
         ) {
             private val modelAttributeGroups: MutableList<AttributeGroup> = mutableListOf()
 
@@ -236,11 +288,51 @@ class ContentPartBuilder private constructor() {
 
             fun end(): TemplateCommentBuilder {
                 val rendererAttributes = mutableMapOf<CommandAttributeKey, AttributeValue>(
-                    CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to rendererClassName,
-                    CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to rendererPackageName,
+                    CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to templateRendererClassName,
+                    CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME to templateRendererPackageName,
                 )
+                templateRendererInterfaceName?.let {
+                    rendererAttributes[CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_NAME] = it
+                }
+                templateRendererInterfacePackageName?.let {
+                    rendererAttributes[CommandAttributeKey.TEMPLATE_RENDERER_INTERFACE_PACKAGE_NAME] = it
+                }
                 val allAttributeGroups = listOf(AttributeGroup(rendererAttributes)) + modelAttributeGroups
                 val keywordCommand = KeywordCommand(CommandKey.TEMPLATE_RENDERER, allAttributeGroups)
+                return templateCommentBuilder.addKeywordCommand(keywordCommand)
+            }
+        }
+
+        class RenderTemplateBuilder(
+            private val templateCommentBuilder: TemplateCommentBuilder,
+            private val templateRendererClassName: String,
+            private val templateRendererPackageName: String?,
+        ) {
+            private val modelAttributeGroups: MutableList<AttributeGroup> = mutableListOf()
+
+            fun addTemplateModel(
+                modelName: String = "model",
+                modelExpression: String = "myModelExpression",
+            ): RenderTemplateBuilder {
+                modelAttributeGroups.add(AttributeGroup(mapOf(
+                    CommandAttributeKey.TEMPLATE_MODEL_NAME to modelName,
+                    CommandAttributeKey.MODEL_EXPRESSION to modelExpression,
+                )))
+                return this
+            }
+
+            fun end(): TemplateCommentBuilder {
+                require(modelAttributeGroups.isNotEmpty()) {
+                    "RENDER_TEMPLATE requires at least one template model — call addTemplateModel(...) before end()"
+                }
+                val rendererAttributes = mutableMapOf<CommandAttributeKey, AttributeValue>(
+                    CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME to templateRendererClassName,
+                )
+                templateRendererPackageName?.let {
+                    rendererAttributes[CommandAttributeKey.TEMPLATE_RENDERER_PACKAGE_NAME] = it
+                }
+                val allAttributeGroups = listOf(AttributeGroup(rendererAttributes)) + modelAttributeGroups
+                val keywordCommand = KeywordCommand(CommandKey.RENDER_TEMPLATE, allAttributeGroups)
                 return templateCommentBuilder.addKeywordCommand(keywordCommand)
             }
         }
