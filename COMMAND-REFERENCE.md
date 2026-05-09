@@ -18,7 +18,8 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
-* [move-comment](#move-comment)
+* [move-comment-backward](#move-comment-backward)
+* [move-comment-forward](#move-comment-forward)
 * [expand-comment](#expand-comment)
 
 Commands always starts with a `@`.
@@ -354,28 +355,57 @@ Repeatable Group Attributes:
   * Allowed values: _\<unrestricted\>_
   * Mutually exclusive with: none
 
-## move-comment
+## move-comment-backward
 
-Syntax: ```@move-comment [ direction="backward|forward" beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: ```@move-comment-backward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
-Moves the whole comment in which this command is written in the specified direction. Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous/next comment or to the beginning or end of the file.
+Moves the whole comment in which this command is written backward (i.e. before the preceding text). Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous comment or to the beginning of the file.
 
 This is useful as some file formats do not allow to put a comment as first line of the file.
 
-Example:  XML starts with a preamble like ```<?xml version="1.0" encoding="iso-8859-1"?>``` and this text should be part of the template renderer's output. But it is not possible to write a XML comment before this preamble. To still span the template from the beginning of the file, you can move the comment to the beginning of the file using this command (```@move-comment[direction=backward]```)
+Example:  XML starts with a preamble like ```<?xml version="1.0" encoding="iso-8859-1"?>``` and this text should be part of the template renderer's output. But it is not possible to write a XML comment before this preamble. To still span the template from the beginning of the file, you can move the comment to the beginning of the file using this command (```@move-comment-backward```)
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command/keyword must have exactly one group of attributes.
+* This command can have zero or one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
 Attributes:
-* *direction*: The direction in which the comment is moved.
-  * Required attribute: _Yes_
+* *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
+  * Required attribute: _No_
   * Required not empty: _Yes_
-  * Allowed values: ```backward```,```forward```
-  * Mutually exclusive with: none
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
+* *afterFirstOccurrenceOf*: Positions the comment after the first occurrence of the given text in the surrounding content.
+  * Required attribute: _No_
+  * Required not empty: _Yes_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```beforeLastOccurrenceOf```, ```afterLastOccurrenceOf```
+* *beforeLastOccurrenceOf*: Positions the comment before the last occurrence of the given text in the surrounding content.
+  * Required attribute: _No_
+  * Required not empty: _Yes_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```afterLastOccurrenceOf```
+* *afterLastOccurrenceOf*: Positions the comment after the last occurrence of the given text in the surrounding content.
+  * Required attribute: _No_
+  * Required not empty: _Yes_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```
+
+## move-comment-forward
+
+Syntax: ```@move-comment-forward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+
+Moves the whole comment in which this command is written forward (i.e. after the following text). Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the next comment or to the end of the file.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command can have zero or one group of attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+Attributes:
 * *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
   * Required attribute: _No_
   * Required not empty: _Yes_

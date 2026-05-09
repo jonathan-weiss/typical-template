@@ -38,7 +38,7 @@ class ContentPartsPreprocessorValidatorTest {
         @Test
         fun `comment with exactly one move-comment command passes validation`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .build()
 
             val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
@@ -62,8 +62,8 @@ class ContentPartsPreprocessorValidatorTest {
         fun `comment with two move-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addMoveCommentCommand(direction = FORWARD)
-                .addMoveCommentCommand(direction = BACKWARD)
+                .addMoveCommentForwardCommand()
+                .addMoveCommentBackwardCommand()
                 .end()
                 .build()
 
@@ -77,9 +77,9 @@ class ContentPartsPreprocessorValidatorTest {
         fun `comment with three move-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addMoveCommentCommand(direction = FORWARD)
-                .addMoveCommentCommand(direction = FORWARD)
-                .addMoveCommentCommand(direction = BACKWARD)
+                .addMoveCommentForwardCommand()
+                .addMoveCommentForwardCommand()
+                .addMoveCommentBackwardCommand()
                 .end()
                 .build()
 
@@ -92,9 +92,9 @@ class ContentPartsPreprocessorValidatorTest {
         @Test
         fun `multiple comments each with at most one move-comment command passes validation`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .addText("text")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addMoveCommentBackwardCommand().end()
                 .build()
 
             val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
@@ -105,11 +105,11 @@ class ContentPartsPreprocessorValidatorTest {
         @Test
         fun `second comment with two move-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .addText("text")
                 .addTemplateComment()
-                .addMoveCommentCommand(direction = FORWARD)
-                .addMoveCommentCommand(direction = BACKWARD)
+                .addMoveCommentForwardCommand()
+                .addMoveCommentBackwardCommand()
                 .end()
                 .build()
 
@@ -123,7 +123,7 @@ class ContentPartsPreprocessorValidatorTest {
         fun `mixed text and comments where valid comment has one move-comment command passes validation`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "X").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeFirstOccurrenceOf = "X").end()
                 .addText("after")
                 .build()
 

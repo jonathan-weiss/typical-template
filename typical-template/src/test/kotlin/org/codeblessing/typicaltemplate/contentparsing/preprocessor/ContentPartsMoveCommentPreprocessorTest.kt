@@ -1,8 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
-import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
@@ -42,7 +40,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward simple swap moves comment after following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .addText("Hello World")
                 .build()
 
@@ -60,7 +58,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `forward with no following element keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -76,7 +74,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward with following comment as neighbor keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .addTemplateComment().addIfCommand().end()
                 .build()
 
@@ -93,7 +91,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward beforeFirstOccurrenceOf places comment before first occurrence in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeFirstOccurrenceOf = "World").end()
                 .addText("Hello World Bye World")
                 .build()
 
@@ -111,7 +109,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward afterFirstOccurrenceOf places comment after first occurrence in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().addMoveCommentForwardCommand(afterFirstOccurrenceOf = "Hello").end()
                 .addText("Hello World Hello")
                 .build()
 
@@ -129,7 +127,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward beforeLastOccurrenceOf places comment before last occurrence in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeLastOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeLastOccurrenceOf = "World").end()
                 .addText("Hello World Bye World End")
                 .build()
 
@@ -147,7 +145,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward afterLastOccurrenceOf places comment after last occurrence in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentForwardCommand(afterLastOccurrenceOf = "World").end()
                 .addText("Hello World Bye World End")
                 .build()
 
@@ -165,7 +163,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward beforeFirstOccurrenceOf at start of text produces no left text part`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeFirstOccurrenceOf = "Hello").end()
                 .addText("Hello World")
                 .build()
 
@@ -182,7 +180,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward afterLastOccurrenceOf at end of text produces no right text part`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentForwardCommand(afterLastOccurrenceOf = "World").end()
                 .addText("Hello World")
                 .build()
 
@@ -205,7 +203,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward simple swap moves comment before preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addMoveCommentBackwardCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -221,7 +219,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `backward with no preceding element keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addMoveCommentBackwardCommand().end()
                 .addText("after")
                 .build()
 
@@ -239,7 +237,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward with preceding comment as neighbor keeps comment in place but strips move-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addIfCommand().end()
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addMoveCommentBackwardCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -256,7 +254,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward beforeFirstOccurrenceOf places comment before first occurrence in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World Bye World")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeFirstOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(beforeFirstOccurrenceOf = "World").end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -274,7 +272,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward afterFirstOccurrenceOf places comment after first occurrence in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World Hello")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterFirstOccurrenceOf = "Hello").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(afterFirstOccurrenceOf = "Hello").end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -292,7 +290,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward beforeLastOccurrenceOf places comment before last occurrence in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World Bye World End")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeLastOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(beforeLastOccurrenceOf = "World").end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -310,7 +308,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward afterLastOccurrenceOf places comment after last occurrence in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World Bye World End")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterLastOccurrenceOf = "World").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(afterLastOccurrenceOf = "World").end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -331,7 +329,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward beforeFirstOccurrenceOf throws when string not found in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeFirstOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeFirstOccurrenceOf = "Missing").end()
                 .addText("Hello World")
                 .build()
 
@@ -344,7 +342,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward afterFirstOccurrenceOf throws when string not found in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterFirstOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentForwardCommand(afterFirstOccurrenceOf = "Missing").end()
                 .addText("Hello World")
                 .build()
 
@@ -357,7 +355,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward beforeLastOccurrenceOf throws when string not found in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, beforeLastOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentForwardCommand(beforeLastOccurrenceOf = "Missing").end()
                 .addText("Hello World")
                 .build()
 
@@ -370,7 +368,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `forward afterLastOccurrenceOf throws when string not found in following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD, afterLastOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentForwardCommand(afterLastOccurrenceOf = "Missing").end()
                 .addText("Hello World")
                 .build()
 
@@ -384,7 +382,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward beforeFirstOccurrenceOf throws when string not found in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, beforeFirstOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(beforeFirstOccurrenceOf = "Missing").end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
@@ -397,7 +395,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `backward afterLastOccurrenceOf throws when string not found in preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello World")
-                .addTemplateComment().addMoveCommentCommand(direction = BACKWARD, afterLastOccurrenceOf = "Missing").end()
+                .addTemplateComment().addMoveCommentBackwardCommand(afterLastOccurrenceOf = "Missing").end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
@@ -413,7 +411,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         @Test
         fun `move-comment command is removed from result when move has an effect`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .addText("Hello World")
                 .build()
 
@@ -422,7 +420,7 @@ class ContentPartsMoveCommentPreprocessorTest {
             val remainingMoveCommentCommands = result
                 .filterIsInstance<TemplateCommentContentPart>()
                 .flatMap { it.keywordCommands }
-                .filter { it.commandKey == CommandKey.MOVE_COMMENT }
+                .filter { it.commandKey == CommandKey.MOVE_COMMENT_FORWARD || it.commandKey == CommandKey.MOVE_COMMENT_BACKWARD }
             assertEquals(emptyList<Any>(), remainingMoveCommentCommands)
         }
 
@@ -430,7 +428,7 @@ class ContentPartsMoveCommentPreprocessorTest {
         fun `move-comment command is removed from result when move has no effect`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
-                .addTemplateComment().addMoveCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addMoveCommentForwardCommand().end()
                 .build()
 
             val result = ContentPartsMoveCommentPreprocessor.runPreprocessing(input)
@@ -438,7 +436,7 @@ class ContentPartsMoveCommentPreprocessorTest {
             val remainingMoveCommentCommands = result
                 .filterIsInstance<TemplateCommentContentPart>()
                 .flatMap { it.keywordCommands }
-                .filter { it.commandKey == CommandKey.MOVE_COMMENT }
+                .filter { it.commandKey == CommandKey.MOVE_COMMENT_FORWARD || it.commandKey == CommandKey.MOVE_COMMENT_BACKWARD }
             assertEquals(emptyList<Any>(), remainingMoveCommentCommands)
         }
     }

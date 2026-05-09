@@ -1,7 +1,7 @@
 package my.example.businessproject.domain
 
 /* @tt{{{
-  @move-comment [direction="backward"]
+  @move-comment-backward
   @template-renderer [
       templateRendererClassName="StatusEnumRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"

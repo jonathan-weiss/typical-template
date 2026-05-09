@@ -1,7 +1,7 @@
 package my.example.businessproject.summary
 
 /* @tt{{{
-  @move-comment [direction="backward"]
+  @move-comment-backward
   @template-renderer [
       templateRendererClassName="SummaryClassRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"

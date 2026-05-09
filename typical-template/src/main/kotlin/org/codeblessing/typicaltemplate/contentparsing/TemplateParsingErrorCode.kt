@@ -43,7 +43,7 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
         "Occurrence of '{searchToken}' not found in text"
     ),
     MULTIPLE_MOVE_COMMENT_COMMANDS(
-        "A template comment must not have more than one '{command}' command, but found {count}."
+        "A template comment must not have more than one move-comment command, but found {count}."
     ),
     MULTIPLE_EXPAND_COMMENT_COMMANDS(
         "A template comment must not have more than one '{command}' command with direction '{direction}', but found {count}."

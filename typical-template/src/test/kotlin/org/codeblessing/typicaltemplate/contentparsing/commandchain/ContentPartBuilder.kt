@@ -148,15 +148,40 @@ class ContentPartBuilder private constructor() {
             return this.createCommand(CommandKey.END_TEMPLATE_RENDERER).addCommandToChain()
         }
 
-        fun addMoveCommentCommand(
-            direction: DirectionValue = DirectionValue.FORWARD,
+        fun addMoveCommentForwardCommand(
             beforeFirstOccurrenceOf: String? = null,
             afterFirstOccurrenceOf: String? = null,
             beforeLastOccurrenceOf: String? = null,
             afterLastOccurrenceOf: String? = null,
+        ): TemplateCommentBuilder = addMoveCommentCommand(
+            CommandKey.MOVE_COMMENT_FORWARD,
+            beforeFirstOccurrenceOf,
+            afterFirstOccurrenceOf,
+            beforeLastOccurrenceOf,
+            afterLastOccurrenceOf,
+        )
+
+        fun addMoveCommentBackwardCommand(
+            beforeFirstOccurrenceOf: String? = null,
+            afterFirstOccurrenceOf: String? = null,
+            beforeLastOccurrenceOf: String? = null,
+            afterLastOccurrenceOf: String? = null,
+        ): TemplateCommentBuilder = addMoveCommentCommand(
+            CommandKey.MOVE_COMMENT_BACKWARD,
+            beforeFirstOccurrenceOf,
+            afterFirstOccurrenceOf,
+            beforeLastOccurrenceOf,
+            afterLastOccurrenceOf,
+        )
+
+        private fun addMoveCommentCommand(
+            commandKey: CommandKey,
+            beforeFirstOccurrenceOf: String?,
+            afterFirstOccurrenceOf: String?,
+            beforeLastOccurrenceOf: String?,
+            afterLastOccurrenceOf: String?,
         ): TemplateCommentBuilder {
-            var builder = createCommand(CommandKey.MOVE_COMMENT)
-                .withAttribute(CommandAttributeKey.DIRECTION, direction.value)
+            var builder = createCommand(commandKey)
             beforeFirstOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF, it) }
             afterFirstOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.AFTER_FIRST_OCCURRENCE_OF, it) }
             beforeLastOccurrenceOf?.let { builder = builder.withAttribute(CommandAttributeKey.BEFORE_LAST_OCCURRENCE_OF, it) }

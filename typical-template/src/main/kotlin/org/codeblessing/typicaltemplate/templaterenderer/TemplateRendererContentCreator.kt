@@ -42,7 +42,8 @@ object TemplateRendererContentCreator {
 
     private fun commandContent(ctx: TemplateCreationContext, keywordCommand: KeywordCommand): String {
         return when (val commandKey = keywordCommand.commandKey) {
-            CommandKey.MOVE_COMMENT,
+            CommandKey.MOVE_COMMENT_FORWARD,
+            CommandKey.MOVE_COMMENT_BACKWARD,
             CommandKey.EXPAND_COMMENT,
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.END_TEMPLATE_RENDERER,

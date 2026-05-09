@@ -21,13 +21,14 @@ object ContentPartsPreprocessorValidator {
     }
 
     private fun validateMoveComment(part: TemplateCommentContentPart) {
-        val moveCommentCount = part.keywordCommands.count { it.commandKey == CommandKey.MOVE_COMMENT }
+        val moveCommentCount = part.keywordCommands.count {
+            it.commandKey == CommandKey.MOVE_COMMENT_FORWARD || it.commandKey == CommandKey.MOVE_COMMENT_BACKWARD
+        }
         if (moveCommentCount > 1) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
                 errorCode = TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS,
                 msg = TemplateParsingErrorCode.MULTIPLE_MOVE_COMMENT_COMMANDS.resolve(
-                    "command" to CommandKey.MOVE_COMMENT.keyword,
                     "count" to moveCommentCount.toString(),
                 ),
             )

@@ -67,17 +67,21 @@ object CommandReferenceMarkdownCreator {
             "This command's syntax has a lot of similarity to ${CommandKey.TEMPLATE_RENDERER.keyword}, as it calls a " +
                     "template renderer defined by the ${CommandKey.TEMPLATE_RENDERER.keyword} block."
         ),
-        CommandKey.MOVE_COMMENT to listOf(
-            "Moves the whole comment in which this command is written in the specified direction. " +
+        CommandKey.MOVE_COMMENT_BACKWARD to listOf(
+            "Moves the whole comment in which this command is written backward (i.e. before the preceding text). " +
                     "Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. " +
-                    "The comment will be moved at most to the previous/next comment or to the beginning or end of the file.",
+                    "The comment will be moved at most to the previous comment or to the beginning of the file.",
             "This is useful as some file formats do not allow to put a comment as first line of the file.",
             "Example:  XML starts with a preamble like ```<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>``` and this " +
                     "text should be part of the template renderer's output. But it is not possible to write a XML comment before " +
                     "this preamble. To still span the template from the beginning of the file, you can move the comment to the " +
                     "beginning of the file using this command " +
-                    "(```${CommandKey.MOVE_COMMENT.commandPrefix()}${CommandKey.MOVE_COMMENT.keyword}" +
-                    "[${CommandAttributeKey.DIRECTION.keyAsString}=${DirectionValue.BACKWARD.value}]```)",
+                    "(```${CommandKey.MOVE_COMMENT_BACKWARD.commandPrefix()}${CommandKey.MOVE_COMMENT_BACKWARD.keyword}```)",
+        ),
+        CommandKey.MOVE_COMMENT_FORWARD to listOf(
+            "Moves the whole comment in which this command is written forward (i.e. after the following text). " +
+                    "Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. " +
+                    "The comment will be moved at most to the next comment or to the end of the file.",
         ),
         CommandKey.EXPAND_COMMENT to listOf(
             "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) " +
@@ -137,9 +141,6 @@ object CommandReferenceMarkdownCreator {
         ),
         CommandAttributeKey.MODEL_EXPRESSION to listOf(
             "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
-        ),
-        CommandAttributeKey.DIRECTION to listOf(
-            "The direction in which the comment is moved.",
         ),
         CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF to listOf(
             "Positions the comment before the first occurrence of the given text in the surrounding content.",

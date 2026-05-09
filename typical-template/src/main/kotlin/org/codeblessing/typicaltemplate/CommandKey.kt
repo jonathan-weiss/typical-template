@@ -3,6 +3,7 @@ package org.codeblessing.typicaltemplate
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP
+import org.codeblessing.typicaltemplate.AttributeGroupOccurrence.ZERO_OR_ONE_ATTRIBUTE_GROUP
 import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
@@ -134,12 +135,21 @@ enum class CommandKey(
             ),
         ),
     ),
-    MOVE_COMMENT(
-        keyword = "move-comment",
+    MOVE_COMMENT_BACKWARD(
+        keyword = "move-comment-backward",
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
-                occurrence = ONE_ATTRIBUTE_GROUP,
-                requiredAttributes = setOf(DIRECTION),
+                occurrence = ZERO_OR_ONE_ATTRIBUTE_GROUP,
+                optionalAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
+                mutualExclusiveAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
+            )
+        ),
+    ),
+    MOVE_COMMENT_FORWARD(
+        keyword = "move-comment-forward",
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ZERO_OR_ONE_ATTRIBUTE_GROUP,
                 optionalAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
                 mutualExclusiveAttributes = setOf(BEFORE_FIRST_OCCURRENCE_OF, AFTER_FIRST_OCCURRENCE_OF, BEFORE_LAST_OCCURRENCE_OF, AFTER_LAST_OCCURRENCE_OF),
             )

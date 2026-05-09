@@ -21,7 +21,6 @@ enum class CommandAttributeKey(
     LOOP_VARIABLE_NAME("loopVariable"),
     TEXT("text"),
     MODEL_EXPRESSION("modelExpression"),
-    DIRECTION("direction", allowedValues = DirectionValue.entries.toList()),
     BEFORE_FIRST_OCCURRENCE_OF("beforeFirstOccurrenceOf"),
     AFTER_FIRST_OCCURRENCE_OF("afterFirstOccurrenceOf"),
     BEFORE_LAST_OCCURRENCE_OF("beforeLastOccurrenceOf"),

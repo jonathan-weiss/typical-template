@@ -359,42 +359,36 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `valid move-comment with direction only`() {
+    fun `valid move-comment-forward without attributes`() {
         val commandStructure = createSingleTemplateComment(
-            comment = """
-                @move-comment [
-                    direction="forward"
-                ]
-            """.trimIndent()
+            comment = "@move-comment-forward"
         )
 
         val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        Assertions.assertEquals(CommandKey.MOVE_COMMENT, keywordCommand.commandKey)
-        Assertions.assertEquals("forward", keywordCommand.attribute(CommandAttributeKey.DIRECTION))
+        Assertions.assertEquals(CommandKey.MOVE_COMMENT_FORWARD, keywordCommand.commandKey)
+        Assertions.assertTrue(keywordCommand.attributeGroups.isEmpty())
     }
 
     @Test
-    fun `valid move-comment with direction and one occurrence attribute`() {
+    fun `valid move-comment-backward with one occurrence attribute`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                @move-comment [
-                    direction="backward"
+                @move-comment-backward [
                     beforeFirstOccurrenceOf="someText"
                 ]
             """.trimIndent()
         )
 
         val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        Assertions.assertEquals(CommandKey.MOVE_COMMENT, keywordCommand.commandKey)
+        Assertions.assertEquals(CommandKey.MOVE_COMMENT_BACKWARD, keywordCommand.commandKey)
         Assertions.assertEquals("someText", keywordCommand.attribute(CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF))
     }
 
     @Test
-    fun `throws when move-comment has two mutually exclusive occurrence attributes`() {
+    fun `throws when move-comment-forward has two mutually exclusive occurrence attributes`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                @move-comment [
-                    direction="forward"
+                @move-comment-forward [
                     beforeFirstOccurrenceOf="someText"
                     afterFirstOccurrenceOf="otherText"
                 ]
