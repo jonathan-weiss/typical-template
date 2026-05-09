@@ -105,7 +105,6 @@ Of course, the comment style depends on the language of the source file.
 All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax 
 for typical template.
 Inside the magic brackets, write one or many typical-template commands (see [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)).
-Preprocessed commands starts with a `#`, the "real" commands with a `$`.
 
 ## Let typical template generate the renderer classes
 
