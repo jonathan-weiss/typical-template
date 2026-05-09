@@ -323,6 +323,8 @@ object CommandReferenceMarkdownCreator {
                 "This command/keyword does not support groups and has no attributes."
             attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.ONE_ATTRIBUTE_GROUP ->
                 "This command/keyword must have exactly one group of attributes."
+            attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.ZERO_OR_ONE_ATTRIBUTE_GROUP ->
+                "This command can have zero or one group of attributes."
             attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP ->
                 "This command can have many groups of attributes"
             attributeGroupConstraints.size == 1 && attributeGroupConstraints[0].occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP ->
@@ -331,6 +333,8 @@ object CommandReferenceMarkdownCreator {
                 "This command has a primary group of attributes followed by one or more groups of attributes."
             attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP ->
                 "This command has a primary group of attributes optionally followed by zero or more groups of attributes."
+            attributeGroupConstraints.size > 1 && attributeGroupConstraints.last().occurrence == AttributeGroupOccurrence.ZERO_OR_ONE_ATTRIBUTE_GROUP ->
+                "This command has a primary group of attributes optionally followed by one more group of attributes."
             else ->
                 "This command/keyword has ${attributeGroupConstraints.size} fixed groups of attributes."
         }
