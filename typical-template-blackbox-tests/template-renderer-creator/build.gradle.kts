@@ -19,7 +19,7 @@ tasks.register<JavaExec>("createTypicalTemplateRenderers") {
     val pathToKotlinSourceFiles = exampleBusinessProjectPath.resolve("src/main/kotlin")
     val pathToHtmlSourceFiles = exampleBusinessProjectPath.resolve("src/webapp")
     args(
-        "--template-render",
+        "--template-renderer",
         targetDirectoryForTemplateRenderer.absolutePath,  // Path to the base directory where the template renderers are written to
         "--search",
         "${pathToKotlinSourceFiles.absolutePath}:*.kt",
