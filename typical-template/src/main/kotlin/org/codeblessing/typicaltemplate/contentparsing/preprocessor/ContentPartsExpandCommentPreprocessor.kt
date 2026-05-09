@@ -1,15 +1,18 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
-import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.DirectionValue
-import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
-import org.codeblessing.typicaltemplate.toEnum
 
 object ContentPartsExpandCommentPreprocessor {
+
+    private val REMOVE_COMMENT_COMMAND_KEYS = setOf(
+        CommandKey.REMOVE_BLANKS_BEFORE_COMMENT,
+        CommandKey.REMOVE_BLANKS_AFTER_COMMENT,
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
+    )
 
     fun runPreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {
         val result = mutableListOf<TemplateContentPart>()
@@ -20,40 +23,46 @@ object ContentPartsExpandCommentPreprocessor {
 
             val part = templateContentParts[i]
             if (part is TemplateCommentContentPart) {
-                val expandCommand = part.keywordCommands.firstOrNull { it.commandKey == CommandKey.EXPAND_COMMENT }
-                if (expandCommand != null) {
-                    val direction = expandCommand.attribute(CommandAttributeKey.EXPAND_DIRECTION).toEnum<DirectionValue>()
-                    val stripMode = expandCommand.attribute(CommandAttributeKey.STRIP_MODE).toEnum<ExpandModeValue>()
+                val beforeCommand = part.keywordCommands.firstOrNull {
+                    it.commandKey == CommandKey.REMOVE_BLANKS_BEFORE_COMMENT
+                            || it.commandKey == CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT
+                }
+                val afterCommand = part.keywordCommands.firstOrNull {
+                    it.commandKey == CommandKey.REMOVE_BLANKS_AFTER_COMMENT
+                            || it.commandKey == CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT
+                }
+                if (beforeCommand != null || afterCommand != null) {
                     val processedComment = part.copy(
-                        keywordCommands = part.keywordCommands.filter { it.commandKey != CommandKey.EXPAND_COMMENT }
+                        keywordCommands = part.keywordCommands.filter { it.commandKey !in REMOVE_COMMENT_COMMAND_KEYS }
                     )
 
-                    if (direction == DirectionValue.FORWARD) {
-                        val nextIndex = i + 1
-                        if (nextIndex < templateContentParts.size && templateContentParts[nextIndex] is TextContentPart) {
-                            val textPart = templateContentParts[nextIndex] as TextContentPart
-                            val strippedText = stripFromStart(textPart.text, stripMode)
-                            result.add(processedComment)
-                            if (strippedText.isNotEmpty()) {
-                                result.add(textPart.copy(text = strippedText))
-                            }
-                            consumed.add(nextIndex)
-                            continue
-                        }
-                    } else if (direction == DirectionValue.BACKWARD) {
+                    if (beforeCommand != null) {
                         val prevIndex = i - 1
                         if (prevIndex >= 0 && prevIndex !in consumed && templateContentParts[prevIndex] is TextContentPart) {
                             val textPart = templateContentParts[prevIndex] as TextContentPart
-                            val strippedText = stripFromEnd(textPart.text, stripMode)
+                            val stripLinebreak = beforeCommand.commandKey == CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT
+                            val strippedText = stripFromEnd(textPart.text, stripLinebreak)
                             result.removeAt(result.lastIndex)
                             if (strippedText.isNotEmpty()) {
                                 result.add(textPart.copy(text = strippedText))
                             }
-                            result.add(processedComment)
-                            continue
                         }
                     }
+
                     result.add(processedComment)
+
+                    if (afterCommand != null) {
+                        val nextIndex = i + 1
+                        if (nextIndex < templateContentParts.size && templateContentParts[nextIndex] is TextContentPart) {
+                            val textPart = templateContentParts[nextIndex] as TextContentPart
+                            val stripLinebreak = afterCommand.commandKey == CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT
+                            val strippedText = stripFromStart(textPart.text, stripLinebreak)
+                            if (strippedText.isNotEmpty()) {
+                                result.add(textPart.copy(text = strippedText))
+                            }
+                            consumed.add(nextIndex)
+                        }
+                    }
                     continue
                 }
             }
@@ -63,12 +72,12 @@ object ContentPartsExpandCommentPreprocessor {
         return result
     }
 
-    private fun stripFromStart(text: String, stripMode: ExpandModeValue): String {
+    private fun stripFromStart(text: String, stripLinebreak: Boolean): String {
         var i = 0
         while (i < text.length && (text[i] == ' ' || text[i] == '\t')) {
             i++
         }
-        if (stripMode == ExpandModeValue.LINEBREAK && i < text.length) {
+        if (stripLinebreak && i < text.length) {
             if (text[i] == '\r' && i + 1 < text.length && text[i + 1] == '\n') {
                 i += 2
             } else if (text[i] == '\r' || text[i] == '\n') {
@@ -78,12 +87,12 @@ object ContentPartsExpandCommentPreprocessor {
         return text.substring(i)
     }
 
-    private fun stripFromEnd(text: String, stripMode: ExpandModeValue): String {
+    private fun stripFromEnd(text: String, stripLinebreak: Boolean): String {
         var i = text.length - 1
         while (i >= 0 && (text[i] == ' ' || text[i] == '\t')) {
             i--
         }
-        if (stripMode == ExpandModeValue.LINEBREAK && i >= 0) {
+        if (stripLinebreak && i >= 0) {
             if (text[i] == '\n' && i > 0 && text[i - 1] == '\r') {
                 i -= 2
             } else if (text[i] == '\n' || text[i] == '\r') {

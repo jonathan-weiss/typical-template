@@ -20,7 +20,10 @@ The following keywords/commands are supported:
 * [render-template](#render-template)
 * [move-comment-backward](#move-comment-backward)
 * [move-comment-forward](#move-comment-forward)
-* [expand-comment](#expand-comment)
+* [remove-blanks-before-comment](#remove-blanks-before-comment)
+* [remove-blanks-after-comment](#remove-blanks-after-comment)
+* [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment)
+* [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment)
 
 Commands always starts with a `@`.
 
@@ -427,28 +430,58 @@ Attributes:
   * Allowed values: _\<unrestricted\>_
   * Mutually exclusive with: ```beforeFirstOccurrenceOf```, ```afterFirstOccurrenceOf```, ```beforeLastOccurrenceOf```
 
-## expand-comment
+## remove-blanks-before-comment
 
-Syntax: ```@expand-comment [ expandDirection="backward|forward" strip="blanks|linebreak" ]```
+Syntax: ```@remove-blanks-before-comment```
 
-Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) from the neighboring text part.
+Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
-This is useful if you don't want to have empty lines in your template output due to the typical templates comments or dangling spaces/idents if the typical template comments itself have to follow some ident rules (e.g. by your linter).
+This is useful if you don't want to have dangling spaces/idents in your template output if the typical template comments itself have to follow some ident rules (e.g. by your linter).
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command/keyword must have exactly one group of attributes.
+* This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
-Attributes:
-* *expandDirection*: The direction in which the comment expands into the adjacent text (```forward``` or ```backward```).
-  * Required attribute: _Yes_
-  * Required not empty: _Yes_
-  * Allowed values: ```backward```,```forward```
-  * Mutually exclusive with: none
-* *strip*: Controls how much whitespace is stripped from the adjacent text. ```blanks``` removes only spaces and tabs; ```linebreak``` also removes the immediately adjacent line-ending.
-  * Required attribute: _Yes_
-  * Required not empty: _Yes_
-  * Allowed values: ```blanks```,```linebreak```
-  * Mutually exclusive with: none
+## remove-blanks-after-comment
+
+Syntax: ```@remove-blanks-after-comment```
+
+Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
+
+This is useful if you don't want to have dangling spaces/idents in your template output if the typical template comments itself have to follow some ident rules (e.g. by your linter).
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## remove-blanks-and-linebreak-before-comment
+
+Syntax: ```@remove-blanks-and-linebreak-before-comment```
+
+Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, including the immediately adjacent line-ending.
+
+This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## remove-blanks-and-linebreak-after-comment
+
+Syntax: ```@remove-blanks-and-linebreak-after-comment```
+
+Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, including the immediately adjacent line-ending.
+
+This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.

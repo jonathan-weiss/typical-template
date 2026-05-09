@@ -45,8 +45,8 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
     MULTIPLE_MOVE_COMMENT_COMMANDS(
         "A template comment must not have more than one move-comment command, but found {count}."
     ),
-    MULTIPLE_EXPAND_COMMENT_COMMANDS(
-        "A template comment must not have more than one '{command}' command with direction '{direction}', but found {count}."
+    MULTIPLE_REMOVE_COMMENT_COMMANDS(
+        "A template comment must not have more than one '{position}'-comment remove command, but found {count}."
     ),
     UNKNOWN_KEYWORD(
         "Invalid keyword '{keyword}'."

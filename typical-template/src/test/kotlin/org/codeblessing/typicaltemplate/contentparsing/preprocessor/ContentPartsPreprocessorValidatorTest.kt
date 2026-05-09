@@ -1,7 +1,5 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
-import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
-import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingErrorCode
 import org.codeblessing.typicaltemplate.contentparsing.TemplateParsingException
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
@@ -134,10 +132,10 @@ class ContentPartsPreprocessorValidatorTest {
     }
 
     @Nested
-    inner class ExpandCommentValidation {
+    inner class RemoveCommentValidation {
 
         @Test
-        fun `comment with no expand-comment commands passes validation`() {
+        fun `comment with no remove-comment commands passes validation`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addIfCommand().end()
                 .build()
@@ -148,9 +146,9 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `comment with one forward expand-comment passes validation`() {
+        fun `comment with one remove-blanks-after-comment passes validation`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .build()
 
             val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
@@ -159,9 +157,9 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `comment with one backward expand-comment passes validation`() {
+        fun `comment with one remove-blanks-before-comment passes validation`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
@@ -170,11 +168,11 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `comment with one forward and one backward expand-comment passes validation`() {
+        fun `comment with one before and one after remove-comment passes validation`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addExpandCommentCommand(direction = FORWARD)
-                .addExpandCommentCommand(direction = BACKWARD)
+                .addRemoveBlanksAfterCommentCommand()
+                .addRemoveBlanksBeforeCommentCommand()
                 .end()
                 .build()
 
@@ -184,57 +182,57 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `comment with two forward expand-comment commands throws exception`() {
+        fun `comment with two after remove-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addExpandCommentCommand(direction = FORWARD)
-                .addExpandCommentCommand(direction = FORWARD)
+                .addRemoveBlanksAfterCommentCommand()
+                .addRemoveBlanksAndLinebreakAfterCommentCommand()
                 .end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
-        fun `comment with two backward expand-comment commands throws exception`() {
+        fun `comment with two before remove-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addExpandCommentCommand(direction = BACKWARD)
-                .addExpandCommentCommand(direction = BACKWARD)
+                .addRemoveBlanksBeforeCommentCommand()
+                .addRemoveBlanksAndLinebreakBeforeCommentCommand()
                 .end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
-        fun `comment with two forward and one backward expand-comment commands throws exception`() {
+        fun `comment with two after and one before remove-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
-                .addExpandCommentCommand(direction = FORWARD)
-                .addExpandCommentCommand(direction = FORWARD)
-                .addExpandCommentCommand(direction = BACKWARD)
+                .addRemoveBlanksAfterCommentCommand()
+                .addRemoveBlanksAndLinebreakAfterCommentCommand()
+                .addRemoveBlanksBeforeCommentCommand()
                 .end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS, exception.errorCode)
         }
 
         @Test
-        fun `multiple comments each with at most one expand-comment per direction passes validation`() {
+        fun `multiple comments each with at most one remove-comment per position passes validation`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("text")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
@@ -243,20 +241,20 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `second comment with two forward expand-comment commands throws exception`() {
+        fun `second comment with two after remove-comment commands throws exception`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("text")
                 .addTemplateComment()
-                .addExpandCommentCommand(direction = FORWARD)
-                .addExpandCommentCommand(direction = FORWARD)
+                .addRemoveBlanksAfterCommentCommand()
+                .addRemoveBlanksAndLinebreakAfterCommentCommand()
                 .end()
                 .build()
 
             val exception = assertThrows(TemplateParsingException::class.java) {
                 ContentPartsPreprocessorValidator.validatePreprocessing(input)
             }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_EXPAND_COMMENT_COMMANDS, exception.errorCode)
+            assertEquals(TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS, exception.errorCode)
         }
     }
 }

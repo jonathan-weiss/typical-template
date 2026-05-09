@@ -30,12 +30,12 @@ package my.example.businessproject.summary
     [ searchValue="OrderSummary" replaceByExpression="model.summaryClassName" ]
 }}}@ */
 /* @tt{{{ @print-text [ text="// Auto-generated extensions - do not modify" ] }}}@ */
-/* @tt{{{ @expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
+/* @tt{{{ @remove-blanks-and-linebreak-after-comment }}}@ */
 
 fun OrderSummary.label(): String = "Summary: OrderSummary"
 /* @tt{{{ @end-template-renderer }}}@ */
 /* @tt{{{ @print-text [ text="// Auto-generated summary class - do not modify" ] }}}@ */
-/* @tt{{{ @expand-comment [expandDirection="forward" strip="linebreak"] }}}@ */
+/* @tt{{{ @remove-blanks-and-linebreak-after-comment }}}@ */
 
 @Suppress("SUPPRESS_VALUE")
 data class OrderSummary(

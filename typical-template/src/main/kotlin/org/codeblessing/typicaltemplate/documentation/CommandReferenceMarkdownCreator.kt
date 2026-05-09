@@ -3,8 +3,6 @@ package org.codeblessing.typicaltemplate.documentation
 import org.codeblessing.typicaltemplate.AttributeGroupOccurrence
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.DirectionValue
-import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
 
 object CommandReferenceMarkdownCreator {
@@ -83,11 +81,27 @@ object CommandReferenceMarkdownCreator {
                     "Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. " +
                     "The comment will be moved at most to the next comment or to the end of the file.",
         ),
-        CommandKey.EXPAND_COMMENT to listOf(
-            "Expands the comment into the adjacent text in the specified direction by stripping leading or trailing whitespace (blanks and optionally a line-ending) " +
-                    "from the neighboring text part.",
-            "This is useful if you don't want to have empty lines in your template output due to the typical templates comments or dangling spaces/idents if the " +
+        CommandKey.REMOVE_BLANKS_BEFORE_COMMENT to listOf(
+            "Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. " +
+                    "Stops before the line-ending; the line-ending itself is kept.",
+            "This is useful if you don't want to have dangling spaces/idents in your template output if the " +
                     "typical template comments itself have to follow some ident rules (e.g. by your linter).",
+        ),
+        CommandKey.REMOVE_BLANKS_AFTER_COMMENT to listOf(
+            "Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. " +
+                    "Stops before the line-ending; the line-ending itself is kept.",
+            "This is useful if you don't want to have dangling spaces/idents in your template output if the " +
+                    "typical template comments itself have to follow some ident rules (e.g. by your linter).",
+        ),
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to listOf(
+            "Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, " +
+                    "including the immediately adjacent line-ending.",
+            "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
+        ),
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT to listOf(
+            "Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, " +
+                    "including the immediately adjacent line-ending.",
+            "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
         ),
     )
 
@@ -153,12 +167,6 @@ object CommandReferenceMarkdownCreator {
         ),
         CommandAttributeKey.AFTER_LAST_OCCURRENCE_OF to listOf(
             "Positions the comment after the last occurrence of the given text in the surrounding content.",
-        ),
-        CommandAttributeKey.EXPAND_DIRECTION to listOf(
-            "The direction in which the comment expands into the adjacent text (```${DirectionValue.FORWARD.value}``` or ```${DirectionValue.BACKWARD.value}```).",
-        ),
-        CommandAttributeKey.STRIP_MODE to listOf(
-            "Controls how much whitespace is stripped from the adjacent text. ```${ExpandModeValue.BLANKS.value}``` removes only spaces and tabs; ```${ExpandModeValue.LINEBREAK.value}``` also removes the immediately adjacent line-ending.",
         ),
     )
 

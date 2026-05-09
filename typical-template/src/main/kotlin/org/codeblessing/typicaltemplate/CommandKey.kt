@@ -155,14 +155,17 @@ enum class CommandKey(
             )
         ),
     ),
-    EXPAND_COMMENT(
-        keyword = "expand-comment",
-        attributeGroupConstraints = listOf(
-            AttributeGroupConstraint(
-                occurrence = ONE_ATTRIBUTE_GROUP,
-                requiredAttributes = setOf(EXPAND_DIRECTION, STRIP_MODE),
-            )
-        ),
+    REMOVE_BLANKS_BEFORE_COMMENT(
+        keyword = "remove-blanks-before-comment",
+    ),
+    REMOVE_BLANKS_AFTER_COMMENT(
+        keyword = "remove-blanks-after-comment",
+    ),
+    REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT(
+        keyword = "remove-blanks-and-linebreak-before-comment",
+    ),
+    REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT(
+        keyword = "remove-blanks-and-linebreak-after-comment",
     ),
     ;
 

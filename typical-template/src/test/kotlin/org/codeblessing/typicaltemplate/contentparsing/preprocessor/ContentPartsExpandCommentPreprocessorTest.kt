@@ -1,10 +1,6 @@
 package org.codeblessing.typicaltemplate.contentparsing.preprocessor
 
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.DirectionValue.BACKWARD
-import org.codeblessing.typicaltemplate.DirectionValue.FORWARD
-import org.codeblessing.typicaltemplate.ExpandModeValue.BLANKS
-import org.codeblessing.typicaltemplate.ExpandModeValue.LINEBREAK
 import org.codeblessing.typicaltemplate.contentparsing.commandchain.ContentPartBuilder
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,6 +8,13 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class ContentPartsExpandCommentPreprocessorTest {
+
+    private val removeCommentCommandKeys = setOf(
+        CommandKey.REMOVE_BLANKS_BEFORE_COMMENT,
+        CommandKey.REMOVE_BLANKS_AFTER_COMMENT,
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
+        CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
+    )
 
     @Test
     fun `empty list returns empty list`() {
@@ -23,7 +26,7 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Test
-    fun `list without expand-comment command is returned unchanged`() {
+    fun `list without remove-comment command is returned unchanged`() {
         val input = ContentPartBuilder.create()
             .addText("some text")
             .addTemplateComment().addIfCommand().end()
@@ -36,12 +39,12 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
-    inner class ForwardBlanks {
+    inner class RemoveBlanksAfterComment {
 
         @Test
-        fun `forward blanks strips leading spaces from following text`() {
+        fun `strips leading spaces from following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("   Hello")
                 .build()
 
@@ -56,9 +59,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward blanks strips leading tabs from following text`() {
+        fun `strips leading tabs from following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("\t\tHello")
                 .build()
 
@@ -73,9 +76,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward blanks stops before line-ending`() {
+        fun `stops before line-ending`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("   \nHello")
                 .build()
 
@@ -90,9 +93,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward blanks with no leading blanks leaves following text unchanged`() {
+        fun `with no leading blanks leaves following text unchanged`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("Hello")
                 .build()
 
@@ -107,9 +110,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward blanks removes text part when following text becomes empty`() {
+        fun `removes text part when following text becomes empty`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("   ")
                 .build()
 
@@ -124,12 +127,12 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
-    inner class ForwardLinebreak {
+    inner class RemoveBlanksAndLinebreakAfterComment {
 
         @Test
-        fun `forward linebreak strips leading spaces and newline from following text`() {
+        fun `strips leading spaces and newline from following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakAfterCommentCommand().end()
                 .addText("   \nHello")
                 .build()
 
@@ -144,9 +147,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward linebreak strips leading spaces and crlf from following text`() {
+        fun `strips leading spaces and crlf from following text`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakAfterCommentCommand().end()
                 .addText("   \r\nHello")
                 .build()
 
@@ -161,9 +164,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward linebreak strips only one newline`() {
+        fun `strips only one newline`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakAfterCommentCommand().end()
                 .addText("\n\nHello")
                 .build()
 
@@ -178,9 +181,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward linebreak with no newline after blanks only strips blanks`() {
+        fun `with no newline after blanks only strips blanks`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakAfterCommentCommand().end()
                 .addText("   Hello")
                 .build()
 
@@ -196,13 +199,13 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
-    inner class BackwardBlanks {
+    inner class RemoveBlanksBeforeComment {
 
         @Test
-        fun `backward blanks strips trailing spaces from preceding text`() {
+        fun `strips trailing spaces from preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -216,10 +219,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward blanks strips trailing tabs from preceding text`() {
+        fun `strips trailing tabs from preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello\t\t")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -233,10 +236,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward blanks stops before line-ending`() {
+        fun `stops before line-ending`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello\n   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -250,10 +253,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward blanks with no trailing blanks leaves preceding text unchanged`() {
+        fun `with no trailing blanks leaves preceding text unchanged`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -267,10 +270,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward blanks removes text part when preceding text becomes empty`() {
+        fun `removes text part when preceding text becomes empty`() {
             val input = ContentPartBuilder.create()
                 .addText("   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -284,13 +287,13 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
-    inner class BackwardLinebreak {
+    inner class RemoveBlanksAndLinebreakBeforeComment {
 
         @Test
-        fun `backward linebreak strips trailing spaces and newline from preceding text`() {
+        fun `strips trailing spaces and newline from preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello\n   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -304,10 +307,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward linebreak strips trailing spaces and crlf from preceding text`() {
+        fun `strips trailing spaces and crlf from preceding text`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello\r\n   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -321,10 +324,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward linebreak strips only one newline`() {
+        fun `strips only one newline`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello\n\n")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -338,10 +341,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward linebreak with no newline before blanks only strips blanks`() {
+        fun `with no newline before blanks only strips blanks`() {
             val input = ContentPartBuilder.create()
                 .addText("Hello   ")
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = LINEBREAK).end()
+                .addTemplateComment().addRemoveBlanksAndLinebreakBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -359,10 +362,10 @@ class ContentPartsExpandCommentPreprocessorTest {
     inner class DoNothingCases {
 
         @Test
-        fun `forward with no following element keeps content in place but strips expand-comment command`() {
+        fun `after-comment with no following element keeps content in place but strips remove-comment command`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -376,9 +379,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `forward with following comment as neighbor keeps content in place but strips expand-comment command`() {
+        fun `after-comment with following comment as neighbor keeps content in place but strips remove-comment command`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addTemplateComment().addIfCommand().end()
                 .build()
 
@@ -393,9 +396,9 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward with no preceding element keeps content in place but strips expand-comment command`() {
+        fun `before-comment with no preceding element keeps content in place but strips remove-comment command`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .addText("after")
                 .build()
 
@@ -410,10 +413,10 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `backward with preceding comment as neighbor keeps content in place but strips expand-comment command`() {
+        fun `before-comment with preceding comment as neighbor keeps content in place but strips remove-comment command`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment().addIfCommand().end()
-                .addTemplateComment().addExpandCommentCommand(direction = BACKWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
                 .build()
 
             val expected = ContentPartBuilder.create()
@@ -431,35 +434,35 @@ class ContentPartsExpandCommentPreprocessorTest {
     inner class CommandRemoval {
 
         @Test
-        fun `expand-comment command is removed from result when expand has an effect`() {
+        fun `remove-comment command is removed from result when remove has an effect`() {
             val input = ContentPartBuilder.create()
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .addText("   Hello")
                 .build()
 
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            val remainingExpandCommentCommands = result
+            val remainingRemoveCommentCommands = result
                 .filterIsInstance<TemplateCommentContentPart>()
                 .flatMap { it.keywordCommands }
-                .filter { it.commandKey == CommandKey.EXPAND_COMMENT }
-            assertEquals(emptyList<Any>(), remainingExpandCommentCommands)
+                .filter { it.commandKey in removeCommentCommandKeys }
+            assertEquals(emptyList<Any>(), remainingRemoveCommentCommands)
         }
 
         @Test
-        fun `expand-comment command is removed from result when expand has no effect`() {
+        fun `remove-comment command is removed from result when remove has no effect`() {
             val input = ContentPartBuilder.create()
                 .addText("before")
-                .addTemplateComment().addExpandCommentCommand(direction = FORWARD, stripMode = BLANKS).end()
+                .addTemplateComment().addRemoveBlanksAfterCommentCommand().end()
                 .build()
 
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            val remainingExpandCommentCommands = result
+            val remainingRemoveCommentCommands = result
                 .filterIsInstance<TemplateCommentContentPart>()
                 .flatMap { it.keywordCommands }
-                .filter { it.commandKey == CommandKey.EXPAND_COMMENT }
-            assertEquals(emptyList<Any>(), remainingExpandCommentCommands)
+                .filter { it.commandKey in removeCommentCommandKeys }
+            assertEquals(emptyList<Any>(), remainingRemoveCommentCommands)
         }
     }
 }

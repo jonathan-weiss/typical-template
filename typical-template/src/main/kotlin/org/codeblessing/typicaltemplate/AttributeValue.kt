@@ -13,13 +13,3 @@ enum class IsListValue(override val value: AttributeValue): AllowedValue {
     YES("yes"),
     NO("no"),
 }
-
-enum class DirectionValue(override val value: AttributeValue): AllowedValue {
-    BACKWARD("backward"),
-    FORWARD("forward"),
-}
-
-enum class ExpandModeValue(override val value: AttributeValue): AllowedValue {
-    BLANKS("blanks"),
-    LINEBREAK("linebreak"),
-}

@@ -402,19 +402,27 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `valid expand-comment`() {
+    fun `valid remove-blanks-after-comment`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
-                @expand-comment [
-                    expandDirection="forward"
-                    strip="blanks"
-                ]
+                @remove-blanks-after-comment
             """.trimIndent()
         )
 
         val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        Assertions.assertEquals(CommandKey.EXPAND_COMMENT, keywordCommand.commandKey)
-        Assertions.assertEquals("forward", keywordCommand.attribute(CommandAttributeKey.EXPAND_DIRECTION))
+        Assertions.assertEquals(CommandKey.REMOVE_BLANKS_AFTER_COMMENT, keywordCommand.commandKey)
+    }
+
+    @Test
+    fun `valid remove-blanks-and-linebreak-before-comment`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                @remove-blanks-and-linebreak-before-comment
+            """.trimIndent()
+        )
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT, keywordCommand.commandKey)
     }
 
     private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS

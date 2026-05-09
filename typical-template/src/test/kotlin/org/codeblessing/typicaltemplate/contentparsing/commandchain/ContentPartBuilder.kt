@@ -4,8 +4,6 @@ import org.codeblessing.typicaltemplate.AttributeGroup
 import org.codeblessing.typicaltemplate.AttributeValue
 import org.codeblessing.typicaltemplate.CommandAttributeKey
 import org.codeblessing.typicaltemplate.CommandKey
-import org.codeblessing.typicaltemplate.DirectionValue
-import org.codeblessing.typicaltemplate.ExpandModeValue
 import org.codeblessing.typicaltemplate.IsListValue
 import org.codeblessing.typicaltemplate.contentparsing.KeywordCommand
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateCommentContentPart
@@ -189,14 +187,20 @@ class ContentPartBuilder private constructor() {
             return builder.addCommandToChain()
         }
 
-        fun addExpandCommentCommand(
-            direction: DirectionValue = DirectionValue.FORWARD,
-            stripMode: ExpandModeValue = ExpandModeValue.BLANKS,
-        ): TemplateCommentBuilder {
-            return createCommand(CommandKey.EXPAND_COMMENT)
-                .withAttribute(CommandAttributeKey.EXPAND_DIRECTION, direction.value)
-                .withAttribute(CommandAttributeKey.STRIP_MODE, stripMode.value)
-                .addCommandToChain()
+        fun addRemoveBlanksBeforeCommentCommand(): TemplateCommentBuilder {
+            return createCommand(CommandKey.REMOVE_BLANKS_BEFORE_COMMENT).addCommandToChain()
+        }
+
+        fun addRemoveBlanksAfterCommentCommand(): TemplateCommentBuilder {
+            return createCommand(CommandKey.REMOVE_BLANKS_AFTER_COMMENT).addCommandToChain()
+        }
+
+        fun addRemoveBlanksAndLinebreakBeforeCommentCommand(): TemplateCommentBuilder {
+            return createCommand(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT).addCommandToChain()
+        }
+
+        fun addRemoveBlanksAndLinebreakAfterCommentCommand(): TemplateCommentBuilder {
+            return createCommand(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT).addCommandToChain()
         }
 
         fun addPrintTextCommand(text: String): TemplateCommentBuilder {

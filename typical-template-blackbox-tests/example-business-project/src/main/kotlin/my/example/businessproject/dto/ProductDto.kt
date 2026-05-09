@@ -22,18 +22,18 @@ package my.example.businessproject.dto
  */
 data class ProductDto(
 /* @tt{{{
-    @expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @remove-blanks-and-linebreak-before-comment
     @foreach [ iteratorExpression="model.fields" loopVariable="field" ]
 }}}@  */
     val productCode: String,
 /* @tt{{{
-    @expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @remove-blanks-and-linebreak-before-comment
     @end-foreach
     @ignore-text
 }}}@ */
     val productName: String,
 /* @tt{{{
-    @expand-comment [ expandDirection="backward" strip="linebreak" ]
+    @remove-blanks-and-linebreak-before-comment
     @end-ignore-text
     @end-replace-value-by-expression
 }}}@ */
