@@ -8,6 +8,7 @@ import org.codeblessing.typicaltemplate.CommandAttributeKey.*
 
 enum class CommandKey(
     val keyword: String,
+    val aliases: Set<String> = emptySet(),
     val attributeGroupConstraints: List<AttributeGroupConstraint> = emptyList(),
     val correspondingOpeningCommandKey: CommandKey? = null,
     val directlyNestedInsideCommandKey: CommandKey? = null,
@@ -72,6 +73,7 @@ enum class CommandKey(
     ),
     ELSE_IF_CONDITION(
         keyword = "else-if",
+        // "ei" would collide with end-if's first-letter alias, so we use the python-style "elif" instead.
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
                 occurrence = ONE_ATTRIBUTE_GROUP,
@@ -86,6 +88,7 @@ enum class CommandKey(
     ),
     END_IF_CONDITION(
         keyword = "end-if",
+        aliases = setOf("fi"),
         correspondingOpeningCommandKey = IF_CONDITION,
     ),
     FOREACH(
@@ -137,6 +140,7 @@ enum class CommandKey(
     ),
     MOVE_COMMENT_BACKWARD(
         keyword = "move-comment-backward",
+        aliases = setOf("mvb"),
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
                 occurrence = ZERO_OR_ONE_ATTRIBUTE_GROUP,
@@ -147,6 +151,7 @@ enum class CommandKey(
     ),
     MOVE_COMMENT_FORWARD(
         keyword = "move-comment-forward",
+        aliases = setOf("mvf"),
         attributeGroupConstraints = listOf(
             AttributeGroupConstraint(
                 occurrence = ZERO_OR_ONE_ATTRIBUTE_GROUP,
@@ -157,21 +162,33 @@ enum class CommandKey(
     ),
     REMOVE_BLANKS_BEFORE_COMMENT(
         keyword = "remove-blanks-before-comment",
+        aliases = setOf("rbb"),
     ),
     REMOVE_BLANKS_AFTER_COMMENT(
         keyword = "remove-blanks-after-comment",
+        aliases = setOf("rba"),
     ),
     REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT(
         keyword = "remove-blanks-and-linebreak-before-comment",
+        aliases = setOf("rlnb"),
     ),
     REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT(
         keyword = "remove-blanks-and-linebreak-after-comment",
+        aliases = setOf("rlna"),
     ),
     ;
 
     companion object {
-        fun fromKeyword(keyword: String): CommandKey? {
-            return entries.firstOrNull { it.keyword == keyword }
+        init {
+            val allNames = entries.flatMap { listOf(it.keyword) + it.aliases }
+            val duplicates = allNames.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
+            require(duplicates.isEmpty()) {
+                "CommandKey keywords and aliases must be unique, but found duplicates: $duplicates"
+            }
+        }
+
+        fun fromKeywordOrAlias(keywordOrAlias: String): CommandKey? {
+            return entries.firstOrNull { it.keyword == keywordOrAlias || keywordOrAlias in it.aliases }
         }
     }
 

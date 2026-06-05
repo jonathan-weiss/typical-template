@@ -10,7 +10,7 @@ The following keywords/commands are supported:
 * [if](#if)
 * [else-if](#else-if)
 * [else](#else)
-* [end-if](#end-if)
+* [end-if](#end-if) (fi)
 * [foreach](#foreach)
 * [end-foreach](#end-foreach)
 * [ignore-text](#ignore-text)
@@ -18,12 +18,12 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
-* [move-comment-backward](#move-comment-backward)
-* [move-comment-forward](#move-comment-forward)
-* [remove-blanks-before-comment](#remove-blanks-before-comment)
-* [remove-blanks-after-comment](#remove-blanks-after-comment)
-* [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment)
-* [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment)
+* [move-comment-backward](#move-comment-backward) (mvb)
+* [move-comment-forward](#move-comment-forward) (mvf)
+* [remove-blanks-before-comment](#remove-blanks-before-comment) (rbb)
+* [remove-blanks-after-comment](#remove-blanks-after-comment) (rba)
+* [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlnb)
+* [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rlna)
 
 Commands always starts with a `@`.
 
@@ -32,6 +32,8 @@ Commands always starts with a `@`.
 ## template-renderer
 
 Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ] [ modelClassName="..." modelName="..." modelPackageName="..." isList="yes|no" ] [ ... ] .... @end-template-renderer```
+
+Aliases: _none_
 
 Defines the template renderer kotlin class in which the content of the given file is put into. Optionally declares model instances (kotlin function parameters) passed to the renderer. 
 
@@ -93,6 +95,8 @@ Repeatable Group Attributes:
 
 Syntax: ```@end-template-renderer```
 
+Aliases: _none_
+
 Varia:
 * This command is closing the [template-renderer](#template-renderer) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -102,6 +106,8 @@ Varia:
 ## replace-value-by-expression
 
 Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ] [ ... ] .... @end-replace-value-by-expression```
+
+Aliases: _none_
 
 Replaces a value by a kotlin expression in a multiline string. The expression is often accessing properties or functions on a model instance declared with the template-renderer command.
 
@@ -127,6 +133,8 @@ Repeatable Group Attributes:
 
 Syntax: ```@end-replace-value-by-expression```
 
+Aliases: _none_
+
 Varia:
 * This command is closing the [replace-value-by-expression](#replace-value-by-expression) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -136,6 +144,8 @@ Varia:
 ## replace-value-by-value
 
 Syntax: ```@replace-value-by-value [ searchValue="..." replaceByValue="..." ] [ ... ] .... @end-replace-value-by-value```
+
+Aliases: _none_
 
 Replaces a value by another (fixed) value.
 
@@ -161,6 +171,8 @@ Repeatable Group Attributes:
 
 Syntax: ```@end-replace-value-by-value```
 
+Aliases: _none_
+
 Varia:
 * This command is closing the [replace-value-by-value](#replace-value-by-value) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -170,6 +182,8 @@ Varia:
 ## if
 
 Syntax: ```@if [ conditionExpression="..." ] .... @end-if```
+
+Aliases: _none_
 
 Render the enclosed content only if the condition expression evaluates to true.
 
@@ -190,6 +204,8 @@ Attributes:
 
 Syntax: ```@else-if [ conditionExpression="..." ]```
 
+Aliases: _none_
+
 Render the enclosed content only if the condition expression evaluates to true and all previous conditions of the if/else-if conditions evaluates to false.
 
 Varia:
@@ -209,6 +225,8 @@ Attributes:
 
 Syntax: ```@else```
 
+Aliases: _none_
+
 Render the enclosed content only if all previous if/else-if conditions evaluates to false
 
 Varia:
@@ -221,6 +239,8 @@ Varia:
 
 Syntax: ```@end-if```
 
+Aliases: ```@fi``` (can be used in place of ```@end-if```)
+
 Varia:
 * This command is closing the [if](#if) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -230,6 +250,8 @@ Varia:
 ## foreach
 
 Syntax: ```@foreach [ iteratorExpression="..." loopVariable="..." ] .... @end-foreach```
+
+Aliases: _none_
 
 Iterates/Loops over a collection of items (=iterable). In each loop, the current item is hold in a loop variable.
 
@@ -255,6 +277,8 @@ Attributes:
 
 Syntax: ```@end-foreach```
 
+Aliases: _none_
+
 Varia:
 * This command is closing the [foreach](#foreach) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -264,6 +288,8 @@ Varia:
 ## ignore-text
 
 Syntax: ```@ignore-text .... @end-ignore-text```
+
+Aliases: _none_
 
 Ignores the text and does not output it in the template renderer.
 
@@ -277,6 +303,8 @@ Varia:
 
 Syntax: ```@end-ignore-text```
 
+Aliases: _none_
+
 Varia:
 * This command is closing the [ignore-text](#ignore-text) command.
 * This command triggers to close all nested commands that support auto-closing.
@@ -286,6 +314,8 @@ Varia:
 ## print-text
 
 Syntax: ```@print-text [ text="..." ]```
+
+Aliases: _none_
 
 Print additional text as output of the template renderer.
 
@@ -306,6 +336,8 @@ Attributes:
 
 Syntax: ```@modify-provided-filename-by-replacements```
 
+Aliases: _none_
+
 Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements provided by ```replace-value-by-expression``` and ```replace-value-by-value``` the ```modify-provided-filename-by-replacements``` command is currently nested in.
 
 The intention of this command is that the filename and path can also take part of the replacements and this has not to be handled separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content.If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.
@@ -323,6 +355,8 @@ Varia:
 ## render-template
 
 Syntax: ```@render-template [ templateRendererClassName="..." templateRendererPackageName="..." ] [ modelName="..." modelExpression="..." ] [ ... ]```
+
+Aliases: _none_
 
 Calls another template renderer and embeds its output. The first attribute group specifies the renderer class; subsequent groups map model parameters to expressions.
 
@@ -362,6 +396,8 @@ Repeatable Group Attributes:
 
 Syntax: ```@move-comment-backward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
+Aliases: ```@mvb``` (can be used in place of ```@move-comment-backward```)
+
 Moves the whole comment in which this command is written backward (i.e. before the preceding text). Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the previous comment or to the beginning of the file.
 
 This is useful as some file formats do not allow to put a comment as first line of the file.
@@ -400,6 +436,8 @@ Attributes:
 
 Syntax: ```@move-comment-forward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
 
+Aliases: ```@mvf``` (can be used in place of ```@move-comment-forward```)
+
 Moves the whole comment in which this command is written forward (i.e. after the following text). Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. The comment will be moved at most to the next comment or to the end of the file.
 
 Varia:
@@ -434,6 +472,8 @@ Attributes:
 
 Syntax: ```@remove-blanks-before-comment```
 
+Aliases: ```@rbb``` (can be used in place of ```@remove-blanks-before-comment```)
+
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
 This is useful if you don't want to have dangling spaces/idents in your template output if the typical template comments itself have to follow some ident rules (e.g. by your linter).
@@ -447,6 +487,8 @@ Varia:
 ## remove-blanks-after-comment
 
 Syntax: ```@remove-blanks-after-comment```
+
+Aliases: ```@rba``` (can be used in place of ```@remove-blanks-after-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
@@ -462,6 +504,8 @@ Varia:
 
 Syntax: ```@remove-blanks-and-linebreak-before-comment```
 
+Aliases: ```@rlnb``` (can be used in place of ```@remove-blanks-and-linebreak-before-comment```)
+
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, including the immediately adjacent line-ending.
 
 This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
@@ -475,6 +519,8 @@ Varia:
 ## remove-blanks-and-linebreak-after-comment
 
 Syntax: ```@remove-blanks-and-linebreak-after-comment```
+
+Aliases: ```@rlna``` (can be used in place of ```@remove-blanks-and-linebreak-after-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, including the immediately adjacent line-ending.
 

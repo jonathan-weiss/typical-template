@@ -13,7 +13,7 @@ import org.codeblessing.typicaltemplate.contentparsing.linenumbers.LineNumbers
  * Translates a raw [CommandStructure] (parsed comment text) into a fully validated [KeywordCommand],
  * rejecting invalid input with a [TemplateParsingException].
  * It does so by:
- * - Resolving the keyword string to a known [CommandKey], failing fast on unknown keywords
+ * - Resolving the keyword string (or any of its [CommandKey.aliases]) to a known [CommandKey], failing fast on unknown keywords
  * - Checking that the number of bracket groups falls within the min/max bounds derived from the command's [CommandKey.attributeGroupConstraints]
  * - Converting each raw attribute key string to a typed [CommandAttributeKey], rejecting strings not present in the enum
  * - Verifying each attribute key is permitted for its specific group index (groups beyond the constraint list reuse the last constraint)
@@ -29,7 +29,7 @@ object KeywordCommandFactory {
         lineNumbers: LineNumbers
     ): KeywordCommand {
         val keyword = commandStructure.keyword
-        val commandKey = CommandKey.fromKeyword(keyword) ?: throw TemplateParsingException(
+        val commandKey = CommandKey.fromKeywordOrAlias(keyword) ?: throw TemplateParsingException(
             lineNumbers = lineNumbers,
             errorCode = TemplateParsingErrorCode.UNKNOWN_KEYWORD,
             msg = TemplateParsingErrorCode.UNKNOWN_KEYWORD.resolve("keyword" to keyword),

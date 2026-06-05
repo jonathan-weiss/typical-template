@@ -185,7 +185,8 @@ object CommandReferenceMarkdownCreator {
             The following keywords/commands are supported:
         """.trimIndent())
         for ((commandKey, _) in commandKeyDocumentation) {
-            sb.appendLine("* ${commandKey.createMarkDownChapterLink()}")
+            val aliases = if(commandKey.aliases.isNotEmpty()) " (${commandKey.aliases.joinToString()})" else ""
+            sb.appendLine("* ${commandKey.createMarkDownChapterLink()}${aliases}")
         }
         sb.appendLine("""
 
@@ -200,6 +201,11 @@ object CommandReferenceMarkdownCreator {
                     ## ${commandKey.keyword}
 
                     Syntax: ```${commandKey.commandSyntax()}```
+                """.trimIndent()
+            )
+            sb.appendLine("""
+
+                    ${commandKey.aliasesDescription()}
                 """.trimIndent()
             )
             for (line in docLines) {
@@ -332,6 +338,14 @@ object CommandReferenceMarkdownCreator {
             else ->
                 "This command/keyword has ${attributeGroupConstraints.size} fixed groups of attributes."
         }
+
+    private fun CommandKey.aliasesDescription(): String {
+        if (aliases.isEmpty()) {
+            return "Aliases: _none_"
+        }
+        val aliasesAsMarkdown = aliases.joinToString(", ") { "```${commandPrefix()}$it```" }
+        return "Aliases: $aliasesAsMarkdown (can be used in place of ```${commandPrefix()}${keyword}```)"
+    }
 
     private fun CommandKey.nestingDescription(): String =
         if(directlyNestedInsideCommandKey == null) {

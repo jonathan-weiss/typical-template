@@ -33,7 +33,7 @@ data class ProductDto(
 }}}@ */
     val productName: String,
 /* @tt{{{
-    @remove-blanks-and-linebreak-before-comment
+    @rlnb
     @end-ignore-text
     @end-replace-value-by-expression
 }}}@ */

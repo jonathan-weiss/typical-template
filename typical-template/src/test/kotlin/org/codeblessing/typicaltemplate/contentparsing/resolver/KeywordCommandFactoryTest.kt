@@ -425,6 +425,31 @@ class KeywordCommandFactoryTest {
         Assertions.assertEquals(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT, keywordCommand.commandKey)
     }
 
+    @Test
+    fun `alias for command without attributes resolves to the same command key`() {
+        val commandStructure = createSingleTemplateComment(comment = "@rba")
+
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.REMOVE_BLANKS_AFTER_COMMENT, keywordCommand.commandKey)
+    }
+
+    @Test
+    fun `alias enforces same attribute constraints as keyword`() {
+        val commandStructure = createSingleTemplateComment(
+            comment = """
+                        @mvf [
+                            beforeFirstOccurrenceOf="Foo"
+                            afterFirstOccurrenceOf="Bar"
+                        ]
+            """.trimIndent()
+        )
+
+        val exception = assertThrows<TemplateParsingException> {
+            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        }
+        Assertions.assertEquals(TemplateParsingErrorCode.MUTUALLY_EXCLUSIVE_ATTRIBUTES, exception.errorCode)
+    }
+
     private val stubLineNumbers = LineNumbers.EMPTY_LINE_NUMBERS
 
     private fun createSingleTemplateComment(comment: String): CommandStructure {
