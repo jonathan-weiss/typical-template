@@ -170,11 +170,11 @@ enum class CommandKey(
     ),
     REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT(
         keyword = "remove-blanks-and-linebreak-before-comment",
-        aliases = setOf("rlnb"),
+        aliases = setOf("rlb"),
     ),
     REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT(
         keyword = "remove-blanks-and-linebreak-after-comment",
-        aliases = setOf("rlna"),
+        aliases = setOf("rla"),
     ),
     ;
 

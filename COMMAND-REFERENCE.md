@@ -22,8 +22,8 @@ The following keywords/commands are supported:
 * [move-comment-forward](#move-comment-forward) (mvf)
 * [remove-blanks-before-comment](#remove-blanks-before-comment) (rbb)
 * [remove-blanks-after-comment](#remove-blanks-after-comment) (rba)
-* [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlnb)
-* [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rlna)
+* [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlb)
+* [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rla)
 
 Commands always starts with a `@`.
 
@@ -504,7 +504,7 @@ Varia:
 
 Syntax: ```@remove-blanks-and-linebreak-before-comment```
 
-Aliases: ```@rlnb``` (can be used in place of ```@remove-blanks-and-linebreak-before-comment```)
+Aliases: ```@rlb``` (can be used in place of ```@remove-blanks-and-linebreak-before-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, including the immediately adjacent line-ending.
 
@@ -520,7 +520,7 @@ Varia:
 
 Syntax: ```@remove-blanks-and-linebreak-after-comment```
 
-Aliases: ```@rlna``` (can be used in place of ```@remove-blanks-and-linebreak-after-comment```)
+Aliases: ```@rla``` (can be used in place of ```@remove-blanks-and-linebreak-after-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, including the immediately adjacent line-ending.
 
