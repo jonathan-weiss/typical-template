@@ -328,7 +328,7 @@ Varia:
 Attributes:
 * *text*: Text that is to print as-is into the template renderer.
   * Required attribute: _Yes_
-  * Required not empty: _Yes_
+  * Required not empty: _No_
   * Allowed values: _\<unrestricted\>_
   * Mutually exclusive with: none
 

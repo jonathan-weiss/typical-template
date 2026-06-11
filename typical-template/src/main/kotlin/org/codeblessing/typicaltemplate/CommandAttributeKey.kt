@@ -19,7 +19,7 @@ enum class CommandAttributeKey(
     CONDITION_EXPRESSION("conditionExpression"),
     LOOP_ITERABLE_EXPRESSION("iteratorExpression"),
     LOOP_VARIABLE_NAME("loopVariable"),
-    TEXT("text"),
+    TEXT("text", requireNotEmpty = false), // text may be blank to insert ident
     MODEL_EXPRESSION("modelExpression"),
     BEFORE_FIRST_OCCURRENCE_OF("beforeFirstOccurrenceOf"),
     AFTER_FIRST_OCCURRENCE_OF("afterFirstOccurrenceOf"),
