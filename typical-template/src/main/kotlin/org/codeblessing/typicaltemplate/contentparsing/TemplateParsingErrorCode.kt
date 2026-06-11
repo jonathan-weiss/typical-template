@@ -49,7 +49,7 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
         "A template comment must not have more than one '{position}'-comment remove command, but found {count}."
     ),
     UNKNOWN_KEYWORD(
-        "Invalid keyword '{keyword}'."
+        "Invalid keyword '{keyword}'. Only the following keywords and aliases are allowed: {allowedKeywords}"
     ),
     TOO_FEW_ATTRIBUTE_GROUPS(
         "Invalid number of attributes groups. Must be at least {min} but was {actual}."

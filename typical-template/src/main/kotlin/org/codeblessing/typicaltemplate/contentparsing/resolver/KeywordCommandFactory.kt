@@ -29,10 +29,14 @@ object KeywordCommandFactory {
         lineNumbers: LineNumbers
     ): KeywordCommand {
         val keyword = commandStructure.keyword
+        val allowedKeyword = CommandKey.allKeywords().joinToString(",") { "\'$it\'"}
         val commandKey = CommandKey.fromKeywordOrAlias(keyword) ?: throw TemplateParsingException(
             lineNumbers = lineNumbers,
             errorCode = TemplateParsingErrorCode.UNKNOWN_KEYWORD,
-            msg = TemplateParsingErrorCode.UNKNOWN_KEYWORD.resolve("keyword" to keyword),
+            msg = TemplateParsingErrorCode.UNKNOWN_KEYWORD.resolve(
+                "keyword" to keyword,
+                "allowedKeywords" to allowedKeyword,
+            ),
         )
 
         val numberOfAttributeGroups = commandStructure.brackets.size

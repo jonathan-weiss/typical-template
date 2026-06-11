@@ -190,6 +190,10 @@ enum class CommandKey(
         fun fromKeywordOrAlias(keywordOrAlias: String): CommandKey? {
             return entries.firstOrNull { it.keyword == keywordOrAlias || keywordOrAlias in it.aliases }
         }
+
+        fun allKeywords(): List<String> {
+            return entries.flatMap { it.aliases + it.keyword }.sorted()
+        }
     }
 
     val minNumberOfAttributeGroups: Int
