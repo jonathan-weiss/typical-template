@@ -13,14 +13,22 @@ package my.example.businessproject.domain
   @replace-value-by-expression
     [ searchValue="OrderStatus" replaceByExpression="model.enumName" ]
   @modify-provided-filename-by-replacements
+  @rlb
 }}}@ */
-
 enum class OrderStatus {
-/* @tt{{{   @foreach [ iteratorExpression="model.statusValues" loopVariable="statusValue" ]
-             @replace-value-by-expression [ searchValue="PENDING" replaceByExpression="statusValue" ] }}}@ */
+/* @tt{{{
+    @foreach [ iteratorExpression="model.statusValues" loopVariable="statusValue" ]
+    @replace-value-by-expression [ searchValue="PENDING" replaceByExpression="statusValue" ]
+    }}}@
+*/
     PENDING,
-/* @tt{{{ @end-foreach  @ignore-text  }}}@ */
+/* @tt{{{
+    @rlb
+    @end-foreach
+    @ignore-text
+    @rla
+}}}@ */
     COMPLETED,
     CANCELLED,
-/* @tt{{{ @end-ignore-text  @end-replace-value-by-expression }}}@ */
+/* @tt{{{ @rlb @end-ignore-text  @end-replace-value-by-expression }}}@ */
 }

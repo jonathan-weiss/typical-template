@@ -18,13 +18,9 @@ object StatusEnumRenderer {
         return """
           |package my.example.businessproject.domain
           |
-          |
-          |
           |enum class ${model.enumName} {
           |${ model.statusValues.joinToString("") { statusValue ->  """
-              |    ${statusValue},
-              |
-          """ } }
+              |    ${statusValue},""" } }
           |}
           |
         """.trimMargin(marginPrefix = "|")

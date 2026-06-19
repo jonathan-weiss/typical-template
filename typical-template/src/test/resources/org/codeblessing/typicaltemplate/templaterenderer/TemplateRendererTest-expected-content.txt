@@ -45,9 +45,7 @@ object EntityDto {
               |  fun toString(): String {
               |    return "${myModel.entityCapitalized}[${"$"}{super.toString()}]"
               |  }
-              |
-          """ } else { """
-          """ } }
+              |""" } else { """""" } }
           |
           |
           |  // This author and Author should not be replaced.
@@ -69,56 +67,43 @@ object EntityDto {
           |  // test the if..else..end-if statement
           |${ if(myModel.isSerializable()) { """
               |        fun isSerialize(): Boolean = true
-              |
-          """ } else { """
+              |""" } else { """
               |        fun isSerialize(): Boolean = false
-              |
-          """ } }
+              |""" } }
           |
           |  // test the if..else-if..end-if statement
           |
           |  val visibility: String =
           |${ if(myModel.isPrivate()) { """
               |        "private"
-              |
-          """ } else if(myModel.isProtected()) { """
+              |""" } else if(myModel.isProtected()) { """
               |        "protected"
-              |
-          """ } else if(myModel.isPublic()) { """
+              |""" } else if(myModel.isPublic()) { """
               |        "public"
-              |
-          """ } else { """
-          """ } }
+              |""" } else { """""" } }
           |
           |
           |  // test the if..else-if..else..end-if statement
           |  val mainCharacteristic: String =
           |${ if(myModel.isEnum()) { """
               |        "enum-class"
-              |
-          """ } else if(myModel.isDataClass()) { """
+              |""" } else if(myModel.isDataClass()) { """
               |        "data-class"
-              |
-          """ } else { """
+              |""" } else { """
               |        "regular-class"
-              |
-          """ } }
+              |""" } }
           |
           |  // test the foreach..end-foreach statement
           |${ myModel.myFieldList.joinToString("") { field ->  """
               |        println("field: ${"$"}field")
-              |
-          """ } }
+              |""" } }
           |
           |  // test the ignore-text statement
           |
           |
           |
           |  // test the ignore-text statement with nesting
-          |${ if(myModel.isIgnored()) { """
-          """ } else if(myModel.isIgnoredToo()()) { """
-          """ } else { """
-          """ } }
+          |${ if(myModel.isIgnored()) { """""" } else if(myModel.isIgnoredToo()()) { """""" } else { """""" } }
           |  // end of test the ignore-text statement with nesting
           |
           |  // test the print-text command

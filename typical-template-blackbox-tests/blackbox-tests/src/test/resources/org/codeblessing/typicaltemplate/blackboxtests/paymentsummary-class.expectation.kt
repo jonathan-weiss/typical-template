@@ -10,39 +10,29 @@ data class PaymentSummary(
 
     // must not be blank
 
-          
     // max 64 chars
 
-          
 
 
     val paymentId: String,
 
-          
 
-          
 
 
 
     val amount: Long,
 
-          
 
-          
 
 
 
     val notes: String?,
 
-          
 
-          
 
 
 
     val tags: List<String>,
 
-          
 
-          
 )

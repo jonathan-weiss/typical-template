@@ -238,22 +238,12 @@ object TemplateRendererContentCreator {
         return $$"${$${expression}}"
     }
 
-    private fun String.addIdent(ctx: TemplateCreationContext): String {
-        return this.lines()
-            .mapIndexed { index, line -> lineWithIdent(line, ctx)}
-            .joinToString("\n")
-    }
-
     private fun String.addMargin(ctx: TemplateCreationContext): String {
         return this.lines()
-            .joinToString("\n${identAndMarker(ctx, marginSymbol = "|")}")
+            .joinToString("\n${identAndMarker(ctx)}")
     }
-    private fun identAndMarker(ctx: TemplateCreationContext, marginSymbol: String = ""): String {
+    private fun identAndMarker(ctx: TemplateCreationContext, marginSymbol: String = "|"): String {
         return "${" ".repeat(4 * ctx.identLevel.identLevel)}$marginSymbol"
-    }
-
-    private fun lineWithIdent(line: String, ctx: TemplateCreationContext, marginSymbol: String = ""): String {
-        return "${" ".repeat(4 * ctx.identLevel.identLevel)}$marginSymbol$line"
     }
 
     private data class TemplateCreationContext(

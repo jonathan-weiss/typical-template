@@ -27,21 +27,16 @@ object SummaryClassRenderer {
           |${ model.fields.joinToString("") { field ->  """
               |${ field.validationRules.joinToString("") { rule ->  """
                   |    // ${rule}
-                  |
-          """ } }
+                  |""" } }
               |
               |${ if(field.isNullable) { """
                   |    val ${field.fieldName}: ${field.fieldType}?,
-                  |
-          """ } else if(field.isList) { """
+                  |""" } else if(field.isList) { """
                   |    val ${field.fieldName}: List<${field.fieldType}>,
-                  |
-          """ } else { """
+                  |""" } else { """
                   |    val ${field.fieldName}: ${field.fieldType},
-                  |
-          """ } }
-              |
-          """ } }
+                  |""" } }
+              |""" } }
           |)
           |
         """.trimMargin(marginPrefix = "|")

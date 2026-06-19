@@ -24,8 +24,7 @@ object HtmlListPageRenderer {
           |<body>
           |<p>Here are the ${listPageModel.pageTitle.lowercase()}:</p>
           |<ul>${ listPageModel.allListEntries.joinToString("") { pageArticleTitle ->  """
-              |    <li>${pageArticleTitle}</li>
-          """ } }
+              |    <li>${pageArticleTitle}</li>""" } }
           |</ul>
           |
           |</body>
