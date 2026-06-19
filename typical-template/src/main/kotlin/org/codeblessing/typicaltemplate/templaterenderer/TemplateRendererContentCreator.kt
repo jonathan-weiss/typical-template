@@ -231,7 +231,7 @@ object TemplateRendererContentCreator {
 
     private fun endExpressionBlockWithText(ctx: TemplateCreationContext): String {
         ctx.identLevel.decreaseLevel()
-        return $$"$$LINE_BREAK$$MULTILINE_STRING_DELIMITER"
+        return $$"$$MULTILINE_STRING_DELIMITER"
     }
 
     private fun createExpressionPlaceholder(expression: String): String {
