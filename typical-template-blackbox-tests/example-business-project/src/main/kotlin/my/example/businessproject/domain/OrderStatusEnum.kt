@@ -23,12 +23,10 @@ enum class OrderStatus {
 */
     PENDING,
 /* @tt{{{
-    @rlb
     @end-foreach
     @ignore-text
-    @rla
 }}}@ */
     COMPLETED,
     CANCELLED,
-/* @tt{{{ @rlb @end-ignore-text  @end-replace-value-by-expression }}}@ */
+/* @tt{{{ @end-ignore-text  @end-replace-value-by-expression }}}@ */
 }

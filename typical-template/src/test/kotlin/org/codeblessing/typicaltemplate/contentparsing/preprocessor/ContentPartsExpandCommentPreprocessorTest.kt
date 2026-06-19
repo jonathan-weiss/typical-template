@@ -431,6 +431,239 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
+    inner class DefaultWhitespaceHandling {
+
+        @Test
+        fun `standalone comment line is removed entirely`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().end()
+                .addText("   \nline2")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("line2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `leading blanks are removed but the line break is kept`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n\t  ")
+                .addTemplateComment().end()
+                .addText("  \nrest")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("rest")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `trailing blanks and the crlf line break are removed`() {
+            val input = ContentPartBuilder.create()
+                .addText("text\n")
+                .addTemplateComment().end()
+                .addText("  \r\nrest")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("text\n")
+                .addTemplateComment().end()
+                .addText("rest")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `with text before the comment on the same line nothing is removed`() {
+            val input = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().end()
+                .addText("   \nbar")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(input, result)
+        }
+
+        @Test
+        fun `with non-blank after the comment on the same line nothing is removed`() {
+            val input = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText(" bar\n")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(input, result)
+        }
+
+        @Test
+        fun `comment at start of content strips following blanks and line break`() {
+            val input = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addText("   \nrest")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addText("rest")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `comment at end of content strips preceding blanks up to line start`() {
+            val input = ContentPartBuilder.create()
+                .addText("rest\n   ")
+                .addTemplateComment().end()
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("rest\n")
+                .addTemplateComment().end()
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `comment followed only by blanks without a line break strips those blanks`() {
+            val input = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addText("   ")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `default handling also applies to a comment carrying other commands`() {
+            val input = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().addIfCommand().end()
+                .addText("   \nbody")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().addIfCommand().end()
+                .addText("body")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `several comments separated by blanks on the same line are treated as one comment`() {
+            val input = ContentPartBuilder.create()
+                .addText("a\n   ")
+                .addTemplateComment().addIfCommand().end()
+                .addText("  ")
+                .addTemplateComment().addEndIfCommand().end()
+                .addText("   \nb")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("a\n")
+                .addTemplateComment().addIfCommand().end()
+                .addTemplateComment().addEndIfCommand().end()
+                .addText("b")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `comments separated by non-blank text on the same line are not grouped`() {
+            val input = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText(" X ")
+                .addTemplateComment().end()
+                .addText("   \n")
+                .build()
+
+            // Neither comment is standalone: the first has non-blank text after it on the line,
+            // the second has non-blank text before it. Nothing is removed.
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(input, result)
+        }
+
+        @Test
+        fun `grouped comments with non-blank after the last comment are left untouched`() {
+            val input = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText(" X\n")
+                .build()
+
+            // The two comments sit on the same line (only blanks in between) and are treated as
+            // one comment. Because non-blank text follows the group, nothing is removed - the
+            // blanks between the comments are kept too.
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(input, result)
+        }
+
+        @Test
+        fun `consecutive comments on separate lines are each trimmed individually`() {
+            val input = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText("   \n   ")
+                .addTemplateComment().end()
+                .addText("   \nend")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addTemplateComment().end()
+                .addText("end")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+    }
+
+    @Nested
     inner class CommandRemoval {
 
         @Test

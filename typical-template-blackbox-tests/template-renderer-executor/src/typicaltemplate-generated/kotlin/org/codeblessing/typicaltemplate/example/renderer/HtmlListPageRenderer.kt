@@ -19,7 +19,6 @@ object HtmlListPageRenderer {
           |<html lang="en">
           |
           |
-          |
           |<head><title>${listPageModel.pageTitle}</title></head>
           |<body>
           |<p>Here are the ${listPageModel.pageTitle.lowercase()}:</p>
@@ -28,7 +27,6 @@ object HtmlListPageRenderer {
           |</ul>
           |
           |</body>
-          |
           |</html>
           |
         """.trimMargin(marginPrefix = "|")

@@ -16,9 +16,7 @@ object SummaryExtensionRenderer {
 
     fun renderTemplate(model: SummaryRenderModel): String {
         return """
-          |package my.example.businessproject.summary
-          |// Auto-generated extensions - do not modify
-          |
+          |package my.example.businessproject.summary// Auto-generated extensions - do not modify
           |fun ${model.summaryClassName}.label(): String = "Summary: ${model.summaryClassName}"
           |
         """.trimMargin(marginPrefix = "|")

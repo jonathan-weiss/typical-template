@@ -19,7 +19,6 @@ object EntityDtoTemplateRenderer {
           |package my.example.businessproject.dto
           |
           |
-          |
           |/**
           | * The ${model.entityName} DTO (Data Transfer Object) class.
           | */
