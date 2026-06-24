@@ -103,6 +103,18 @@ object CommandReferenceMarkdownCreator {
                     "including the immediately adjacent line-ending.",
             "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
         ),
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to listOf(
+            "Keeps the consecutive blanks (spaces and tabs) and the line-ending directly preceding the comment, i.e. it suppresses " +
+                    "the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line.",
+            "This is the counterpart of ```${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.commandPrefix()}${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.keyword}```: " +
+                    "use it when you want to keep the whitespace before the comment that would otherwise be collapsed.",
+        ),
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT to listOf(
+            "Keeps the consecutive blanks (spaces and tabs) and the line-ending directly following the comment, i.e. it suppresses " +
+                    "the default whitespace handling that would otherwise remove the blanks and the line break after a comment that stands alone on its line.",
+            "This is the counterpart of ```${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT.commandPrefix()}${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT.keyword}```: " +
+                    "use it when you want to keep the whitespace after the comment that would otherwise be collapsed.",
+        ),
     )
 
 

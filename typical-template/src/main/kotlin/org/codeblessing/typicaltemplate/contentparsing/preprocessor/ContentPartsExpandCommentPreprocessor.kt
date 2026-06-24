@@ -18,6 +18,10 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  * line break are removed, so the whole comment line collapses. If there are non-blank
  * characters before or after the comment on the same line, nothing is removed.
  *
+ * The keep-blanks commands (see [KEEP_BEFORE_COMMENT_COMMAND_KEY] / [KEEP_AFTER_COMMENT_COMMAND_KEY])
+ * are the counterpart of the remove-blanks commands: they suppress the default whitespace handling
+ * on their side, so the blanks and the line break before respectively after the comment are kept.
+ *
  * Every comment is considered on its own, looking only at the text directly before and after it.
  */
 object ContentPartsExpandCommentPreprocessor {
@@ -31,6 +35,13 @@ object ContentPartsExpandCommentPreprocessor {
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
     )
     private val REMOVE_COMMENT_COMMAND_KEYS = BEFORE_REMOVE_COMMENT_COMMAND_KEYS + AFTER_REMOVE_COMMENT_COMMAND_KEYS
+
+    private val KEEP_BEFORE_COMMENT_COMMAND_KEY = CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT
+    private val KEEP_AFTER_COMMENT_COMMAND_KEY = CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT
+
+    /** All commands that influence the whitespace handling and therefore must be stripped from the comment. */
+    private val WHITESPACE_COMMENT_COMMAND_KEYS =
+        REMOVE_COMMENT_COMMAND_KEYS + setOf(KEEP_BEFORE_COMMENT_COMMAND_KEY, KEEP_AFTER_COMMENT_COMMAND_KEY)
 
     fun runPreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {
         val parts = templateContentParts.toMutableList()
@@ -60,7 +71,7 @@ object ContentPartsExpandCommentPreprocessor {
         val afterCommand = comment.keywordCommands.firstOrNull { it.commandKey in AFTER_REMOVE_COMMENT_COMMAND_KEYS }
 
         parts[index] = comment.copy(
-            keywordCommands = comment.keywordCommands.filter { it.commandKey !in REMOVE_COMMENT_COMMAND_KEYS }
+            keywordCommands = comment.keywordCommands.filter { it.commandKey !in WHITESPACE_COMMENT_COMMAND_KEYS }
         )
 
         if (beforeCommand != null) {
@@ -86,8 +97,19 @@ object ContentPartsExpandCommentPreprocessor {
      * Applies the default whitespace handling to the comment at [index]: when only blanks precede
      * it up to the start of its line and only blanks follow it up to the end of its line, the
      * surrounding blanks (and the trailing line break) are removed.
+     *
+     * A keep-blanks command on a side suppresses this removal on that side, so the blanks and the
+     * line break before respectively after the comment are kept untouched.
      */
     private fun applyDefaultWhitespaceHandling(parts: MutableList<TemplateContentPart>, index: Int) {
+        val comment = parts[index] as TemplateCommentContentPart
+        val keepBefore = comment.keywordCommands.any { it.commandKey == KEEP_BEFORE_COMMENT_COMMAND_KEY }
+        val keepAfter = comment.keywordCommands.any { it.commandKey == KEEP_AFTER_COMMENT_COMMAND_KEY }
+
+        parts[index] = comment.copy(
+            keywordCommands = comment.keywordCommands.filter { it.commandKey !in WHITESPACE_COMMENT_COMMAND_KEYS }
+        )
+
         val precedingIndex = index - 1
         val followingIndex = index + 1
         val precedingText = parts.getOrNull(precedingIndex) as? TextContentPart
@@ -97,10 +119,10 @@ object ContentPartsExpandCommentPreprocessor {
         val onlyBlanksAfter = followingText == null || !firstLineHasNonBlank(followingText.text)
         val isStandaloneOnLine = onlyBlanksBefore && onlyBlanksAfter
         if (isStandaloneOnLine) {
-            if (precedingText != null) {
+            if (precedingText != null && !keepBefore) {
                 parts[precedingIndex] = precedingText.copy(text = stripFromEnd(precedingText.text, stripLinebreak = false))
             }
-            if (followingText != null) {
+            if (followingText != null && !keepAfter) {
                 parts[followingIndex] = followingText.copy(text = stripFromStart(followingText.text, stripLinebreak = true))
             }
         }

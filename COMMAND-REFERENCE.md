@@ -24,6 +24,8 @@ The following keywords/commands are supported:
 * [remove-blanks-after-comment](#remove-blanks-after-comment) (rba)
 * [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlb)
 * [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rla)
+* [keep-blanks-and-linebreak-before-comment](#keep-blanks-and-linebreak-before-comment) (klb)
+* [keep-blanks-and-linebreak-after-comment](#keep-blanks-and-linebreak-after-comment) (kla)
 
 Commands always starts with a `@`.
 
@@ -525,6 +527,38 @@ Aliases: ```@rla``` (can be used in place of ```@remove-blanks-and-linebreak-aft
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, including the immediately adjacent line-ending.
 
 This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## keep-blanks-and-linebreak-before-comment
+
+Syntax: ```@keep-blanks-and-linebreak-before-comment```
+
+Aliases: ```@klb``` (can be used in place of ```@keep-blanks-and-linebreak-before-comment```)
+
+Keeps the consecutive blanks (spaces and tabs) and the line-ending directly preceding the comment, i.e. it suppresses the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line.
+
+This is the counterpart of ```@remove-blanks-and-linebreak-before-comment```: use it when you want to keep the whitespace before the comment that would otherwise be collapsed.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+
+## keep-blanks-and-linebreak-after-comment
+
+Syntax: ```@keep-blanks-and-linebreak-after-comment```
+
+Aliases: ```@kla``` (can be used in place of ```@keep-blanks-and-linebreak-after-comment```)
+
+Keeps the consecutive blanks (spaces and tabs) and the line-ending directly following the comment, i.e. it suppresses the default whitespace handling that would otherwise remove the blanks and the line break after a comment that stands alone on its line.
+
+This is the counterpart of ```@remove-blanks-and-linebreak-after-comment```: use it when you want to keep the whitespace after the comment that would otherwise be collapsed.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.

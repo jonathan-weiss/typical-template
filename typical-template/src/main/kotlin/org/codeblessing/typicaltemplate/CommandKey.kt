@@ -176,6 +176,14 @@ enum class CommandKey(
         keyword = "remove-blanks-and-linebreak-after-comment",
         aliases = setOf("rla"),
     ),
+    KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT(
+        keyword = "keep-blanks-and-linebreak-before-comment",
+        aliases = setOf("klb"),
+    ),
+    KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT(
+        keyword = "keep-blanks-and-linebreak-after-comment",
+        aliases = setOf("kla"),
+    ),
     ;
 
     companion object {

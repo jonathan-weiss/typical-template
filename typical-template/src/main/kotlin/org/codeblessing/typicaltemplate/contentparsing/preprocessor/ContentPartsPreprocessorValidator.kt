@@ -8,21 +8,23 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
 
 object ContentPartsPreprocessorValidator {
 
-    private val BEFORE_REMOVE_COMMENT_COMMAND_KEYS = setOf(
+    private val BEFORE_WHITESPACE_COMMENT_COMMAND_KEYS = setOf(
         CommandKey.REMOVE_BLANKS_BEFORE_COMMENT,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
     )
-    private val AFTER_REMOVE_COMMENT_COMMAND_KEYS = setOf(
+    private val AFTER_WHITESPACE_COMMENT_COMMAND_KEYS = setOf(
         CommandKey.REMOVE_BLANKS_AFTER_COMMENT,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
     )
 
     fun validatePreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {
         for (part in templateContentParts) {
             if (part is TemplateCommentContentPart) {
                 validateMoveComment(part)
-                validateRemoveComment(part, "before", BEFORE_REMOVE_COMMENT_COMMAND_KEYS)
-                validateRemoveComment(part, "after", AFTER_REMOVE_COMMENT_COMMAND_KEYS)
+                validateWhitespaceComment(part, "before", BEFORE_WHITESPACE_COMMENT_COMMAND_KEYS)
+                validateWhitespaceComment(part, "after", AFTER_WHITESPACE_COMMENT_COMMAND_KEYS)
             }
         }
         return templateContentParts
@@ -43,13 +45,13 @@ object ContentPartsPreprocessorValidator {
         }
     }
 
-    private fun validateRemoveComment(part: TemplateCommentContentPart, position: String, commandKeys: Set<CommandKey>) {
+    private fun validateWhitespaceComment(part: TemplateCommentContentPart, position: String, commandKeys: Set<CommandKey>) {
         val count = part.keywordCommands.count { it.commandKey in commandKeys }
         if (count > 1) {
             throw TemplateParsingException(
                 lineNumbers = part.lineNumbers,
-                errorCode = TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS,
-                msg = TemplateParsingErrorCode.MULTIPLE_REMOVE_COMMENT_COMMANDS.resolve(
+                errorCode = TemplateParsingErrorCode.MULTIPLE_WHITESPACE_COMMENT_COMMANDS,
+                msg = TemplateParsingErrorCode.MULTIPLE_WHITESPACE_COMMENT_COMMANDS.resolve(
                     "position" to position,
                     "count" to count.toString(),
                 ),

@@ -16,6 +16,11 @@ class ContentPartsExpandCommentPreprocessorTest {
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
     )
 
+    private val whitespaceCommentCommandKeys = removeCommentCommandKeys + setOf(
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
+        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
+    )
+
     @Test
     fun `empty list returns empty list`() {
         val input = ContentPartBuilder.create().build()
@@ -350,6 +355,92 @@ class ContentPartsExpandCommentPreprocessorTest {
             val expected = ContentPartBuilder.create()
                 .addText("Hello")
                 .addTemplateComment().end()
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+    }
+
+    @Nested
+    inner class KeepBlanksAndLinebreakAfterComment {
+
+        @Test
+        fun `keeps the blanks and line break after an otherwise standalone comment`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().addKeepBlanksAndLinebreakAfterCommentCommand().end()
+                .addText("   \nline2")
+                .build()
+
+            // The before side gets the default handling (blanks removed), the after side is kept.
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("   \nline2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `keep-after command is removed from the comment`() {
+            val input = ContentPartBuilder.create()
+                .addTemplateComment().addKeepBlanksAndLinebreakAfterCommentCommand().end()
+                .addText("   \nrest")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            val remainingWhitespaceCommands = result
+                .filterIsInstance<TemplateCommentContentPart>()
+                .flatMap { it.keywordCommands }
+                .filter { it.commandKey in whitespaceCommentCommandKeys }
+            assertEquals(emptyList<Any>(), remainingWhitespaceCommands)
+        }
+    }
+
+    @Nested
+    inner class KeepBlanksAndLinebreakBeforeComment {
+
+        @Test
+        fun `keeps the blanks before an otherwise standalone comment`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().addKeepBlanksAndLinebreakBeforeCommentCommand().end()
+                .addText("   \nline2")
+                .build()
+
+            // The before side is kept, the after side gets the default handling (blanks and line break removed).
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().end()
+                .addText("line2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `keep-before and keep-after together keep the whole comment line`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment()
+                .addKeepBlanksAndLinebreakBeforeCommentCommand()
+                .addKeepBlanksAndLinebreakAfterCommentCommand()
+                .end()
+                .addText("   \nline2")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().end()
+                .addText("   \nline2")
                 .build()
 
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
