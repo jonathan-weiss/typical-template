@@ -5,6 +5,9 @@ import org.codeblessing.typicaltemplate.example.renderer.HtmlListPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.StatusEnumRenderer
 import org.codeblessing.typicaltemplate.example.renderer.SummaryClassRenderer
 import org.codeblessing.typicaltemplate.example.renderer.SummaryExtensionRenderer
+import org.codeblessing.typicaltemplate.example.renderer.WhitespaceConsecutiveRenderer
+import org.codeblessing.typicaltemplate.example.renderer.WhitespaceKeepRenderer
+import org.codeblessing.typicaltemplate.example.renderer.WhitespaceRemoveRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoFieldRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
@@ -149,6 +152,31 @@ fun main(args: Array<String>) {
 
         htmlFilePath.parent.createDirectories()
         htmlFilePath.writeText(htmlContent)
+    }
+
+    // GENERATE WHITESPACE-COMMAND DEMO FILES
+    // These templates only exercise the whitespace-handling commands around typical-template
+    // comments; the model is required by the renderer signature but is not used in the templates.
+    val whitespaceDemoModel = HtmlListModel(
+        filenameWithoutPrefix = "unused",
+        pageTitle = "unused",
+        allListEntries = emptyList(),
+    )
+    val whitespaceDemoContentByFileName = mapOf(
+        "whitespace-remove.html" to WhitespaceRemoveRenderer.renderTemplate(model = whitespaceDemoModel),
+        "whitespace-keep.html" to WhitespaceKeepRenderer.renderTemplate(model = whitespaceDemoModel),
+        "whitespace-consecutive.html" to WhitespaceConsecutiveRenderer.renderTemplate(model = whitespaceDemoModel),
+    )
+    whitespaceDemoContentByFileName.forEach { (fileName, content) ->
+        if(PRINT_GENERATED_CONTENT) {
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(" WHITESPACE DEMO FILE $fileName ")
+            println(" ------------------------------------------------------------------------------------------------------------ ")
+            println(content)
+        }
+        val whitespaceFilePath = pathToGeneratedHtmlFiles.resolve(fileName)
+        whitespaceFilePath.parent.createDirectories()
+        whitespaceFilePath.writeText(content)
     }
 
 }
