@@ -585,7 +585,7 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `several comments separated by blanks on the same line are treated as one comment`() {
+        fun `several comments separated by blanks on the same line are each trimmed individually`() {
             val input = ContentPartBuilder.create()
                 .addText("a\n   ")
                 .addTemplateComment().addIfCommand().end()
@@ -624,7 +624,7 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `grouped comments with non-blank after the last comment are left untouched`() {
+        fun `each comment on a shared line is trimmed on its own up to its neighbours`() {
             val input = ContentPartBuilder.create()
                 .addText("   ")
                 .addTemplateComment().end()
@@ -633,12 +633,18 @@ class ContentPartsExpandCommentPreprocessorTest {
                 .addText(" X\n")
                 .build()
 
-            // The two comments sit on the same line (only blanks in between) and are treated as
-            // one comment. Because non-blank text follows the group, nothing is removed - the
-            // blanks between the comments are kept too.
+            // Each comment is considered on its own. The first comment only has blanks around it
+            // (up to the next comment), so its surrounding blanks are removed. The second comment
+            // is followed by non-blank text on the same line, so it is left untouched.
+            val expected = ContentPartBuilder.create()
+                .addTemplateComment().end()
+                .addTemplateComment().end()
+                .addText(" X\n")
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test
