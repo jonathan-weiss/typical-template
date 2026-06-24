@@ -299,9 +299,16 @@ object TemplateRendererContentCreator {
         }
 
         private fun createReplacementMap(): Map<String, String> {
-            return nestingStack.fold(emptyMap()) { acc, nestingCtx ->
-                acc + nestingCtx.replacements
+            // Apply the replacements of the innermost commands first, then the outer
+            // (parent/grand-parent) commands. On a duplicate searchValue the innermost
+            // command wins, as it is seen first.
+            val replacements = LinkedHashMap<String, String>()
+            nestingStack.asReversed().forEach { nestingCtx ->
+                nestingCtx.replacements.forEach { (searchValue, replacementValue) ->
+                    replacements.putIfAbsent(searchValue, replacementValue)
+                }
             }
+            return replacements
         }
 
         fun markLastElementHasElseClause() {

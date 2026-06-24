@@ -66,6 +66,13 @@ data class AuthorDto(// @tt{{{ @replace-value-by-expression [ searchValue="first
 /* @tt{{{ @end-replace-value-by-expression}}}@ */
 /* @tt{{{ @end-replace-value-by-expression}}}@ */
 
+  // test chained nested replace (inner command replaces first)
+/* @tt{{{ @replace-value-by-value [searchValue="B" replaceByValue="C"]}}}@ */
+/* @tt{{{ @replace-value-by-value [searchValue="A" replaceByValue="B"]}}}@ */
+      val chained = "A"
+/* @tt{{{ @end-replace-value-by-value}}}@ */
+/* @tt{{{ @end-replace-value-by-value}}}@ */
+
 
   // test the if..else..end-if statement
 /* @tt{{{ @if [ conditionExpression="myModel.isSerializable()" ]}}}@ */

@@ -52,6 +52,9 @@ object EntityDto {
           |      }
           |
           |
+          |  // test chained nested replace (inner command replaces first)
+          |      val chained = "C"
+          |
           |
           |  // test the if..else..end-if statement
           |${ if(myModel.isSerializable()) { """        fun isSerialize(): Boolean = true
