@@ -14,7 +14,7 @@ package my.example.businessproject.summary
     [ searchValue="OrderSummary" replaceByExpression="model.summaryClassName" ]
   @replace-value-by-value
     [ searchValue="SUPPRESS_VALUE" replaceByValue="unused" ]
-  @modify-provided-filename-by-replacements
+  @modify-provided-filenpath-by-replacements
 }}}@ */
 /* @tt{{{
   @template-renderer [

@@ -16,7 +16,7 @@ The following keywords/commands are supported:
 * [ignore-text](#ignore-text)
 * [end-ignore-text](#end-ignore-text)
 * [print-text](#print-text)
-* [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
+* [modify-provided-filenpath-by-replacements](#modify-provided-filenpath-by-replacements)
 * [render-template](#render-template)
 * [add-import-to-renderer](#add-import-to-renderer)
 * [move-comment-backward](#move-comment-backward) (mvb)
@@ -350,19 +350,19 @@ Attributes:
   * Allowed values: _\<unrestricted\>_
   * Mutually exclusive with: none
 
-## modify-provided-filename-by-replacements
+## modify-provided-filenpath-by-replacements
 
-Syntax: ```@modify-provided-filename-by-replacements```
+Syntax: ```@modify-provided-filenpath-by-replacements```
 
 Aliases: _none_
 
-Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements provided by ```replace-value-by-expression``` and ```replace-value-by-value``` the ```modify-provided-filename-by-replacements``` command is currently nested in.
+Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements provided by ```replace-value-by-expression``` and ```replace-value-by-value``` the ```modify-provided-filenpath-by-replacements``` command is currently nested in.
 
 The intention of this command is that the filename and path can also take part of the replacements and this has not to be handled separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content. If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.
 
 You can use this command multiple times per template renderer. The replacements are done one after another in the order of the command usage.
 
-If you create multiple template renderers from one file (multiple template-renderer), you can (and have to) call ```modify-provided-filename-by-replacements``` for each template renderer individually.
+If you create multiple template renderers from one file (multiple template-renderer), you can (and have to) call ```modify-provided-filenpath-by-replacements``` for each template renderer individually.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.

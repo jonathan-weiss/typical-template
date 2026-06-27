@@ -12,7 +12,7 @@ package my.example.businessproject.domain
   ]
   @replace-value-by-expression
     [ searchValue="OrderStatus" replaceByExpression="model.enumName" ]
-  @modify-provided-filename-by-replacements
+  @modify-provided-filenpath-by-replacements
   @rlb
 }}}@ */
 enum class OrderStatus {

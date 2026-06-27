@@ -122,7 +122,7 @@ enum class CommandKey(
         ),
     ),
     MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS(
-        keyword = "modify-provided-filename-by-replacements",
+        keyword = "modify-provided-filenpath-by-replacements",
     ),
     RENDER_TEMPLATE(
         keyword = "render-template",
