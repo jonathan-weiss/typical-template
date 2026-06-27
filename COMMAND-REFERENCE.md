@@ -48,6 +48,7 @@ Varia:
 * This command supports to be auto-closed. The corresponding [end-template-renderer](#end-template-renderer) command can be skipped.
 * This command has a primary group of attributes optionally followed by zero or more groups of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Primary Attributes:
 * *templateRendererClassName*: The name of the template class that will generate this template.
@@ -104,6 +105,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## replace-value-by-expression
 
@@ -118,6 +120,7 @@ Varia:
 * This command supports to be auto-closed. The corresponding [end-replace-value-by-expression](#end-replace-value-by-expression) command can be skipped.
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Repeatable Group Attributes:
 * *searchValue*: The token that has to be searched in the enclosed block of content. The search is case-sensitive.
@@ -142,6 +145,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## replace-value-by-value
 
@@ -156,6 +160,7 @@ Varia:
 * This command supports to be auto-closed. The corresponding [end-replace-value-by-value](#end-replace-value-by-value) command can be skipped.
 * This command can have many groups of attributes
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Repeatable Group Attributes:
 * *searchValue*: The token that has to be searched in the enclosed block of content. The search is case-sensitive.
@@ -180,6 +185,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## if
 
@@ -194,6 +200,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Attributes:
 * *conditionExpression*: The condition returning a boolean value that is used for the if statement or else-if statement.
@@ -215,6 +222,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword must reside as directly nested element in the parent element [if](#if).
+* This command/keyword can be combined with any other command in the same comment.
 
 Attributes:
 * *conditionExpression*: The condition returning a boolean value that is used for the if statement or else-if statement.
@@ -236,6 +244,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword must reside as directly nested element in the parent element [if](#if).
+* This command/keyword can be combined with any other command in the same comment.
 
 ## end-if
 
@@ -248,6 +257,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## foreach
 
@@ -262,6 +272,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Attributes:
 * *iteratorExpression*: The expression returning the collection/iterable that is looped over.
@@ -286,6 +297,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## ignore-text
 
@@ -300,6 +312,7 @@ Varia:
 * This command supports to be auto-closed. The corresponding [end-ignore-text](#end-ignore-text) command can be skipped.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## end-ignore-text
 
@@ -312,6 +325,7 @@ Varia:
 * This command triggers to close all nested commands that support auto-closing.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## print-text
 
@@ -326,6 +340,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword must have exactly one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Attributes:
 * *text*: Text that is to print as-is into the template renderer.
@@ -353,6 +368,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 ## render-template
 
@@ -369,6 +385,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command has a primary group of attributes optionally followed by zero or more groups of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
 
 Primary Attributes:
 * *templateRendererClassName*: The name of the template class that will generate this template.
@@ -411,6 +428,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command can have zero or one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [move-comment-forward](#move-comment-forward) (mutually exclusive).
 
 Attributes:
 * *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
@@ -447,6 +465,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command can have zero or one group of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [move-comment-backward](#move-comment-backward) (mutually exclusive).
 
 Attributes:
 * *beforeFirstOccurrenceOf*: Positions the comment before the first occurrence of the given text in the surrounding content.
@@ -487,6 +506,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [keep-blanks-and-linebreak-before-comment](#keep-blanks-and-linebreak-before-comment), [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (mutually exclusive).
 
 ## remove-blanks-after-comment
 
@@ -505,6 +525,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [keep-blanks-and-linebreak-after-comment](#keep-blanks-and-linebreak-after-comment), [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (mutually exclusive).
 
 ## remove-blanks-and-linebreak-before-comment
 
@@ -523,6 +544,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [keep-blanks-and-linebreak-before-comment](#keep-blanks-and-linebreak-before-comment), [remove-blanks-before-comment](#remove-blanks-before-comment) (mutually exclusive).
 
 ## remove-blanks-and-linebreak-after-comment
 
@@ -541,6 +563,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [keep-blanks-and-linebreak-after-comment](#keep-blanks-and-linebreak-after-comment), [remove-blanks-after-comment](#remove-blanks-after-comment) (mutually exclusive).
 
 ## keep-blanks-and-linebreak-before-comment
 
@@ -557,6 +580,7 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment), [remove-blanks-before-comment](#remove-blanks-before-comment) (mutually exclusive).
 
 ## keep-blanks-and-linebreak-after-comment
 
@@ -573,3 +597,4 @@ Varia:
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword must not be used in the same comment as [remove-blanks-after-comment](#remove-blanks-after-comment), [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (mutually exclusive).

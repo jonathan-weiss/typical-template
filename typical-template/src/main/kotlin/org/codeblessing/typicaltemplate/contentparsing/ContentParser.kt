@@ -10,6 +10,7 @@ import org.codeblessing.typicaltemplate.contentparsing.commandchain.TemplateRend
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsExpandCommentPreprocessor
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsMoveCommentPreprocessor
 import org.codeblessing.typicaltemplate.contentparsing.preprocessor.ContentPartsPreprocessorValidator
+import org.codeblessing.typicaltemplate.contentparsing.preprocessor.MutuallyExclusiveCommandKeysValidator
 import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentPart
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.FileContentTokenizer
 import org.codeblessing.typicaltemplate.contentparsing.tokenizer.ContentType
@@ -29,6 +30,7 @@ object ContentParser {
             }
 
             val templateContentParts = ContentPartResolver.createContentParts(rawContentParts)
+                .pipe(MutuallyExclusiveCommandKeysValidator::validate)
                 .pipe(ContentPartsPreprocessorValidator::validatePreprocessing)
                 .pipe(ContentPartsExpandCommentPreprocessor::runPreprocessing)
                 .pipe(ContentPartsMoveCommentPreprocessor::runPreprocessing)

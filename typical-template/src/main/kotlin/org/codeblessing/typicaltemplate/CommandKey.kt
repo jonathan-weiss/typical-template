@@ -187,11 +187,32 @@ enum class CommandKey(
     ;
 
     companion object {
+        /**
+         * Groups of command keys that must not be used together in the same template comment because
+         * they contradict each other. Within each group every command key excludes all other command
+         * keys of the same group (e.g. moving a comment backward and forward at the same time, or
+         * removing and keeping the blanks on the same side of a comment).
+         */
+        private val MUTUALLY_EXCLUSIVE_COMMAND_KEY_GROUPS: List<Set<CommandKey>> = listOf(
+            setOf(MOVE_COMMENT_BACKWARD, MOVE_COMMENT_FORWARD),
+            setOf(REMOVE_BLANKS_BEFORE_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT, KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT),
+            setOf(REMOVE_BLANKS_AFTER_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT, KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT),
+        )
+
         init {
             val allNames = entries.flatMap { listOf(it.keyword) + it.aliases }
             val duplicates = allNames.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
             require(duplicates.isEmpty()) {
                 "CommandKey keywords and aliases must be unique, but found duplicates: $duplicates"
+            }
+
+            require(MUTUALLY_EXCLUSIVE_COMMAND_KEY_GROUPS.all { it.size >= 2 }) {
+                "Each mutual exclusion group must contain at least two command keys."
+            }
+            val keysInGroups = MUTUALLY_EXCLUSIVE_COMMAND_KEY_GROUPS.flatten()
+            val keysInMultipleGroups = keysInGroups.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
+            require(keysInMultipleGroups.isEmpty()) {
+                "A command key must not appear in more than one mutual exclusion group, but found: $keysInMultipleGroups"
             }
         }
 
@@ -215,6 +236,15 @@ enum class CommandKey(
 
     val allowedAttributes: Set<CommandAttributeKey>
         get() = attributeGroupConstraints.flatMap { it.allowedAttributes }.toSet()
+
+    /**
+     * The other command keys that must not appear together with this command key in the same template comment.
+     */
+    val mutuallyExclusiveCommandKeys: Set<CommandKey>
+        get() = MUTUALLY_EXCLUSIVE_COMMAND_KEY_GROUPS
+            .filter { this in it }
+            .flatMapTo(mutableSetOf()) { it }
+            .minus(this)
 
     private fun constraintForGroup(groupIndex: Int): AttributeGroupConstraint {
         require(attributeGroupConstraints.isNotEmpty()) {

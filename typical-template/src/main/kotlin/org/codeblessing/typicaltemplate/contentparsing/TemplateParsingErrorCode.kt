@@ -77,6 +77,9 @@ enum class TemplateParsingErrorCode(val messageTemplate: String) {
     ),
     MUTUALLY_EXCLUSIVE_ATTRIBUTES(
         "Only one of the following mutually exclusive attributes may be present for command '{command}' in attributes group #{groupIndex}: {mutualExclusiveAttributes}. Found: {foundAttributes}."
+    ),
+    MUTUALLY_EXCLUSIVE_COMMAND_KEYS(
+        "The commands '{command}' and '{conflictingCommand}' must not be used together in the same template comment because they are mutually exclusive."
     );
 
     fun resolve(vararg pairs: Pair<String, String>): String {

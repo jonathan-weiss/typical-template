@@ -252,6 +252,7 @@ object CommandReferenceMarkdownCreator {
                     * ${commandKey.autoclosingDescription()}
                     * ${commandKey.groupSupportDescription()}
                     * ${commandKey.nestingDescription()}
+                    * ${commandKey.mutualExclusionDescription()}
                 """.trimIndent()
             )
             for ((constraintIndex, constraint) in commandKey.attributeGroupConstraints.withIndex()) {
@@ -375,6 +376,15 @@ object CommandReferenceMarkdownCreator {
         }
         val aliasesAsMarkdown = aliases.joinToString(", ") { "```${commandPrefix()}$it```" }
         return "Aliases: $aliasesAsMarkdown (can be used in place of ```${commandPrefix()}${keyword}```)"
+    }
+
+    private fun CommandKey.mutualExclusionDescription(): String {
+        val exclusions = mutuallyExclusiveCommandKeys.sortedBy { it.keyword }
+        return if (exclusions.isEmpty()) {
+            "This command/keyword can be combined with any other command in the same comment."
+        } else {
+            "This command/keyword must not be used in the same comment as ${exclusions.joinToString(", ") { it.createMarkDownChapterLink() }} (mutually exclusive)."
+        }
     }
 
     private fun CommandKey.nestingDescription(): String =
