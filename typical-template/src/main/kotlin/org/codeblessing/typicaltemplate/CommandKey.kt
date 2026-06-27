@@ -121,6 +121,15 @@ enum class CommandKey(
             )
         ),
     ),
+    REMARK(
+        keyword = "remark",
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = ONE_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(TEXT),
+            )
+        ),
+    ),
     MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS(
         keyword = "modify-provided-filepath-by-replacements",
     ),

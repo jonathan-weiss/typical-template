@@ -66,6 +66,7 @@ object TemplateRendererContentCreator {
             CommandKey.IGNORE_TEXT -> processIgnoreText(ctx, keywordCommand)
             CommandKey.END_IGNORE_TEXT -> processEndIgnoreText(ctx)
             CommandKey.PRINT_TEXT -> processPrintText(ctx, keywordCommand)
+            CommandKey.REMARK -> NO_CONTENT_TO_WRITE
             CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS -> processProvideModifiedFilename(ctx)
             CommandKey.RENDER_TEMPLATE -> processRenderTemplate(ctx, keywordCommand)
             CommandKey.ADD_IMPORT_TO_RENDERER -> NO_CONTENT_TO_WRITE

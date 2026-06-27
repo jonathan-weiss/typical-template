@@ -60,6 +60,12 @@ object CommandReferenceMarkdownCreator {
         CommandKey.PRINT_TEXT to listOf(
             "Print additional text as output of the template renderer.",
         ),
+        CommandKey.REMARK to listOf(
+            "Adds a remark to the template that is purely meant for internal documentation. " +
+                    "The text is completely ignored: it neither appears in the generated template renderer nor in its output.",
+            "Use this command to leave notes or explanations inside a template (e.g. why a certain construct is built the way it is) " +
+                    "without affecting the result in any way.",
+        ),
         CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS to listOf(
             "Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements " +
                 "provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}``` the " +
@@ -190,7 +196,8 @@ object CommandReferenceMarkdownCreator {
             "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
         ),
         CommandAttributeKey.TEXT to listOf(
-            "Text that is to print as-is into the template renderer.",
+            "The text content of the command (e.g. the text printed by ```${CommandKey.PRINT_TEXT.keyword}``` " +
+                    "or the remark documented by ```${CommandKey.REMARK.keyword}```).",
         ),
         CommandAttributeKey.MODEL_EXPRESSION to listOf(
             "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",

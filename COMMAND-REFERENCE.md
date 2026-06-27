@@ -16,6 +16,7 @@ The following keywords/commands are supported:
 * [ignore-text](#ignore-text)
 * [end-ignore-text](#end-ignore-text)
 * [print-text](#print-text)
+* [remark](#remark)
 * [modify-provided-filepath-by-replacements](#modify-provided-filepath-by-replacements)
 * [render-template](#render-template)
 * [add-import-to-renderer](#add-import-to-renderer)
@@ -344,7 +345,31 @@ Varia:
 * This command/keyword can be combined with any other command in the same comment.
 
 Attributes:
-* *text*: Text that is to print as-is into the template renderer.
+* *text*: The text content of the command (e.g. the text printed by ```print-text``` or the remark documented by ```remark```).
+  * Required attribute: _Yes_
+  * Required not empty: _No_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: none
+
+## remark
+
+Syntax: ```@remark [ text="..." ]```
+
+Aliases: _none_
+
+Adds a remark to the template that is purely meant for internal documentation. The text is completely ignored: it neither appears in the generated template renderer nor in its output.
+
+Use this command to leave notes or explanations inside a template (e.g. why a certain construct is built the way it is) without affecting the result in any way.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword must have exactly one group of attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
+
+Attributes:
+* *text*: The text content of the command (e.g. the text printed by ```print-text``` or the remark documented by ```remark```).
   * Required attribute: _Yes_
   * Required not empty: _No_
   * Allowed values: _\<unrestricted\>_
