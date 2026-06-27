@@ -761,6 +761,116 @@ class ContentPartsExpandCommentPreprocessorTest {
     }
 
     @Nested
+    inner class PerSideOverride {
+
+        @Test
+        fun `remove-before on a standalone comment still collapses the after side by default`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().addRemoveBlanksBeforeCommentCommand().end()
+                .addText("   \nline2")
+                .build()
+
+            // before: remove-blanks (same as the default) -> blanks removed, line break kept.
+            // after: no command -> default handling removes the blanks and the line break.
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("line2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `remove-and-linebreak-after on a standalone comment still strips the before side by default`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().addRemoveBlanksAndLinebreakAfterCommentCommand().end()
+                .addText("   \nline2")
+                .build()
+
+            // before: no command -> default handling strips the blanks (line break kept).
+            // after: remove-blanks-and-linebreak (same as the default) -> blanks and line break removed.
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("line2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `remove-before combined with keep-after overrides each side on its own`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment()
+                .addRemoveBlanksBeforeCommentCommand()
+                .addKeepBlanksAndLinebreakAfterCommentCommand()
+                .end()
+                .addText("   \nline2")
+                .build()
+
+            // before: remove-blanks -> blanks removed. after: keep -> blanks and line break kept.
+            val expected = ContentPartBuilder.create()
+                .addText("line1\n")
+                .addTemplateComment().end()
+                .addText("   \nline2")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `remove-and-linebreak-before overrides the before side when not standalone`() {
+            val input = ContentPartBuilder.create()
+                .addText("line1\n   ")
+                .addTemplateComment().addRemoveBlanksAndLinebreakBeforeCommentCommand().end()
+                .addText(" X\n")
+                .build()
+
+            // Non-standalone (non-blank text after on the line): the after side keeps its default
+            // (nothing removed), while remove-and-linebreak-before still strips the before side.
+            val expected = ContentPartBuilder.create()
+                .addText("line1")
+                .addTemplateComment().end()
+                .addText(" X\n")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `keep-after on a non-standalone comment is a no-op`() {
+            val input = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().addKeepBlanksAndLinebreakAfterCommentCommand().end()
+                .addText("   \nbar")
+                .build()
+
+            // Non-standalone: the default already keeps both sides, so keep-after changes nothing.
+            val expected = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().end()
+                .addText("   \nbar")
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
+        }
+    }
+
+    @Nested
     inner class CommandRemoval {
 
         @Test

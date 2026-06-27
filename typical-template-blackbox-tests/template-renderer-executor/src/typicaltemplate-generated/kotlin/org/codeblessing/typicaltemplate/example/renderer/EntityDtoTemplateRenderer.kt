@@ -22,9 +22,7 @@ object EntityDtoTemplateRenderer {
           |/**
           | * The ${model.entityName} DTO (Data Transfer Object) class.
           | */
-          |data class ${model.kotlinDtoClassName}(${ model.fields.joinToString("") { field ->  """
-              |    val ${field.fieldName}: ${field.fieldTypeNameWithNullability},""" } }
-          |)
+          |data class ${model.kotlinDtoClassName}(${ model.fields.joinToString("") { field ->  """    val ${field.fieldName}: ${field.fieldTypeNameWithNullability},""" } })
           |
         """.trimMargin(marginPrefix = "|")
     }

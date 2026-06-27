@@ -10,16 +10,16 @@ object CommandReferenceMarkdownCreator {
     private const val COMMAND_PREFIX = "@"
 
     // Shared note appended to every remove-blanks command, explaining the default whitespace
-    // handling these commands opt out of.
+    // handling and how these commands override it per side.
     private val DEFAULT_WHITESPACE_HANDLING_NOTE =
         "Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and " +
                 "only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the " +
-                "blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as " +
-                "any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole " +
-                "comment and only the explicitly requested removals are applied (e.g. using only " +
+                "blanks before the comment as well as the blanks and the line break after the comment are removed. The before " +
+                "side and the after side are decided independently: a remove-blanks or keep-blanks command overrides the default " +
+                "decision only for its own side and never affects the other side (e.g. using only " +
                 "```${COMMAND_PREFIX}${CommandKey.REMOVE_BLANKS_BEFORE_COMMENT.keyword}``` on an otherwise stand-alone comment " +
-                "therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default " +
-                "handling; they only suppress it on their side."
+                "still lets the default handling remove the blanks and the line break after it). A command that requests the " +
+                "same thing as the default decision is simply a no-op."
 
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, List<String>> = linkedMapOf(

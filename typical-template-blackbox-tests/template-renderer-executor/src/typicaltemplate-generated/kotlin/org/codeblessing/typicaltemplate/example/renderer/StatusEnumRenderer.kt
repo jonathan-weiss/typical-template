@@ -17,7 +17,6 @@ object StatusEnumRenderer {
     fun renderTemplate(model: StatusEnumRenderModel): String {
         return """
           |package my.example.businessproject.domain
-          |
           |enum class ${model.enumName} {
           |${ model.statusValues.joinToString("") { statusValue ->  """    ${statusValue},
               |""" } }}
