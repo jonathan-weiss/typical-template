@@ -52,10 +52,23 @@ object TemplateRendererClassContentCreator {
                 if (packageName.isNotBlank()) "$packageName.$className" else null
             }
 
+        val additionalImports = templateRendererDescription.templateChain
+            .filterIsInstance<TemplateCommentContentPart>()
+            .flatMap { it.keywordCommands }
+            .filter { it.commandKey == CommandKey.ADD_IMPORT_TO_RENDERER }
+            .flatMap { command ->
+                command.attributeGroupIndices().map { groupIndex ->
+                    val className = command.attribute(groupIndex, CommandAttributeKey.IMPORT_CLASS_NAME)
+                    val packageName = command.attributeOptional(groupIndex, CommandAttributeKey.IMPORT_PACKAGE_NAME) ?: ""
+                    if (packageName.isNotBlank()) "$packageName.$className" else className
+                }
+            }
+
         val allImports = listOfNotNull(
             templateRendererInterfaceFqnOrNull,
             *modelImports.toTypedArray(),
             *rendererImports.toTypedArray(),
+            *additionalImports.toTypedArray(),
         ).distinct().joinToString("\n") { "import $it" }
 
 

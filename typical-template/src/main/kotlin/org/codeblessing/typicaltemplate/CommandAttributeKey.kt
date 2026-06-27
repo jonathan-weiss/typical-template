@@ -25,6 +25,8 @@ enum class CommandAttributeKey(
     AFTER_FIRST_OCCURRENCE_OF("afterFirstOccurrenceOf"),
     BEFORE_LAST_OCCURRENCE_OF("beforeLastOccurrenceOf"),
     AFTER_LAST_OCCURRENCE_OF("afterLastOccurrenceOf"),
+    IMPORT_CLASS_NAME("importClassName"),
+    IMPORT_PACKAGE_NAME("importPackageName", requireNotEmpty = false),
     ;
 
     companion object {

@@ -138,6 +138,16 @@ enum class CommandKey(
             ),
         ),
     ),
+    ADD_IMPORT_TO_RENDERER(
+        keyword = "add-import-to-renderer",
+        attributeGroupConstraints = listOf(
+            AttributeGroupConstraint(
+                occurrence = MANY_ATTRIBUTE_GROUP,
+                requiredAttributes = setOf(IMPORT_CLASS_NAME),
+                optionalAttributes = setOf(IMPORT_PACKAGE_NAME),
+            )
+        ),
+    ),
     MOVE_COMMENT_BACKWARD(
         keyword = "move-comment-backward",
         aliases = setOf("mvb"),

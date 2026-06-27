@@ -18,6 +18,7 @@ The following keywords/commands are supported:
 * [print-text](#print-text)
 * [modify-provided-filename-by-replacements](#modify-provided-filename-by-replacements)
 * [render-template](#render-template)
+* [add-import-to-renderer](#add-import-to-renderer)
 * [move-comment-backward](#move-comment-backward) (mvb)
 * [move-comment-forward](#move-comment-forward) (mvf)
 * [remove-blanks-before-comment](#remove-blanks-before-comment) (rbb)
@@ -408,6 +409,37 @@ Repeatable Group Attributes:
 * *modelExpression*: The expression that provides the value for the model parameter specified by ```modelName``` when calling the template renderer.
   * Required attribute: _Yes_
   * Required not empty: _Yes_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: none
+
+## add-import-to-renderer
+
+Syntax: ```@add-import-to-renderer [ importClassName="..." importPackageName="..." ] [ ... ]```
+
+Aliases: _none_
+
+Adds one or more imports to the generated template renderer class. Each repeating attribute group adds one import.
+
+Once a symbol is imported, it can be referenced by its short name in any expression (e.g. in ```if``` conditions, ```foreach``` iterables or ```replace-value-by-expression``` expressions). This lets you keep those expressions short and readable instead of repeating the fully qualified name (e.g. write ```DayOfWeek.WEDNESDAY``` instead of ```java.time.DayOfWeek.WEDNESDAY```).
+
+Imports are added to the renderer class header in addition to the imports typical-template derives automatically (model classes, the renderer interface and rendered sub-templates). Duplicate imports are removed.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command can have many groups of attributes
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.
+
+Repeatable Group Attributes:
+* *importClassName*: The name of the symbol to import (e.g. a class, object or enum entry like ```DayOfWeek.WEDNESDAY```). Combined with ```importPackageName``` (when given) to form the fully qualified import.
+  * Required attribute: _Yes_
+  * Required not empty: _Yes_
+  * Allowed values: _\<unrestricted\>_
+  * Mutually exclusive with: none
+* *importPackageName*: The name of the package the symbol defined with ```importClassName``` resides in (e.g. ```java.time```). When omitted, the value of ```importClassName``` is imported as-is.
+  * Required attribute: _No_
+  * Required not empty: _No_
   * Allowed values: _\<unrestricted\>_
   * Mutually exclusive with: none
 

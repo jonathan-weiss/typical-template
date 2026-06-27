@@ -77,6 +77,15 @@ object CommandReferenceMarkdownCreator {
             "This command's syntax has a lot of similarity to ${CommandKey.TEMPLATE_RENDERER.keyword}, as it calls a " +
                     "template renderer defined by the ${CommandKey.TEMPLATE_RENDERER.keyword} block."
         ),
+        CommandKey.ADD_IMPORT_TO_RENDERER to listOf(
+            "Adds one or more imports to the generated template renderer class. Each repeating attribute group adds one import.",
+            "Once a symbol is imported, it can be referenced by its short name in any expression (e.g. in " +
+                    "```${CommandKey.IF_CONDITION.keyword}``` conditions, ```${CommandKey.FOREACH.keyword}``` iterables or " +
+                    "```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` expressions). This lets you keep those expressions short and readable " +
+                    "instead of repeating the fully qualified name (e.g. write ```DayOfWeek.WEDNESDAY``` instead of ```java.time.DayOfWeek.WEDNESDAY```).",
+            "Imports are added to the renderer class header in addition to the imports typical-template derives automatically " +
+                    "(model classes, the renderer interface and rendered sub-templates). Duplicate imports are removed.",
+        ),
         CommandKey.MOVE_COMMENT_BACKWARD to listOf(
             "Moves the whole comment in which this command is written backward (i.e. before the preceding text). " +
                     "Optionally positions it relative to the first or last occurrence of a given text in the surrounding content. " +
@@ -185,6 +194,14 @@ object CommandReferenceMarkdownCreator {
         ),
         CommandAttributeKey.MODEL_EXPRESSION to listOf(
             "The expression that provides the value for the model parameter specified by ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}``` when calling the template renderer.",
+        ),
+        CommandAttributeKey.IMPORT_CLASS_NAME to listOf(
+            "The name of the symbol to import (e.g. a class, object or enum entry like ```DayOfWeek.WEDNESDAY```). " +
+                    "Combined with ```${CommandAttributeKey.IMPORT_PACKAGE_NAME.keyAsString}``` (when given) to form the fully qualified import.",
+        ),
+        CommandAttributeKey.IMPORT_PACKAGE_NAME to listOf(
+            "The name of the package the symbol defined with ```${CommandAttributeKey.IMPORT_CLASS_NAME.keyAsString}``` resides in (e.g. ```java.time```). " +
+                    "When omitted, the value of ```${CommandAttributeKey.IMPORT_CLASS_NAME.keyAsString}``` is imported as-is.",
         ),
         CommandAttributeKey.BEFORE_FIRST_OCCURRENCE_OF to listOf(
             "Positions the comment before the first occurrence of the given text in the surrounding content.",

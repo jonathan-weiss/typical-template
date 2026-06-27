@@ -68,6 +68,7 @@ object TemplateRendererContentCreator {
             CommandKey.PRINT_TEXT -> processPrintText(ctx, keywordCommand)
             CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS -> processProvideModifiedFilename(ctx)
             CommandKey.RENDER_TEMPLATE -> processRenderTemplate(ctx, keywordCommand)
+            CommandKey.ADD_IMPORT_TO_RENDERER -> NO_CONTENT_TO_WRITE
         }
     }
 
