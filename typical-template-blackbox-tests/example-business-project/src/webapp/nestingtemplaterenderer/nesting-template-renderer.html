@@ -1,0 +1,10 @@
+<!-- @tt{{{ @template-renderer [ templateRendererClassName="FancyRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+  @replace-value-by-value [ searchValue="TOKEN" replaceByValue="REPLACED-IN-A" ][ searchValue="nesting-template-renderer.html" replaceByValue="fancy-output.html" ]
+  @modify-provided-filepath-by-replacements
+  @add-import-to-renderer [ importClassName="DayOfWeek" importPackageName="java.time" ]
+  @replace-value-by-expression [ searchValue="DAY" replaceByExpression="DayOfWeek.MONDAY" ] }}}@ -->
+A: TOKEN DAY
+<!-- @tt{{{ @end-template-renderer }}}@ -->
+<!-- @tt{{{ @template-renderer [ templateRendererClassName="PlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
+B: TOKEN DAY
+<!-- @tt{{{ @end-template-renderer }}}@ -->

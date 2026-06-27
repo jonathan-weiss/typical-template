@@ -1,0 +1,14 @@
+<!-- @tt{{{ @template-renderer [ templateRendererClassName="IfsRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ][ modelName="model" modelClassName="IfModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ] }}}@ -->
+<!-- @tt{{{ @if [ conditionExpression="model.isBook" ] }}}@ -->
+BOOK
+<!-- @tt{{{ @if [ conditionExpression="model.highlighted" ] }}}@ -->
+- highlighted
+<!-- @tt{{{ @else }}}@ -->
+- plain
+<!-- @tt{{{ @end-if }}}@ -->
+<!-- @tt{{{ @else-if [ conditionExpression="model.isMovie" ] }}}@ -->
+MOVIE
+<!-- @tt{{{ @else }}}@ -->
+OTHER
+<!-- @tt{{{ @end-if }}}@ -->
+<!-- @tt{{{ @end-template-renderer }}}@ -->

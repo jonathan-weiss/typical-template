@@ -17,4 +17,6 @@ dependencies {
     implementation(project(":typical-template-api"))
 
     testImplementation(kotlin("test"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 }

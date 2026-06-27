@@ -1,0 +1,10 @@
+<!-- @tt{{{ @template-renderer [ templateRendererClassName="NestingReplacesRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+  @replace-value-by-value [ searchValue="ONE" replaceByValue="TWO" ][ searchValue="TWO" replaceByValue="THREE" ] }}}@ -->
+within-comment-order: ONE
+<!-- @tt{{{ @replace-value-by-value [ searchValue="ZERO" replaceByValue="ONE" ]
+  @replace-value-by-expression [ searchValue="EXPRTOKEN" replaceByExpression="40 + 2" ] }}}@ -->
+innermost-first: ZERO
+expression: EXPRTOKEN
+<!-- @tt{{{ @end-replace-value-by-expression @end-replace-value-by-value }}}@ -->
+after-inner: ZERO
+<!-- @tt{{{ @end-template-renderer }}}@ -->

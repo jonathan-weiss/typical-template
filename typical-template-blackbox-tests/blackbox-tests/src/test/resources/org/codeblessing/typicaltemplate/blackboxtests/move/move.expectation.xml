@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <book lang='en' id="b1">Clean Code</book>
+    <book id="b2"><keep>Refactoring</keep></book>
+    <row><!-- a plain xml comment the move below travels across -->moved-across-normal-comment:VALUE</row>
+    <tags>x,y,z,(last)w,UNREACHABLE</tags>
+</catalog>
