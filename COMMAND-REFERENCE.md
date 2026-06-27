@@ -27,7 +27,7 @@ The following keywords/commands are supported:
 * [keep-blanks-and-linebreak-before-comment](#keep-blanks-and-linebreak-before-comment) (klb)
 * [keep-blanks-and-linebreak-after-comment](#keep-blanks-and-linebreak-after-comment) (kla)
 
-Commands always starts with a `@`.
+Commands always start with a `@`.
 
 
 
@@ -41,7 +41,7 @@ Defines the template renderer kotlin class in which the content of the given fil
 
 The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter.
 
-Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and is closed with end-template-renderer.A nested template renderer is completely independent (and its content therefore removed from) the parent template renderer.Also all other commands defined in the parent template (models, if..else, replacements, etc.) will not affect the child template renderer, as each template renderer resides in its own class.
+Additional template-renderer commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and is closed with end-template-renderer. A nested template renderer is completely independent (and its content therefore removed from) the parent template renderer. Also all other commands defined in the parent template (models, if..else, replacements, etc.) will not affect the child template renderer, as each template renderer resides in its own class.
 
 Varia:
 * This command must be closed using the [end-template-renderer](#end-template-renderer) command.
@@ -264,7 +264,7 @@ Varia:
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
 Attributes:
-* *iteratorExpression*: The condition returning a boolean value that is used for the if statement.
+* *iteratorExpression*: The expression returning the collection/iterable that is looped over.
   * Required attribute: _Yes_
   * Required not empty: _Yes_
   * Allowed values: _\<unrestricted\>_
@@ -342,7 +342,7 @@ Aliases: _none_
 
 Each template renderer provides the path of the source file as string. By using this command, the path can be modified with all replacements provided by ```replace-value-by-expression``` and ```replace-value-by-value``` the ```modify-provided-filename-by-replacements``` command is currently nested in.
 
-The intention of this command is that the filename and path can also take part of the replacements and this has not to be handled separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content.If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.
+The intention of this command is that the filename and path can also take part of the replacements and this has not to be handled separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content. If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.
 
 You can use this command multiple times per template renderer. The replacements are done one after another in the order of the command usage.
 
@@ -367,7 +367,7 @@ This command's syntax has a lot of similarity to template-renderer, as it calls 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
-* This command has a primary group of attributes followed by one or more groups of attributes.
+* This command has a primary group of attributes optionally followed by zero or more groups of attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 
 Primary Attributes:
@@ -478,7 +478,9 @@ Aliases: ```@rbb``` (can be used in place of ```@remove-blanks-before-comment```
 
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
-This is useful if you don't want to have dangling spaces/idents in your template output if the typical template comments itself have to follow some ident rules (e.g. by your linter).
+This is useful if you don't want to have dangling spaces/indents in your template output if the typical template comments itself have to follow some indentation rules (e.g. by your linter).
+
+Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole comment and only the explicitly requested removals are applied (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default handling; they only suppress it on their side.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
@@ -494,7 +496,9 @@ Aliases: ```@rba``` (can be used in place of ```@remove-blanks-after-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
-This is useful if you don't want to have dangling spaces/idents in your template output if the typical template comments itself have to follow some ident rules (e.g. by your linter).
+This is useful if you don't want to have dangling spaces/indents in your template output if the typical template comments itself have to follow some indentation rules (e.g. by your linter).
+
+Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole comment and only the explicitly requested removals are applied (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default handling; they only suppress it on their side.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
@@ -512,6 +516,8 @@ Removes the consecutive blanks (spaces and tabs) directly preceding the comment 
 
 This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
 
+Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole comment and only the explicitly requested removals are applied (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default handling; they only suppress it on their side.
+
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
@@ -528,6 +534,8 @@ Removes the consecutive blanks (spaces and tabs) directly following the comment 
 
 This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
 
+Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole comment and only the explicitly requested removals are applied (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default handling; they only suppress it on their side.
+
 Varia:
 * This command stands for itself and does not need to be closed by another command.
 * This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
@@ -540,7 +548,7 @@ Syntax: ```@keep-blanks-and-linebreak-before-comment```
 
 Aliases: ```@klb``` (can be used in place of ```@keep-blanks-and-linebreak-before-comment```)
 
-Keeps the consecutive blanks (spaces and tabs) and the line-ending directly preceding the comment, i.e. it suppresses the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line.
+Keeps the consecutive blanks (spaces and tabs) directly preceding the comment, i.e. it suppresses the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line. Note that the default handling never removes the line-ending before the comment (it belongs to the preceding line), so on the before side this command only affects the blanks.
 
 This is the counterpart of ```@remove-blanks-and-linebreak-before-comment```: use it when you want to keep the whitespace before the comment that would otherwise be collapsed.
 

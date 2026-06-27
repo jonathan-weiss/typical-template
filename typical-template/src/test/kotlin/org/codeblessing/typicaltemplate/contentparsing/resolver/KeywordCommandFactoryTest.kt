@@ -246,7 +246,7 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `valid multi-constraint command with minimum groups`() {
+    fun `valid multi-constraint command with one repeatable group`() {
         val commandStructure = createSingleTemplateComment(
             comment = """
                 @render-template [
@@ -288,7 +288,9 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `throws for multi-constraint command with too few groups`() {
+    fun `valid render-template with only renderer group and no model groups`() {
+        // A template-renderer may declare zero models, so render-template must be able to call
+        // such a renderer with no model groups at all.
         val commandStructure = createSingleTemplateComment(
             comment = """
                 @render-template [
@@ -297,10 +299,10 @@ class KeywordCommandFactoryTest {
             """.trimIndent()
         )
 
-        val exception = assertThrows<TemplateParsingException> {
-            KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        }
-        Assertions.assertEquals(TemplateParsingErrorCode.TOO_FEW_ATTRIBUTE_GROUPS, exception.errorCode)
+        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
+        Assertions.assertEquals(CommandKey.RENDER_TEMPLATE, keywordCommand.commandKey)
+        Assertions.assertEquals(1, keywordCommand.attributeGroups.size)
+        Assertions.assertEquals("MyRenderer", keywordCommand.attribute(0, CommandAttributeKey.TEMPLATE_RENDERER_CLASS_NAME))
     }
 
     @Test

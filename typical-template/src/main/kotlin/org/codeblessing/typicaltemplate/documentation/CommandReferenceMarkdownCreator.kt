@@ -9,13 +9,25 @@ object CommandReferenceMarkdownCreator {
 
     private const val COMMAND_PREFIX = "@"
 
+    // Shared note appended to every remove-blanks command, explaining the default whitespace
+    // handling these commands opt out of.
+    private val DEFAULT_WHITESPACE_HANDLING_NOTE =
+        "Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and " +
+                "only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the " +
+                "blanks before the comment as well as the blanks and the line break after the comment are removed. As soon as " +
+                "any of the remove-blanks commands is present on a comment, this default handling is switched off for the whole " +
+                "comment and only the explicitly requested removals are applied (e.g. using only " +
+                "```${COMMAND_PREFIX}${CommandKey.REMOVE_BLANKS_BEFORE_COMMENT.keyword}``` on an otherwise stand-alone comment " +
+                "therefore keeps the line break after it). The keep-blanks commands, in contrast, do not switch off the default " +
+                "handling; they only suppress it on their side."
+
     // linked map to preserve the order of the keys
     private val commandKeyDocumentation: Map<CommandKey, List<String>> = linkedMapOf(
         CommandKey.TEMPLATE_RENDERER to listOf(
             "Defines the template renderer kotlin class in which the content of the given file is put into. Optionally declares model instances (kotlin function parameters) passed to the renderer. ",
             "The first attribute group specifies the renderer class; subsequent repeating groups each define one model parameter.",
-            "Additional ${CommandKey.TEMPLATE_RENDERER.keyword} commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and is closed with ${CommandKey.END_TEMPLATE_RENDERER.keyword}." +
-                "A nested template renderer is completely independent (and its content therefore removed from) the parent template renderer." +
+            "Additional ${CommandKey.TEMPLATE_RENDERER.keyword} commands can be nested inside the top-level one; each nested template-renderer produces an independent renderer class and is closed with ${CommandKey.END_TEMPLATE_RENDERER.keyword}. " +
+                "A nested template renderer is completely independent (and its content therefore removed from) the parent template renderer. " +
                 "Also all other commands defined in the parent template (models, if..else, replacements, etc.) will not affect the child template renderer, as each template renderer resides in its own class.",
         ),
         CommandKey.END_TEMPLATE_RENDERER to emptyList(),
@@ -53,7 +65,7 @@ object CommandReferenceMarkdownCreator {
                 "provided by ```${CommandKey.REPLACE_VALUE_BY_EXPRESSION.keyword}``` and ```${CommandKey.REPLACE_VALUE_BY_VALUE.keyword}``` the " +
                 "```${CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS.keyword}``` command is currently nested in.",
             "The intention of this command is that the filename and path can also take part of the replacements and this has not to be handled " +
-                    "separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content." +
+                    "separately and outside of the template renderer; the replacements for the filename follow often the same patterns as for the file content. " +
                     "If you change in your template every ```foo``` to ```bar```, it is likely that you also want to change the path of the file " +
                     "e.g. from ```src/foo/foo.txt``` to ```src/bar/bar.txt``` to generate dynamic file paths.",
             "You can use this command multiple times per template renderer. The replacements are done one after another in the order of the command usage.",
@@ -84,28 +96,34 @@ object CommandReferenceMarkdownCreator {
         CommandKey.REMOVE_BLANKS_BEFORE_COMMENT to listOf(
             "Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. " +
                     "Stops before the line-ending; the line-ending itself is kept.",
-            "This is useful if you don't want to have dangling spaces/idents in your template output if the " +
-                    "typical template comments itself have to follow some ident rules (e.g. by your linter).",
+            "This is useful if you don't want to have dangling spaces/indents in your template output if the " +
+                    "typical template comments itself have to follow some indentation rules (e.g. by your linter).",
+            DEFAULT_WHITESPACE_HANDLING_NOTE,
         ),
         CommandKey.REMOVE_BLANKS_AFTER_COMMENT to listOf(
             "Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. " +
                     "Stops before the line-ending; the line-ending itself is kept.",
-            "This is useful if you don't want to have dangling spaces/idents in your template output if the " +
-                    "typical template comments itself have to follow some ident rules (e.g. by your linter).",
+            "This is useful if you don't want to have dangling spaces/indents in your template output if the " +
+                    "typical template comments itself have to follow some indentation rules (e.g. by your linter).",
+            DEFAULT_WHITESPACE_HANDLING_NOTE,
         ),
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to listOf(
             "Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, " +
                     "including the immediately adjacent line-ending.",
             "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
+            DEFAULT_WHITESPACE_HANDLING_NOTE,
         ),
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT to listOf(
             "Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, " +
                     "including the immediately adjacent line-ending.",
             "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
+            DEFAULT_WHITESPACE_HANDLING_NOTE,
         ),
         CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to listOf(
-            "Keeps the consecutive blanks (spaces and tabs) and the line-ending directly preceding the comment, i.e. it suppresses " +
-                    "the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line.",
+            "Keeps the consecutive blanks (spaces and tabs) directly preceding the comment, i.e. it suppresses " +
+                    "the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line. " +
+                    "Note that the default handling never removes the line-ending before the comment (it belongs to the preceding line), " +
+                    "so on the before side this command only affects the blanks.",
             "This is the counterpart of ```${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.commandPrefix()}${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.keyword}```: " +
                     "use it when you want to keep the whitespace before the comment that would otherwise be collapsed.",
         ),
@@ -157,7 +175,7 @@ object CommandReferenceMarkdownCreator {
             "The condition returning a boolean value that is used for the if statement or else-if statement.",
         ),
         CommandAttributeKey.LOOP_ITERABLE_EXPRESSION to listOf(
-            "The condition returning a boolean value that is used for the if statement.",
+            "The expression returning the collection/iterable that is looped over.",
         ),
         CommandAttributeKey.LOOP_VARIABLE_NAME to listOf(
             "The name of the loop variable, similar to the model variable from ```${CommandAttributeKey.TEMPLATE_MODEL_NAME.keyAsString}```. The variable holds the current instance of the loop iterable defined with ```${CommandAttributeKey.LOOP_ITERABLE_EXPRESSION.keyAsString}```.",
@@ -202,7 +220,7 @@ object CommandReferenceMarkdownCreator {
         }
         sb.appendLine("""
 
-            Commands always starts with a `$COMMAND_PREFIX`.
+            Commands always start with a `$COMMAND_PREFIX`.
 
 
         """.trimIndent())

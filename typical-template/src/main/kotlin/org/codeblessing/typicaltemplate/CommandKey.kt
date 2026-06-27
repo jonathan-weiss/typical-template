@@ -133,7 +133,7 @@ enum class CommandKey(
                 optionalAttributes = setOf(TEMPLATE_RENDERER_PACKAGE_NAME),
             ),
             AttributeGroupConstraint(
-                occurrence = MANY_ATTRIBUTE_GROUP,
+                occurrence = ZERO_OR_MANY_ATTRIBUTE_GROUP,
                 requiredAttributes = setOf(TEMPLATE_MODEL_NAME, MODEL_EXPRESSION),
             ),
         ),
