@@ -1,18 +1,22 @@
 <!-- @tt{{{ @template-renderer [ templateRendererClassName="WhitespaceHtmlRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
-<ul>
-<li>default keepA
-   <!-- @tt{{{ @print-text [ text="" ] }}}@ -->
-keepB</li>
-<li>rbb keepA   <!-- @tt{{{ @remove-blanks-before-comment }}}@ -->keepB</li>
-<li>rba keepA<!-- @tt{{{ @remove-blanks-after-comment }}}@ -->   keepB</li>
-<li>rlb keepA
-<!-- @tt{{{ @remove-blanks-and-linebreak-before-comment }}}@ -->keepB</li>
-<li>rla keepA<!-- @tt{{{ @remove-blanks-and-linebreak-after-comment }}}@ -->
-keepB</li>
-<li>klb keepA
-   <!-- @tt{{{ @keep-blanks-and-linebreak-before-comment }}}@ -->
-keepB</li>
-<li>kla keepA
-<!-- @tt{{{ @keep-blanks-and-linebreak-after-comment }}}@ -->
-keepB</li>
-</ul>
+<html lang="en">
+<body>
+    <ul>
+    <li>default keepA
+       <!-- @tt{{{ @print-text [ text="" ] }}}@ -->
+    keepB</li>
+    <li>rbb keepA   <!-- @tt{{{ @remove-blanks-before-comment }}}@ -->keepB</li>
+    <li>rba keepA<!-- @tt{{{ @remove-blanks-after-comment }}}@ -->   keepB</li>
+    <li>rlb keepA
+    <!-- @tt{{{ @remove-blanks-and-linebreak-before-comment }}}@ -->keepB</li>
+    <li>rla keepA<!-- @tt{{{ @remove-blanks-and-linebreak-after-comment }}}@ -->
+    keepB</li>
+    <li>klb keepA
+       <!-- @tt{{{ @keep-blanks-and-linebreak-before-comment }}}@ -->
+    keepB</li>
+    <li>kla keepA
+    <!-- @tt{{{ @keep-blanks-and-linebreak-after-comment }}}@ -->
+    keepB</li>
+    </ul>
+</body>
+</html>

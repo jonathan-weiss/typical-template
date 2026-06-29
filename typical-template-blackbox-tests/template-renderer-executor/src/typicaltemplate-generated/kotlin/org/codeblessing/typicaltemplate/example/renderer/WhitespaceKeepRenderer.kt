@@ -16,6 +16,8 @@ object WhitespaceKeepRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
+          |<html lang="en">
+          |<body>
           |<ul>
           |<li>klb keepA
           |   keepB</li>
@@ -23,6 +25,8 @@ object WhitespaceKeepRenderer {
           |
           |keepB</li>
           |</ul>
+          |</body>
+          |</html>
           |
         """.trimMargin(marginPrefix = "|")
     }

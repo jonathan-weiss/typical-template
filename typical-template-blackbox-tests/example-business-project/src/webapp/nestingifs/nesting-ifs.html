@@ -1,14 +1,20 @@
 <!-- @tt{{{ @template-renderer [ templateRendererClassName="IfsRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ][ modelName="model" modelClassName="IfModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ] }}}@ -->
-<!-- @tt{{{ @if [ conditionExpression="model.isBook" ] }}}@ -->
-<li class="book">A book</li>
-<!-- @tt{{{ @if [ conditionExpression="model.highlighted" ] }}}@ -->
-<li class="badge">highlighted</li>
-<!-- @tt{{{ @else }}}@ -->
-<li class="badge">plain</li>
-<!-- @tt{{{ @end-if }}}@ -->
-<!-- @tt{{{ @else-if [ conditionExpression="model.isMovie" ] }}}@ -->
-<li class="movie">A movie</li>
-<!-- @tt{{{ @else }}}@ -->
-<li class="other">Something else</li>
-<!-- @tt{{{ @end-if }}}@ -->
-<!-- @tt{{{ @end-template-renderer }}}@ -->
+<html lang="en">
+<body>
+    <ul>
+        <!-- @tt{{{ @if [ conditionExpression="model.isBook" ] }}}@ -->
+        <li class="book">A book</li>
+        <!-- @tt{{{ @if [ conditionExpression="model.highlighted" ] }}}@ -->
+        <li class="badge">highlighted</li>
+        <!-- @tt{{{ @else }}}@ -->
+        <li class="badge">plain</li>
+        <!-- @tt{{{ @end-if }}}@ -->
+        <!-- @tt{{{ @else-if [ conditionExpression="model.isMovie" ] }}}@ -->
+        <li class="movie">A movie</li>
+        <!-- @tt{{{ @else }}}@ -->
+        <li class="other">Something else</li>
+        <!-- @tt{{{ @end-if }}}@ -->
+        <!-- @tt{{{ @end-template-renderer }}}@ -->
+    </ul>
+</body>
+</html>

@@ -1,4 +1,7 @@
 <!-- @tt{{{ @template-renderer [ templateRendererClassName="NestingRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ][ modelName="model" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ] }}}@ -->
+<!DOCTYPE html>
+<html lang="en">
+<body>
 <ul>
 <!-- @tt{{{ @foreach [ iteratorExpression="model.allListEntries" loopVariable="entry" ]
   @replace-value-by-expression [ searchValue="ENTRY" replaceByExpression="entry" ]
@@ -12,3 +15,5 @@
 <!-- @tt{{{ @ignore-text }}}@ -->
 This body is ignored; its @end-ignore-text is auto-closed by @end-template-renderer below.
 <!-- @tt{{{ @end-template-renderer }}}@ -->
+</body>
+</html>

@@ -16,12 +16,16 @@ object WhitespaceRemoveRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
-          |<ul>
-          |<li>rbb keepAkeepB</li>
-          |<li>rba keepAkeepB</li>
-          |<li>rlb keepAkeepB</li>
-          |<li>rla keepAkeepB</li>
-          |</ul>
+          |<html lang="en">
+          |<body>
+          |    <ul>
+          |    <li>rbb keepAkeepB</li>
+          |    <li>rba keepAkeepB</li>
+          |    <li>rlb keepAkeepB</li>
+          |    <li>rla keepA    keepB</li>
+          |    </ul>
+          |</body>
+          |</html>
           |
         """.trimMargin(marginPrefix = "|")
     }

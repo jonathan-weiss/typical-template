@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<!-- @tt{{{
-  @move-comment-backward
-  @template-renderer [ templateRendererClassName="MoveRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
-}}}@ -->
-<ul>
-    <li id="b1">Clean Code</li><!-- @tt{{{ @move-comment-backward [ afterFirstOccurrenceOf="<li" ] @print-text [ text=" lang='en'" ] }}}@ -->
-    <li id="b2"><span>Refactoring</span><!-- @tt{{{ @move-comment-forward [ beforeFirstOccurrenceOf="<aside>" ] @ignore-text }}}@ --><aside>classified</aside><!-- @tt{{{ @end-ignore-text }}}@ --></li>
-    <li><!-- a plain html comment the move below travels across -->VALUE<!-- @tt{{{ @move-comment-backward [ beforeFirstOccurrenceOf="VALUE" ] @print-text [ text="moved-across-normal-comment:" ] }}}@ --></li>
-    <li>x,y,z<!-- @tt{{{ @move-comment-forward [ afterLastOccurrenceOf="," ] @print-text [ text="(last)" ] }}}@ -->,w<!-- @tt{{{ @print-text [ text="" ] }}}@ -->,UNREACHABLE</li>
-</ul>
+<html lang="en">
+    <!-- @tt{{{
+      @move-comment-backward
+      @template-renderer [ templateRendererClassName="MoveRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+    }}}@ -->
+<body>
+    <ul>
+        <li id="b1">Clean Code</li><!-- @tt{{{ @move-comment-backward [ afterFirstOccurrenceOf="<li" ] @print-text [ text=" lang='en'" ] }}}@ -->
+        <li id="b2"><span>Refactoring</span><!-- @tt{{{ @move-comment-forward [ beforeFirstOccurrenceOf="<aside>" ] @ignore-text }}}@ --><aside>classified</aside><!-- @tt{{{ @end-ignore-text }}}@ --></li>
+        <li><!-- a plain html comment the move below travels across -->VALUE<!-- @tt{{{ @move-comment-backward [ beforeFirstOccurrenceOf="VALUE" ] @print-text [ text="moved-across-normal-comment:" ] }}}@ --></li>
+        <li>x,y,z<!-- @tt{{{ @move-comment-forward [ afterLastOccurrenceOf="," ] @print-text [ text="(last)" ] }}}@ -->,w<!-- @tt{{{ @print-text [ text="" ] }}}@ -->,UNREACHABLE</li>
+    </ul>
+</body>
+</html>

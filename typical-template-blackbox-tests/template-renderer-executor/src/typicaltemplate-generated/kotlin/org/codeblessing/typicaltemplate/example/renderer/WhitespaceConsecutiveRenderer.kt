@@ -16,6 +16,8 @@ object WhitespaceConsecutiveRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
+          |<html lang="en">
+          |<body>
           |<ul>
           |<li>merge keepAkeepB</li>
           |<li>spread start
@@ -23,6 +25,8 @@ object WhitespaceConsecutiveRenderer {
           |
           |end</li>
           |</ul>
+          |</body>
+          |</html>
           |
         """.trimMargin(marginPrefix = "|")
     }

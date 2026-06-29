@@ -16,7 +16,10 @@ object FancyRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<li class="fancy">REPLACED-IN-A rendered on ${DayOfWeek.MONDAY}</li>
+          |<html lang="en">
+          |<body>
+          |    <ul>
+          |        <li class="fancy">REPLACED-IN-A rendered on ${DayOfWeek.MONDAY}</li>
           |
         """.trimMargin(marginPrefix = "|")
     }

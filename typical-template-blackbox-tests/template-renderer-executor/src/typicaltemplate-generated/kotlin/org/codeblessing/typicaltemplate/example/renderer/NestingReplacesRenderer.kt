@@ -16,12 +16,14 @@ object NestingReplacesRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<ul>
-          |<li>within-comment-order: THREE</li>
-          |<li>innermost-first: THREE</li>
-          |<li>expression: ${40 + 2}</li>
-          |<li>after-inner: ZERO</li>
-          |</ul>
+          |<html lang="en">
+          |<body>
+          |    <ul>
+          |    <li>within-comment-order: THREE</li>
+          |    <li>innermost-first: THREE</li>
+          |    <li>expression: ${40 + 2}</li>
+          |    <li>after-inner: ZERO</li>
+          |    </ul>
           |
         """.trimMargin(marginPrefix = "|")
     }

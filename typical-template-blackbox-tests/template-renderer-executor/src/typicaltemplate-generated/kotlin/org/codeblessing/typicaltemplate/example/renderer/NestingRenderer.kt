@@ -16,6 +16,9 @@ object NestingRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
+          |<!DOCTYPE html>
+          |<html lang="en">
+          |<body>
           |<ul>
           |${ model.allListEntries.joinToString("") { entry ->  """${ if(entry.isNotBlank()) { """  <li>* ${entry}</li>
                   |""" } else { """""" } }""" } }</ul>

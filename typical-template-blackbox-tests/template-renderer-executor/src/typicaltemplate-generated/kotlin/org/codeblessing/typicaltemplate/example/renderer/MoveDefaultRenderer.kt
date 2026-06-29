@@ -16,9 +16,12 @@ object MoveDefaultRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<ul>
-          |    <li id="b1">Clean Code</li>
-          |</ul>
+          |<body>
+          |    <ul>
+          |        <li id="b1">Clean Code</li>
+          |    </ul>
+          |</body>
+          |</html>
           |
         """.trimMargin(marginPrefix = "|")
     }

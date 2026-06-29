@@ -16,7 +16,7 @@ object PlainRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<li class="plain">TOKEN rendered on DAY</li>
+          |        <li class="plain">TOKEN rendered on DAY</li>
           |
         """.trimMargin(marginPrefix = "|")
     }
