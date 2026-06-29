@@ -1,11 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
 <!-- @tt{{{
   @template-renderer
     [ templateRendererClassName="NestingRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
     [ modelName="model" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
   }}}@ -->
-<!DOCTYPE html>
-<html lang="en">
-<body>
 <ul>
 <!-- @tt{{{ @foreach [ iteratorExpression="model.allListEntries" loopVariable="entry" ]
   @replace-value-by-expression [ searchValue="ENTRY" replaceByExpression="entry" ]
