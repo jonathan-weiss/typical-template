@@ -19,9 +19,6 @@ object RenderPageRenderer {
           |    default (indent before the placeholder is removed; embedded lines are not re-indented):
           |    <ul>
           |${RenderItemRenderer.renderTemplate()}    </ul>
-          |    kept indent (only the first embedded line gets the indent; following lines are not re-indented):
-          |    <ul>
-          |        ${RenderItemRenderer.renderTemplate()}    </ul>
           |
         """.trimMargin(marginPrefix = "|")
     }

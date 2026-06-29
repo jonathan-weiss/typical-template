@@ -242,14 +242,6 @@ class ContentPartBuilder private constructor() {
             return createCommand(CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT).addCommandToChain()
         }
 
-        fun addKeepBlanksAndLinebreakBeforeCommentCommand(): TemplateCommentBuilder {
-            return createCommand(CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT).addCommandToChain()
-        }
-
-        fun addKeepBlanksAndLinebreakAfterCommentCommand(): TemplateCommentBuilder {
-            return createCommand(CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT).addCommandToChain()
-        }
-
         fun addModifyProvidedFilenameByReplacementsCommand(): TemplateCommentBuilder {
             return createCommand(CommandKey.MODIFY_PROVIDED_FILENAME_BY_REPLACEMENTS).addCommandToChain()
         }

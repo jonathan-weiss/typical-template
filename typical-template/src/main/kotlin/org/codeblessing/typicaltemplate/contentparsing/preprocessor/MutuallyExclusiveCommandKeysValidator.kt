@@ -10,8 +10,8 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TemplateContentP
  * Validates that no two mutually exclusive command keys are used together in the same template comment.
  *
  * Which command keys exclude each other is declared per command key in [CommandKey.mutuallyExclusiveCommandKeys]
- * (e.g. moving a comment backward and forward at the same time, or removing and keeping the blanks on the same
- * side of a comment). This class does nothing but this single validation.
+ * (e.g. moving a comment backward and forward at the same time, or removing only the blanks and removing the
+ * blanks together with the line break on the same side of a comment). This class does nothing but this single validation.
  */
 object MutuallyExclusiveCommandKeysValidator {
 

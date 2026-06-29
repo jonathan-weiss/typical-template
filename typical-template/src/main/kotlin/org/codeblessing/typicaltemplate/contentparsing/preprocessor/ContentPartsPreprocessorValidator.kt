@@ -11,12 +11,10 @@ object ContentPartsPreprocessorValidator {
     private val BEFORE_WHITESPACE_COMMENT_COMMAND_KEYS = setOf(
         CommandKey.REMOVE_BLANKS_BEFORE_COMMENT,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
     )
     private val AFTER_WHITESPACE_COMMENT_COMMAND_KEYS = setOf(
         CommandKey.REMOVE_BLANKS_AFTER_COMMENT,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
     )
 
     fun validatePreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {

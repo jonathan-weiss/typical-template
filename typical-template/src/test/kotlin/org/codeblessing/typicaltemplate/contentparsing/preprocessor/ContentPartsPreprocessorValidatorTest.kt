@@ -258,61 +258,17 @@ class ContentPartsPreprocessorValidatorTest {
         }
 
         @Test
-        fun `comment with one keep-before and one keep-after passes validation`() {
-            val input = ContentPartBuilder.create()
-                .addTemplateComment()
-                .addKeepBlanksAndLinebreakBeforeCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
-                .end()
-                .build()
-
-            val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
-
-            assertEquals(input, result)
-        }
-
-        @Test
-        fun `comment with remove-before and keep-after passes validation`() {
+        fun `comment with one before and one after remove-comment command passes validation`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
                 .addRemoveBlanksBeforeCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
-                .end()
-                .build()
-
-            val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
-
-            assertEquals(input, result)
-        }
-
-        @Test
-        fun `comment with remove-before and keep-before throws exception`() {
-            val input = ContentPartBuilder.create()
-                .addTemplateComment()
-                .addRemoveBlanksBeforeCommentCommand()
-                .addKeepBlanksAndLinebreakBeforeCommentCommand()
-                .end()
-                .build()
-
-            val exception = assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessorValidator.validatePreprocessing(input)
-            }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_WHITESPACE_COMMENT_COMMANDS, exception.errorCode)
-        }
-
-        @Test
-        fun `comment with remove-after and keep-after throws exception`() {
-            val input = ContentPartBuilder.create()
-                .addTemplateComment()
                 .addRemoveBlanksAfterCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
                 .end()
                 .build()
 
-            val exception = assertThrows(TemplateParsingException::class.java) {
-                ContentPartsPreprocessorValidator.validatePreprocessing(input)
-            }
-            assertEquals(TemplateParsingErrorCode.MULTIPLE_WHITESPACE_COMMENT_COMMANDS, exception.errorCode)
+            val result = ContentPartsPreprocessorValidator.validatePreprocessing(input)
+
+            assertEquals(input, result)
         }
     }
 }

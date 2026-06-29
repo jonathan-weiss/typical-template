@@ -51,7 +51,7 @@ class MutuallyExclusiveCommandKeysValidatorTest {
                 .addTemplateComment()
                 .addMoveCommentForwardCommand()
                 .addRemoveBlanksBeforeCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
+                .addRemoveBlanksAfterCommentCommand()
                 .end()
                 .build()
 
@@ -107,21 +107,6 @@ class MutuallyExclusiveCommandKeysValidatorTest {
         }
 
         @Test
-        fun `remove-blanks-before and keep-blanks-and-linebreak-before throw`() {
-            val input = ContentPartBuilder.create()
-                .addTemplateComment()
-                .addRemoveBlanksBeforeCommentCommand()
-                .addKeepBlanksAndLinebreakBeforeCommentCommand()
-                .end()
-                .build()
-
-            val exception = assertThrows(TemplateParsingException::class.java) {
-                MutuallyExclusiveCommandKeysValidator.validate(input)
-            }
-            assertEquals(TemplateParsingErrorCode.MUTUALLY_EXCLUSIVE_COMMAND_KEYS, exception.errorCode)
-        }
-
-        @Test
         fun `remove-blanks-before and remove-blanks-and-linebreak-before throw`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
@@ -137,11 +122,11 @@ class MutuallyExclusiveCommandKeysValidatorTest {
         }
 
         @Test
-        fun `remove-blanks-after and keep-blanks-and-linebreak-after throw`() {
+        fun `remove-blanks-after and remove-blanks-and-linebreak-after throw`() {
             val input = ContentPartBuilder.create()
                 .addTemplateComment()
                 .addRemoveBlanksAfterCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
+                .addRemoveBlanksAndLinebreakAfterCommentCommand()
                 .end()
                 .build()
 
@@ -175,7 +160,7 @@ class MutuallyExclusiveCommandKeysValidatorTest {
                 .addText("text")
                 .addTemplateComment()
                 .addRemoveBlanksAfterCommentCommand()
-                .addKeepBlanksAndLinebreakAfterCommentCommand()
+                .addRemoveBlanksAndLinebreakAfterCommentCommand()
                 .end()
                 .build()
 

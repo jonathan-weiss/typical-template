@@ -195,14 +195,6 @@ enum class CommandKey(
         keyword = "remove-blanks-and-linebreak-after-comment",
         aliases = setOf("rla"),
     ),
-    KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT(
-        keyword = "keep-blanks-and-linebreak-before-comment",
-        aliases = setOf("klb"),
-    ),
-    KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT(
-        keyword = "keep-blanks-and-linebreak-after-comment",
-        aliases = setOf("kla"),
-    ),
     ;
 
     companion object {
@@ -210,12 +202,13 @@ enum class CommandKey(
          * Groups of command keys that must not be used together in the same template comment because
          * they contradict each other. Within each group every command key excludes all other command
          * keys of the same group (e.g. moving a comment backward and forward at the same time, or
-         * removing and keeping the blanks on the same side of a comment).
+         * removing only the blanks and removing the blanks together with the line break on the same
+         * side of a comment).
          */
         private val MUTUALLY_EXCLUSIVE_COMMAND_KEY_GROUPS: List<Set<CommandKey>> = listOf(
             setOf(MOVE_COMMENT_BACKWARD, MOVE_COMMENT_FORWARD),
-            setOf(REMOVE_BLANKS_BEFORE_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT, KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT),
-            setOf(REMOVE_BLANKS_AFTER_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT, KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT),
+            setOf(REMOVE_BLANKS_BEFORE_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT),
+            setOf(REMOVE_BLANKS_AFTER_COMMENT, REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT),
         )
 
         init {

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
  * Blackbox tests for the commands that control the whitespace around typical-template comments:
  * - remove-blanks-before-comment / remove-blanks-after-comment
  * - remove-blanks-and-linebreak-before-comment / remove-blanks-and-linebreak-after-comment
- * - keep-blanks-and-linebreak-before-comment / keep-blanks-and-linebreak-after-comment
  *
  * The templates use `keepA`/`keepB` markers around the comments so that the effect of each command
  * is directly visible in the generated output. They also cover the case where several
@@ -27,21 +26,8 @@ class WhitespaceCommandsBlackboxTest: AbstractBlackboxTest() {
     }
 
     /**
-     * `keep-blanks-and-linebreak-before/after-comment` suppress the default whitespace collapsing,
-     * so the indentation before the comment respectively the line break after it is preserved.
-     */
-    @Test
-    fun `test output of keep-blanks commands`() {
-        assertSameContent(
-            webAppPath().resolve("whitespace-keep.html"),
-            webAppGeneratedPath().resolve("whitespace-keep.html"),
-            "whitespace-keep.expectation.html")
-    }
-
-    /**
      * Several typical-template comments directly in a row are each handled on their own:
-     * two consecutive `remove-blanks-and-linebreak-after-comment` comments merge the lines, while
-     * two consecutive `keep-blanks-and-linebreak-after-comment` comments each keep their line break.
+     * two consecutive `remove-blanks-and-linebreak-after-comment` comments merge the lines.
      */
     @Test
     fun `test output of consecutive comments`() {

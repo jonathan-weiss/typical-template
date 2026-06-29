@@ -21,10 +21,8 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  * 3. Each side is then processed on its own.
  * 4. A remove-blanks command overrides the default decision for its own side only (and never
  *    touches the other side).
- * 5. A keep-blanks command overrides the default decision for its own side only, keeping the
- *    blanks and the line break on that side.
  *
- * Conflicting keep/remove commands on the same side cannot occur (they are rejected earlier by
+ * Conflicting remove commands on the same side cannot occur (they are rejected earlier by
  * the validators), and a command that does the same thing as the default decision is simply a
  * no-op. Every comment is considered on its own, looking only at the text directly before and
  * after it.
@@ -36,12 +34,10 @@ object ContentPartsExpandCommentPreprocessor {
     private val BEFORE_COMMAND_ACTIONS = mapOf(
         CommandKey.REMOVE_BLANKS_BEFORE_COMMENT to WhitespaceAction.STRIP_BLANKS,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK,
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to WhitespaceAction.KEEP,
     )
     private val AFTER_COMMAND_ACTIONS = mapOf(
         CommandKey.REMOVE_BLANKS_AFTER_COMMENT to WhitespaceAction.STRIP_BLANKS,
         CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT to WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK,
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT to WhitespaceAction.KEEP,
     )
 
     /** All commands that influence the whitespace handling and therefore must be stripped from the comment. */

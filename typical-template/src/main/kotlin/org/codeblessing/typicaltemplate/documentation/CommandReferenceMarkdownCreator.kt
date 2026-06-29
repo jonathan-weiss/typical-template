@@ -15,7 +15,7 @@ object CommandReferenceMarkdownCreator {
         "Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and " +
                 "only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the " +
                 "blanks before the comment as well as the blanks and the line break after the comment are removed. The before " +
-                "side and the after side are decided independently: a remove-blanks or keep-blanks command overrides the default " +
+                "side and the after side are decided independently: a remove-blanks command overrides the default " +
                 "decision only for its own side and never affects the other side (e.g. using only " +
                 "```${COMMAND_PREFIX}${CommandKey.REMOVE_BLANKS_BEFORE_COMMENT.keyword}``` on an otherwise stand-alone comment " +
                 "still lets the default handling remove the blanks and the line break after it). A command that requests the " +
@@ -133,20 +133,6 @@ object CommandReferenceMarkdownCreator {
                     "including the immediately adjacent line-ending.",
             "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
             DEFAULT_WHITESPACE_HANDLING_NOTE,
-        ),
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT to listOf(
-            "Keeps the consecutive blanks (spaces and tabs) directly preceding the comment, i.e. it suppresses " +
-                    "the default whitespace handling that would otherwise remove the blanks before a comment that stands alone on its line. " +
-                    "Note that the default handling never removes the line-ending before the comment (it belongs to the preceding line), " +
-                    "so on the before side this command only affects the blanks.",
-            "This is the counterpart of ```${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.commandPrefix()}${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT.keyword}```: " +
-                    "use it when you want to keep the whitespace before the comment that would otherwise be collapsed.",
-        ),
-        CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT to listOf(
-            "Keeps the consecutive blanks (spaces and tabs) and the line-ending directly following the comment, i.e. it suppresses " +
-                    "the default whitespace handling that would otherwise remove the blanks and the line break after a comment that stands alone on its line.",
-            "This is the counterpart of ```${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT.commandPrefix()}${CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT.keyword}```: " +
-                    "use it when you want to keep the whitespace after the comment that would otherwise be collapsed.",
         ),
     )
 

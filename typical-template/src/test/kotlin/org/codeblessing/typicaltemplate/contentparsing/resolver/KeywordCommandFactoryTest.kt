@@ -428,30 +428,6 @@ class KeywordCommandFactoryTest {
     }
 
     @Test
-    fun `valid keep-blanks-and-linebreak-before-comment`() {
-        val commandStructure = createSingleTemplateComment(
-            comment = """
-                @keep-blanks-and-linebreak-before-comment
-            """.trimIndent()
-        )
-
-        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        Assertions.assertEquals(CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT, keywordCommand.commandKey)
-    }
-
-    @Test
-    fun `valid keep-blanks-and-linebreak-after-comment`() {
-        val commandStructure = createSingleTemplateComment(
-            comment = """
-                @keep-blanks-and-linebreak-after-comment
-            """.trimIndent()
-        )
-
-        val keywordCommand = KeywordCommandFactory.createKeywordCommand(commandStructure, stubLineNumbers)
-        Assertions.assertEquals(CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT, keywordCommand.commandKey)
-    }
-
-    @Test
     fun `alias for command without attributes resolves to the same command key`() {
         val commandStructure = createSingleTemplateComment(comment = "@rba")
 

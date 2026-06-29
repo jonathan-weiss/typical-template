@@ -20,10 +20,6 @@ object WhitespaceConsecutiveRenderer {
           |<body>
           |<ul>
           |<li>merge keepAkeepB</li>
-          |<li>spread start
-          |
-          |
-          |end</li>
           |</ul>
           |</body>
           |</html>

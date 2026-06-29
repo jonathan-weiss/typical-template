@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.EnumSource
  * Blackbox tests for the whitespace-handling commands around typical-template comments:
  * - `remove-blanks-before-comment` / `remove-blanks-after-comment`
  * - `remove-blanks-and-linebreak-before-comment` / `remove-blanks-and-linebreak-after-comment`
- * - `keep-blanks-and-linebreak-before-comment` / `keep-blanks-and-linebreak-after-comment`
  * - the default whitespace handling that applies when none of those commands is used.
  *
  * The same set of commands is exercised once in an HTML file (free `<!-- -->` block comment) and once
@@ -21,7 +20,6 @@ import org.junit.jupiter.params.provider.EnumSource
  *   line break after it collapsed (before and after side are decided independently).
  * - `remove-blanks(-and-linebreak)-before/after`: additionally strip the blanks (and optionally the
  *   line break) on the respective side.
- * - `keep-blanks-and-linebreak-before/after`: suppress the default collapsing on the respective side.
  */
 class WhitespaceBlackboxTest : AbstractBlackboxTest() {
 

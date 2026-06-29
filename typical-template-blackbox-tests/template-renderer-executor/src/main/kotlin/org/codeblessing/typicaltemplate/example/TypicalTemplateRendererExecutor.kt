@@ -6,7 +6,6 @@ import org.codeblessing.typicaltemplate.example.renderer.StatusEnumRenderer
 import org.codeblessing.typicaltemplate.example.renderer.SummaryClassRenderer
 import org.codeblessing.typicaltemplate.example.renderer.SummaryExtensionRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceConsecutiveRenderer
-import org.codeblessing.typicaltemplate.example.renderer.WhitespaceKeepRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceRemoveRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceKotlinRenderer
@@ -176,7 +175,6 @@ fun main(args: Array<String>) {
     )
     val whitespaceDemoContentByFileName = mapOf(
         "whitespace-remove.html" to WhitespaceRemoveRenderer.renderTemplate(model = whitespaceDemoModel),
-        "whitespace-keep.html" to WhitespaceKeepRenderer.renderTemplate(model = whitespaceDemoModel),
         "whitespace-consecutive.html" to WhitespaceConsecutiveRenderer.renderTemplate(model = whitespaceDemoModel),
     )
     whitespaceDemoContentByFileName.forEach { (fileName, content) ->

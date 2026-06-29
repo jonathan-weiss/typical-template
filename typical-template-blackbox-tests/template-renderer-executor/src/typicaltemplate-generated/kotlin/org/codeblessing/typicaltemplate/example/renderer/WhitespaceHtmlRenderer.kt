@@ -25,11 +25,6 @@ object WhitespaceHtmlRenderer {
           |    <li>rba keepAkeepB</li>
           |    <li>rlb keepAkeepB</li>
           |    <li>rla keepA    keepB</li>
-          |    <li>klb keepA
-          |           keepB</li>
-          |    <li>kla keepA
-          |
-          |    keepB</li>
           |    </ul>
           |</body>
           |</html>

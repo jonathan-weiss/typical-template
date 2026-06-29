@@ -48,8 +48,6 @@ object TemplateRendererContentCreator {
             CommandKey.REMOVE_BLANKS_AFTER_COMMENT,
             CommandKey.REMOVE_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
             CommandKey.REMOVE_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
-            CommandKey.KEEP_BLANKS_AND_LINEBREAK_BEFORE_COMMENT,
-            CommandKey.KEEP_BLANKS_AND_LINEBREAK_AFTER_COMMENT,
             CommandKey.TEMPLATE_RENDERER,
             CommandKey.END_TEMPLATE_RENDERER,
                  -> throw IllegalArgumentException("Command '$commandKey' not allowed here")

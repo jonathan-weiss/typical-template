@@ -17,9 +17,3 @@ val rlb = "keepA" +
    /* @tt{{{ @remove-blanks-and-linebreak-before-comment }}}@ */"keepB"
 val rla = "keepA" + /* @tt{{{ @remove-blanks-and-linebreak-after-comment }}}@ */
    "keepB"
-val klb = "keepA" +
-   /* @tt{{{ @keep-blanks-and-linebreak-before-comment }}}@ */
-   "keepB"
-val kla = "keepA" +
-   /* @tt{{{ @keep-blanks-and-linebreak-after-comment }}}@ */
-   "keepB"
