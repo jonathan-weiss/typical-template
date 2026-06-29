@@ -1,14 +1,20 @@
 <html lang="en">
 <body>
 
-<!-- @tt{{{ @template-renderer [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
+<!-- @tt{{{
+    @template-renderer [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+}}}@ -->
 <li>line-1</li>
 <li>line-2</li>
 <!-- @tt{{{ @end-template-renderer }}}@ -->
-    <!-- @tt{{{ @template-renderer [ templateRendererClassName="RenderPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
+    <!-- @tt{{{
+        @template-renderer [ templateRendererClassName="RenderPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+    }}}@ -->
     default (indent before the placeholder is removed; embedded lines are not re-indented):
     <ul>
-        <!-- @tt{{{ @render-template [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
+        <!-- @tt{{{
+            @render-template [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+        }}}@ -->
     </ul>
     <!-- @tt{{{ @end-template-renderer }}}@ -->
 </body>
