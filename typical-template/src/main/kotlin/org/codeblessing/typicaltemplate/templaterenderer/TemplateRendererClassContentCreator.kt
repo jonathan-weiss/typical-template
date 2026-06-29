@@ -33,9 +33,11 @@ object TemplateRendererClassContentCreator {
             overrideKeyword = ""
         }
 
-        val templateRendererInterfaceFqnOrNull = if(templateRendererDescription.templateRendererInterface != null
+        val templateRendererInterfaceFqnOrNull = if(
+            templateRendererInterfaceClassName != null
+            && templateRendererInterfacePackageName != null
             && templateRendererInterfacePackageName != templateRendererPackageName) {
-            templateRendererInterfacePackageName
+            "${templateRendererInterfacePackageName}.${templateRendererInterfaceClassName}"
         } else {
             null
         }
