@@ -134,6 +134,17 @@ object CommandReferenceMarkdownCreator {
             "This is useful if you don't want to have empty lines in your template output due to the typical templates comments.",
             DEFAULT_WHITESPACE_HANDLING_NOTE,
         ),
+        CommandKey.NO_DEFAULT_WHITESPACE_REMOVE to listOf(
+            "Disables the default whitespace handling for the comment it is written in. Only the comment itself is removed; " +
+                    "no blanks and no line breaks before or after the comment are touched.",
+            "Normally a comment that stands alone on its line has its surrounding whitespace collapsed automatically " +
+                    "(see the note below). Use this command when you intentionally want to keep that whitespace " +
+                    "(e.g. a blank line or the indentation) around an otherwise stand-alone comment.",
+            "Explicit remove-blanks commands still take effect: they override the (now disabled) default decision for their " +
+                    "own side. So you can combine this command with e.g. ```${COMMAND_PREFIX}${CommandKey.REMOVE_BLANKS_BEFORE_COMMENT.keyword}``` " +
+                    "to keep everything except the blanks directly before the comment.",
+            DEFAULT_WHITESPACE_HANDLING_NOTE,
+        ),
     )
 
 

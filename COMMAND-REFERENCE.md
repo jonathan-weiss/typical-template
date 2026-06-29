@@ -26,6 +26,7 @@ The following keywords/commands are supported:
 * [remove-blanks-after-comment](#remove-blanks-after-comment) (rba)
 * [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlb)
 * [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rla)
+* [no-default-whitespace-remove](#no-default-whitespace-remove)
 
 Commands always start with a `@`.
 
@@ -619,3 +620,24 @@ Varia:
 * This command/keyword does not support groups and has no attributes.
 * This command/keyword is NOT forced to reside as nested element in a certain parent element.
 * This command/keyword must not be used in the same comment as [remove-blanks-after-comment](#remove-blanks-after-comment) (mutually exclusive).
+
+## no-default-whitespace-remove
+
+Syntax: ```@no-default-whitespace-remove```
+
+Aliases: _none_
+
+Disables the default whitespace handling for the comment it is written in. Only the comment itself is removed; no blanks and no line breaks before or after the comment are touched.
+
+Normally a comment that stands alone on its line has its surrounding whitespace collapsed automatically (see the note below). Use this command when you intentionally want to keep that whitespace (e.g. a blank line or the indentation) around an otherwise stand-alone comment.
+
+Explicit remove-blanks commands still take effect: they override the (now disabled) default decision for their own side. So you can combine this command with e.g. ```@remove-blanks-before-comment``` to keep everything except the blanks directly before the comment.
+
+Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the blanks before the comment as well as the blanks and the line break after the comment are removed. The before side and the after side are decided independently: a remove-blanks command overrides the default decision only for its own side and never affects the other side (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment still lets the default handling remove the blanks and the line break after it). A command that requests the same thing as the default decision is simply a no-op.
+
+Varia:
+* This command stands for itself and does not need to be closed by another command.
+* This command neither triggers an auto-closing of nested commands nor will it be auto-closed.
+* This command/keyword does not support groups and has no attributes.
+* This command/keyword is NOT forced to reside as nested element in a certain parent element.
+* This command/keyword can be combined with any other command in the same comment.

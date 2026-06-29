@@ -195,6 +195,9 @@ enum class CommandKey(
         keyword = "remove-blanks-and-linebreak-after-comment",
         aliases = setOf("rla"),
     ),
+    NO_DEFAULT_WHITESPACE_REMOVE(
+        keyword = "no-default-whitespace-remove",
+    ),
     ;
 
     companion object {

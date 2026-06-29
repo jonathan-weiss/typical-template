@@ -21,6 +21,9 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  * 3. Each side is then processed on its own.
  * 4. A remove-blanks command overrides the default decision for its own side only (and never
  *    touches the other side).
+ * 5. The no-default-whitespace-remove command switches the default decision off for both sides,
+ *    so that nothing but the comment itself is removed. Explicit remove-blanks commands still
+ *    override that (now disabled) default for their own side.
  *
  * Conflicting remove commands on the same side cannot occur (they are rejected earlier by
  * the validators), and a command that does the same thing as the default decision is simply a
@@ -41,7 +44,8 @@ object ContentPartsExpandCommentPreprocessor {
     )
 
     /** All commands that influence the whitespace handling and therefore must be stripped from the comment. */
-    private val WHITESPACE_COMMENT_COMMAND_KEYS = BEFORE_COMMAND_ACTIONS.keys + AFTER_COMMAND_ACTIONS.keys
+    private val WHITESPACE_COMMENT_COMMAND_KEYS =
+        BEFORE_COMMAND_ACTIONS.keys + AFTER_COMMAND_ACTIONS.keys + CommandKey.NO_DEFAULT_WHITESPACE_REMOVE
 
     fun runPreprocessing(templateContentParts: List<TemplateContentPart>): List<TemplateContentPart> {
         val parts = templateContentParts.toMutableList()
@@ -69,9 +73,15 @@ object ContentPartsExpandCommentPreprocessor {
         val onlyBlanksAfter = followingText == null || !firstLineHasNonBlank(followingText.text)
         val isStandaloneOnLine = onlyBlanksBefore && onlyBlanksAfter
 
-        // Step 2: default decision per side (only meaningful when standalone)
-        val beforeDefault = if (isStandaloneOnLine) WhitespaceAction.STRIP_BLANKS else WhitespaceAction.KEEP
-        val afterDefault = if (isStandaloneOnLine) WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK else WhitespaceAction.KEEP
+        // The no-default-whitespace-remove command disables the default whitespace handling
+        // entirely, so that only the comment itself is removed and no surrounding blanks or line
+        // breaks. Explicit remove-blanks commands still override the (now disabled) default per side.
+        val defaultRemovalEnabled = isStandaloneOnLine &&
+                comment.keywordCommands.none { it.commandKey == CommandKey.NO_DEFAULT_WHITESPACE_REMOVE }
+
+        // Step 2: default decision per side (only meaningful when standalone and not disabled)
+        val beforeDefault = if (defaultRemovalEnabled) WhitespaceAction.STRIP_BLANKS else WhitespaceAction.KEEP
+        val afterDefault = if (defaultRemovalEnabled) WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK else WhitespaceAction.KEEP
 
         // Steps 3-5: a command overrides the default for its own side only
         val beforeAction = comment.commandAction(BEFORE_COMMAND_ACTIONS) ?: beforeDefault
