@@ -16,11 +16,13 @@ object WhitespaceKeepRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
-          |klb[keepA
-          |   keepB]
-          |kla[keepA
+          |<ul>
+          |<li>klb keepA
+          |   keepB</li>
+          |<li>kla keepA
           |
-          |keepB]
+          |keepB</li>
+          |</ul>
           |
         """.trimMargin(marginPrefix = "|")
     }

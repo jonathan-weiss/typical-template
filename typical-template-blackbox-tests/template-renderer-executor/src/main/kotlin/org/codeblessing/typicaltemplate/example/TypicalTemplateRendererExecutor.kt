@@ -205,9 +205,9 @@ private fun generateBlackboxTopicDemos(htmlBaseDir: Path) {
     writeDemoOutput(htmlBaseDir.resolve("whitespace/whitespace.html"), WhitespaceHtmlRenderer.renderTemplate())
     writeDemoOutput(htmlBaseDir.resolve("whitespace/whitespace.kt"), WhitespaceKotlinRenderer.renderTemplate())
 
-    // --- 2. Move comment (XML) ---
-    writeDemoOutput(htmlBaseDir.resolve("move/move.xml"), MoveRenderer.renderTemplate())
-    writeDemoOutput(htmlBaseDir.resolve("move/move-default.xml"), MoveDefaultRenderer.renderTemplate())
+    // --- 2. Move comment (HTML) ---
+    writeDemoOutput(htmlBaseDir.resolve("move/move.html"), MoveRenderer.renderTemplate())
+    writeDemoOutput(htmlBaseDir.resolve("move/move-default.html"), MoveDefaultRenderer.renderTemplate())
 
     // --- 3. Nesting (command nesting + autoclose at the boundary to the next-higher level) ---
     val nestingModel = HtmlListModel(

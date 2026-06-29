@@ -16,11 +16,11 @@ object IfsRenderer {
 
     fun renderTemplate(model: IfModel): String {
         return """
-          |${ if(model.isBook) { """BOOK
-              |${ if(model.highlighted) { """- highlighted
-                  |""" } else { """- plain
-                  |""" } }""" } else if(model.isMovie) { """MOVIE
-              |""" } else { """OTHER
+          |${ if(model.isBook) { """<li class="book">A book</li>
+              |${ if(model.highlighted) { """<li class="badge">highlighted</li>
+                  |""" } else { """<li class="badge">plain</li>
+                  |""" } }""" } else if(model.isMovie) { """<li class="movie">A movie</li>
+              |""" } else { """<li class="other">Something else</li>
               |""" } }
         """.trimMargin(marginPrefix = "|")
     }

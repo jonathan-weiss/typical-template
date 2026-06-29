@@ -9,25 +9,25 @@ package org.codeblessing.typicaltemplate.example.renderer
  * Generate the content for the template `MoveRenderer`.
  *
  * This template renderer was generated from the template:
- * - file: `move.xml`
- * - path: `move/move.xml`
+ * - file: `move.html`
+ * - path: `move/move.html`
  */
 object MoveRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<?xml version="1.0" encoding="UTF-8"?>
-          |<catalog>
-          |    <book lang='en' id="b1">Clean Code</book>
-          |    <book id="b2"><keep>Refactoring</keep></book>
-          |    <row><!-- a plain xml comment the move below travels across -->moved-across-normal-comment:VALUE</row>
-          |    <tags>x,y,z,(last)w,UNREACHABLE</tags>
-          |</catalog>
+          |<!DOCTYPE html>
+          |<ul>
+          |    <li lang='en' id="b1">Clean Code</li>
+          |    <li id="b2"><span>Refactoring</span></li>
+          |    <li><!-- a plain html comment the move below travels across -->moved-across-normal-comment:VALUE</li>
+          |    <li>x,y,z,(last)w,UNREACHABLE</li>
+          |</ul>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
     fun filePath(): String {
-      return "move/move.xml"
+      return "move/move.html"
     }
 }

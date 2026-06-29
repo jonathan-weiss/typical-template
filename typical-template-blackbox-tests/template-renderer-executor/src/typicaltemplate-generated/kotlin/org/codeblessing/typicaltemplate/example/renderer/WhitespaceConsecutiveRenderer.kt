@@ -16,11 +16,13 @@ object WhitespaceConsecutiveRenderer {
 
     fun renderTemplate(model: HtmlListModel): String {
         return """
-          |merge[keepAkeepB]
-          |spread[start
+          |<ul>
+          |<li>merge keepAkeepB</li>
+          |<li>spread start
           |
           |
-          |end]
+          |end</li>
+          |</ul>
           |
         """.trimMargin(marginPrefix = "|")
     }

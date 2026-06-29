@@ -36,8 +36,6 @@ tasks.register<JavaExec>("createTypicalTemplateRenderers") {
         "${pathToKotlinSourceFiles.absolutePath}:*.kt",
         "--search",
         "${pathToHtmlSourceFiles.absolutePath}:*.html",
-        "--search",
-        "${pathToHtmlSourceFiles.absolutePath}:*.xml",
     )
 
     inputs.dir(pathToKotlinSourceFiles)

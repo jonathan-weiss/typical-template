@@ -9,21 +9,21 @@ package org.codeblessing.typicaltemplate.example.renderer
  * Generate the content for the template `MoveDefaultRenderer`.
  *
  * This template renderer was generated from the template:
- * - file: `move-default.xml`
- * - path: `move/move-default.xml`
+ * - file: `move-default.html`
+ * - path: `move/move-default.html`
  */
 object MoveDefaultRenderer {
 
     fun renderTemplate(): String {
         return """
-          |<catalog>
-          |    <book id="b1">Clean Code</book>
-          |</catalog>
+          |<ul>
+          |    <li id="b1">Clean Code</li>
+          |</ul>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
     fun filePath(): String {
-      return "move/move-default.xml"
+      return "move/move-default.html"
     }
 }

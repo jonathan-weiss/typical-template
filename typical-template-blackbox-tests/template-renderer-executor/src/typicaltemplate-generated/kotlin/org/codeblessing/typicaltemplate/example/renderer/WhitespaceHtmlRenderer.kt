@@ -16,17 +16,19 @@ object WhitespaceHtmlRenderer {
 
     fun renderTemplate(): String {
         return """
-          |default[keepA
-          |keepB]
-          |rbb[keepAkeepB]
-          |rba[keepAkeepB]
-          |rlb[keepAkeepB]
-          |rla[keepAkeepB]
-          |klb[keepA
-          |   keepB]
-          |kla[keepA
+          |<ul>
+          |<li>default keepA
+          |keepB</li>
+          |<li>rbb keepAkeepB</li>
+          |<li>rba keepAkeepB</li>
+          |<li>rlb keepAkeepB</li>
+          |<li>rla keepAkeepB</li>
+          |<li>klb keepA
+          |   keepB</li>
+          |<li>kla keepA
           |
-          |keepB]
+          |keepB</li>
+          |</ul>
           |
         """.trimMargin(marginPrefix = "|")
     }

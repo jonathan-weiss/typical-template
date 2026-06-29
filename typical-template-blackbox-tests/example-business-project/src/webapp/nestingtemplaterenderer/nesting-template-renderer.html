@@ -3,8 +3,8 @@
   @modify-provided-filepath-by-replacements
   @add-import-to-renderer [ importClassName="DayOfWeek" importPackageName="java.time" ]
   @replace-value-by-expression [ searchValue="DAY" replaceByExpression="DayOfWeek.MONDAY" ] }}}@ -->
-A: TOKEN DAY
+<li class="fancy">TOKEN rendered on DAY</li>
 <!-- @tt{{{ @end-template-renderer }}}@ -->
 <!-- @tt{{{ @template-renderer [ templateRendererClassName="PlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
-B: TOKEN DAY
+<li class="plain">TOKEN rendered on DAY</li>
 <!-- @tt{{{ @end-template-renderer }}}@ -->
