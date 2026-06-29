@@ -12,6 +12,7 @@ tasks.test {
     // which triggers the template renderer execution
     // which triggers the template renderer creation
     dependsOn("${blackboxBaseProject.path}:compileKotlin")
+    dependsOn("${blackboxBaseProject.path}:processResources")
 }
 dependencies {
     implementation(project(":typical-template-api"))

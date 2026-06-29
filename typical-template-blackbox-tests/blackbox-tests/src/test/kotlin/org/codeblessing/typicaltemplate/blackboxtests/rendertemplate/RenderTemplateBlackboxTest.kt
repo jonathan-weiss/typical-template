@@ -17,8 +17,8 @@ class RenderTemplateBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test that render-template embeds the sub-template without re-indenting its lines`() {
         assertSameContent(
-            webAppPath().resolve("rendertemplate/render-template.html"),
-            webAppGeneratedPath().resolve("rendertemplate/render-template.html"),
+            htmlSourcePath().resolve("rendertemplate/render-template.html"),
+            htmlGeneratedPath().resolve("rendertemplate/render-template.html"),
             "rendertemplate/render-template.expectation.html",
         )
     }

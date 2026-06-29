@@ -24,8 +24,8 @@ class NestingReplacesBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test that nested replacements apply in listing order and from innermost to outermost`() {
         assertSameContent(
-            webAppPath().resolve("nestingreplaces/nesting-replaces.html"),
-            webAppGeneratedPath().resolve("nestingreplaces/nesting-replaces.html"),
+            htmlSourcePath().resolve("nestingreplaces/nesting-replaces.html"),
+            htmlGeneratedPath().resolve("nestingreplaces/nesting-replaces.html"),
             "nestingreplaces/nesting-replaces.expectation.html",
         )
     }

@@ -5,7 +5,7 @@ plugins {
 
 val directoryForGeneratedTemplateRenderer = "src/typicaltemplate-generated/kotlin"
 val directoryForTemplateRendererGeneratedKotlinSource = "src/generated/kotlin"
-val directoryForTemplateRendererGeneratedHtmlSource = "src/webapp-generated"
+val directoryForTemplateRendererGeneratedHtmlSource = "src/generated/resources/html"
 val taskNameCreateTypicalTemplateRenderers = ":typical-template-blackbox-tests:template-renderer-creator:createTypicalTemplateRenderers"
 
 val exampleBusinessProjectPath: File = project(":typical-template-blackbox-tests:example-business-project").projectDir

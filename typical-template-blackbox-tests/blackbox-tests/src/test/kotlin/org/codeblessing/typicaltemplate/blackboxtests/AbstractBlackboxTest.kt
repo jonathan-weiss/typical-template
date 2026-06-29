@@ -22,12 +22,12 @@ abstract class AbstractBlackboxTest {
         return Paths.get(System.getProperty(BASE_PROJECT_PATH_PROPERTY, System.getProperty("user.dir")))
     }
 
-    fun webAppPath(): Path {
-        return baseProjectPath().resolve("src/webapp")
+    fun htmlSourcePath(): Path {
+        return baseProjectPath().resolve("src/main/resources/html")
     }
 
-    fun webAppGeneratedPath(): Path {
-        return baseProjectPath().resolve("src/webapp-generated")
+    fun htmlGeneratedPath(): Path {
+        return baseProjectPath().resolve("src/generated/resources/html")
     }
 
     fun kotlinSourcePath(): Path {
@@ -39,7 +39,7 @@ abstract class AbstractBlackboxTest {
     }
 
     fun assertSameContent(fileWithTypicalTemplateSyntax: Path, generatedFile: Path, expectedContentResourceName: String) {
-        assertTrue(fileWithTypicalTemplateSyntax.exists(), "$generatedFile doesn't exist")
+        assertTrue(fileWithTypicalTemplateSyntax.exists(), "$fileWithTypicalTemplateSyntax doesn't exist")
 
         assertTrue(generatedFile.exists(), "$generatedFile doesn't exist")
         assertTrue(generatedFile.isReadable(), "$generatedFile exists but is not readable")

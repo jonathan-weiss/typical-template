@@ -30,8 +30,8 @@ class NestingTemplateRendererBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test that the renderer with inner commands produces the replaced content at the renamed path`() {
         assertSameContent(
-            webAppPath().resolve(template),
-            webAppGeneratedPath().resolve("nestingtemplaterenderer/fancy-output.html"),
+            htmlSourcePath().resolve(template),
+            htmlGeneratedPath().resolve("nestingtemplaterenderer/fancy-output.html"),
             "nestingtemplaterenderer/fancy-output.expectation.html",
         )
     }
@@ -39,8 +39,8 @@ class NestingTemplateRendererBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test that the sibling renderer is unaffected by the inner commands of the other renderer`() {
         assertSameContent(
-            webAppPath().resolve(template),
-            webAppGeneratedPath().resolve("nestingtemplaterenderer/nesting-template-renderer.html"),
+            htmlSourcePath().resolve(template),
+            htmlGeneratedPath().resolve("nestingtemplaterenderer/nesting-template-renderer.html"),
             "nestingtemplaterenderer/plain-output.expectation.html",
         )
     }

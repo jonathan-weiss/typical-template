@@ -22,8 +22,8 @@ class NestingBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test command nesting and autoclose at the boundary to the next-higher level`() {
         assertSameContent(
-            webAppPath().resolve("nesting/nesting.html"),
-            webAppGeneratedPath().resolve("nesting/nesting.html"),
+            htmlSourcePath().resolve("nesting/nesting.html"),
+            htmlGeneratedPath().resolve("nesting/nesting.html"),
             "nesting/nesting.expectation.html",
         )
     }

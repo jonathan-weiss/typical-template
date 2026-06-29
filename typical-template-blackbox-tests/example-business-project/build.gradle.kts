@@ -3,14 +3,17 @@ plugins {
     `maven-dependency-repository`
 }
 
-val directoryForTemplateRendererGeneratedSource = "src/generated/kotlin"
+val directoryForTemplateRendererGeneratedKotlinSource = "src/generated/kotlin"
+val directoryForTemplateRendererGeneratedHtmlSource = "src/generated/resources/html"
 
 kotlin {
-    sourceSets["main"].kotlin.srcDir(directoryForTemplateRendererGeneratedSource)
+    sourceSets["main"].kotlin.srcDir(directoryForTemplateRendererGeneratedKotlinSource)
+    sourceSets["main"].resources.srcDir(directoryForTemplateRendererGeneratedHtmlSource)
 }
 
 tasks.register<Delete>("cleanGeneratedSource") {
-    delete(file(directoryForTemplateRendererGeneratedSource))
+    delete(file(directoryForTemplateRendererGeneratedKotlinSource))
+    delete(file(directoryForTemplateRendererGeneratedHtmlSource))
 }
 
 tasks.clean {
@@ -19,5 +22,9 @@ tasks.clean {
 
 val taskNameExecuteTypicalTemplateRenderers = ":typical-template-blackbox-tests:template-renderer-executor:executeTypicalTemplateRenderers"
 tasks.compileKotlin {
+    dependsOn(taskNameExecuteTypicalTemplateRenderers)
+}
+
+tasks.processResources {
     dependsOn(taskNameExecuteTypicalTemplateRenderers)
 }

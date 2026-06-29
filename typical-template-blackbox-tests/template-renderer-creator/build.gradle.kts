@@ -28,7 +28,7 @@ tasks.register<JavaExec>("createTypicalTemplateRenderers") {
     mainClass.set("org.codeblessing.typicaltemplate.TypicalTemplateKt")
 
     val pathToKotlinSourceFiles = exampleBusinessProjectPath.resolve("src/main/kotlin")
-    val pathToHtmlSourceFiles = exampleBusinessProjectPath.resolve("src/webapp")
+    val pathToHtmlSourceFiles = exampleBusinessProjectPath.resolve("src/main/resources/html")
     args(
         "--template-renderer",
         targetDirectoryForTemplateRenderer.absolutePath,  // Path to the base directory where the template renderers are written to

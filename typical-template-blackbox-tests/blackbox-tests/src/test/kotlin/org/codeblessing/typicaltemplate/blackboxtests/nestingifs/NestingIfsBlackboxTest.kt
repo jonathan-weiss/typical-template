@@ -20,8 +20,8 @@ class NestingIfsBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test that nested if with else-if and else selects the correct branch`() {
         assertSameContent(
-            webAppPath().resolve("nestingifs/nesting-ifs.html"),
-            webAppGeneratedPath().resolve("nestingifs/nesting-ifs.html"),
+            htmlSourcePath().resolve("nestingifs/nesting-ifs.html"),
+            htmlGeneratedPath().resolve("nestingifs/nesting-ifs.html"),
             "nestingifs/nesting-ifs.expectation.html",
         )
     }

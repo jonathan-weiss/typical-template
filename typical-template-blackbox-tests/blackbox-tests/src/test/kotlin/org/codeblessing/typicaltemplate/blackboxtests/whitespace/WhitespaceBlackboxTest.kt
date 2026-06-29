@@ -10,10 +10,10 @@ class WhitespaceBlackboxTest : AbstractBlackboxTest() {
         val templateRelativePath = "whitespace/whitespace.html"
         val generatedRelativePath = "whitespace/whitespace.html"
         val expectationResource = "whitespace/whitespace.expectation.html"
-        val templateRoot = webAppPath()
+        val templateRoot = htmlSourcePath()
         assertSameContent(
             templateRoot.resolve(templateRelativePath),
-            webAppGeneratedPath().resolve(generatedRelativePath),
+            htmlGeneratedPath().resolve(generatedRelativePath),
             expectationResource,
         )
     }

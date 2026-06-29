@@ -32,8 +32,8 @@ class MoveBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test output without moving the comment keeps the doctype out of the template`() {
         assertSameContent(
-            webAppPath().resolve("move/move-default.html"),
-            webAppGeneratedPath().resolve("move/move-default.html"),
+            htmlSourcePath().resolve("move/move-default.html"),
+            htmlGeneratedPath().resolve("move/move-default.html"),
             "move/move-default.expectation.html",
         )
     }
@@ -46,8 +46,8 @@ class MoveBlackboxTest : AbstractBlackboxTest() {
     @Test
     fun `test output of move-comment-backward and move-comment-forward commands`() {
         assertSameContent(
-            webAppPath().resolve("move/move.html"),
-            webAppGeneratedPath().resolve("move/move.html"),
+            htmlSourcePath().resolve("move/move.html"),
+            htmlGeneratedPath().resolve("move/move.html"),
             "move/move.expectation.html",
         )
     }

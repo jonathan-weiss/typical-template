@@ -7,8 +7,8 @@ class GardeningBlackboxTest: AbstractBlackboxTest() {
     @Test
     fun `test output of several typical template commands`() {
         assertSameContent(
-            webAppPath().resolve("news.html"),
-            webAppGeneratedPath().resolve("gardening.html"),
+            htmlSourcePath().resolve("news.html"),
+            htmlGeneratedPath().resolve("gardening.html"),
             "gardening.expectation.html")
     }
 }
