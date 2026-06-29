@@ -3,6 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
 
 /**
@@ -12,18 +13,18 @@ import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
  * - file: `render-template.html`
  * - path: `rendertemplate/render-template.html`
  */
-object RenderPageRenderer {
+object RenderPageRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |    default (indent before the placeholder is removed; embedded lines are not re-indented):
           |    <ul>
-          |${RenderItemRenderer.renderTemplate()}    </ul>
+          |${RenderItemRenderer.renderTemplate(model = model)}    </ul>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "rendertemplate/render-template.html"
     }
 }

@@ -3,6 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 import java.time.DayOfWeek
 
 /**
@@ -12,9 +13,9 @@ import java.time.DayOfWeek
  * - file: `nesting-template-renderer.html`
  * - path: `nestingtemplaterenderer/nesting-template-renderer.html`
  */
-object FancyRenderer {
+object FancyRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<html lang="en">
           |<body>
@@ -24,7 +25,7 @@ object FancyRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "nestingtemplaterenderer/fancy-output.html"
     }
 }

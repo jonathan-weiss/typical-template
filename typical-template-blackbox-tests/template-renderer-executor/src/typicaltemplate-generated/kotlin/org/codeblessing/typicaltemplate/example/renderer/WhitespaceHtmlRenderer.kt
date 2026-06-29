@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `WhitespaceHtmlRenderer`.
@@ -12,9 +12,9 @@ package org.codeblessing.typicaltemplate.example.renderer
  * - file: `whitespace.html`
  * - path: `whitespace/whitespace.html`
  */
-object WhitespaceHtmlRenderer {
+object WhitespaceHtmlRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<html lang="en">
           |<body>
@@ -38,7 +38,7 @@ object WhitespaceHtmlRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "whitespace/whitespace.html"
     }
 }

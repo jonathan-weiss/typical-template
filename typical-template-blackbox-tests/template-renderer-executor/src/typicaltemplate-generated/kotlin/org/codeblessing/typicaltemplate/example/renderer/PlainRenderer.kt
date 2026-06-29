@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `PlainRenderer`.
@@ -12,16 +12,16 @@ package org.codeblessing.typicaltemplate.example.renderer
  * - file: `nesting-template-renderer.html`
  * - path: `nestingtemplaterenderer/nesting-template-renderer.html`
  */
-object PlainRenderer {
+object PlainRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |        <li class="plain">TOKEN rendered on DAY</li>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "nestingtemplaterenderer/nesting-template-renderer.html"
     }
 }

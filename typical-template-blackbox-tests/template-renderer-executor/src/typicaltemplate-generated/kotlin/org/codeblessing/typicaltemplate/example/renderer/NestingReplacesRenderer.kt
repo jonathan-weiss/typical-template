@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `NestingReplacesRenderer`.
@@ -12,9 +12,9 @@ package org.codeblessing.typicaltemplate.example.renderer
  * - file: `nesting-replaces.html`
  * - path: `nestingreplaces/nesting-replaces.html`
  */
-object NestingReplacesRenderer {
+object NestingReplacesRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<html lang="en">
           |<body>
@@ -28,7 +28,7 @@ object NestingReplacesRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "nestingreplaces/nesting-replaces.html"
     }
 }

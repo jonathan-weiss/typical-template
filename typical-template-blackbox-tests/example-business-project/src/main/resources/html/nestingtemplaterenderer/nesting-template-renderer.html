@@ -1,5 +1,5 @@
 <!-- @tt{{{
-    @template-renderer [ templateRendererClassName="FancyRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+    @template-renderer [ templateRendererClassName="FancyRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
     @replace-value-by-value [ searchValue="TOKEN" replaceByValue="REPLACED-IN-A" ][ searchValue="nesting-template-renderer.html" replaceByValue="fancy-output.html" ]
     @modify-provided-filepath-by-replacements
     @add-import-to-renderer [ importClassName="DayOfWeek" importPackageName="java.time" ]
@@ -10,7 +10,7 @@
     <ul>
         <li class="fancy">TOKEN rendered on DAY</li>
         <!-- @tt{{{ @end-template-renderer }}}@ -->
-        <!-- @tt{{{ @template-renderer [ templateRendererClassName="PlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] }}}@ -->
+        <!-- @tt{{{ @template-renderer [ templateRendererClassName="PlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ] }}}@ -->
         <li class="plain">TOKEN rendered on DAY</li>
         <!-- @tt{{{ @end-template-renderer }}}@ -->
     </ul>

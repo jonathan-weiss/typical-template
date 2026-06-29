@@ -3,26 +3,26 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `HtmlListPageRenderer`.
  *
  * This template renderer was generated from the template:
- * - file: `news.html`
- * - path: `news.html`
+ * - file: `foreach.html`
+ * - path: `foreach/foreach.html`
  */
-object HtmlListPageRenderer {
+object HtmlListPageRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(listPageModel: HtmlListModel): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<html lang="en">
           |
           |
-          |<head><title>${listPageModel.pageTitle}</title></head>
+          |<head><title>${model.simpleName}</title></head>
           |<body>
-          |<p>Here are the ${listPageModel.pageTitle.lowercase()}:</p>
-          |<ul>${ listPageModel.allListEntries.joinToString("") { pageArticleTitle ->  """
+          |<p>Here are the ${model.simpleName.lowercase()}:</p>
+          |<ul>${ model.allListEntries.joinToString("") { pageArticleTitle ->  """
               |    <li>${pageArticleTitle}</li>""" } }
           |</ul>
           |
@@ -32,7 +32,7 @@ object HtmlListPageRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(listPageModel: HtmlListModel): String {
-      return "news.html"
+    override fun filePath(model: BlackboxDefaultModel): String {
+      return "foreach/foreach.html"
     }
 }

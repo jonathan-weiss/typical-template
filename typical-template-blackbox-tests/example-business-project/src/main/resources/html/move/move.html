@@ -2,7 +2,16 @@
 <html lang="en">
     <!-- @tt{{{
       @move-comment-backward
-      @template-renderer [ templateRendererClassName="MoveRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+      @template-renderer [
+        templateRendererClassName="MoveRenderer"
+        templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
+        templateRendererInterfaceName="RendererWithBlackboxDefaultModel"
+        templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer"
+        ] [
+        modelName="model"
+        modelClassName="BlackboxDefaultModel"
+        modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
+        ]
     }}}@ -->
 <body>
     <ul>

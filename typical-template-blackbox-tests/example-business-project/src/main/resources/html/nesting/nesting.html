@@ -3,8 +3,8 @@
 <body>
 <!-- @tt{{{
   @template-renderer
-    [ templateRendererClassName="NestingRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
-    [ modelName="model" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
+    [ templateRendererClassName="NestingRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+    [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
   }}}@ -->
 <ul>
 <!-- @tt{{{ @foreach [ iteratorExpression="model.allListEntries" loopVariable="entry" ]

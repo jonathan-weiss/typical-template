@@ -2,18 +2,18 @@
 <body>
 
 <!-- @tt{{{
-    @template-renderer [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+    @template-renderer [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
 }}}@ -->
 <li>line-1</li>
 <li>line-2</li>
 <!-- @tt{{{ @end-template-renderer }}}@ -->
     <!-- @tt{{{
-        @template-renderer [ templateRendererClassName="RenderPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+        @template-renderer [ templateRendererClassName="RenderPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
     }}}@ -->
     default (indent before the placeholder is removed; embedded lines are not re-indented):
     <ul>
         <!-- @tt{{{
-            @render-template [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
+            @render-template [ templateRendererClassName="RenderItemRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelExpression="model" ]
         }}}@ -->
     </ul>
     <!-- @tt{{{ @end-template-renderer }}}@ -->

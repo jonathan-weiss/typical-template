@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `RenderItemRenderer`.
@@ -12,9 +12,9 @@ package org.codeblessing.typicaltemplate.example.renderer
  * - file: `render-template.html`
  * - path: `rendertemplate/render-template.html`
  */
-object RenderItemRenderer {
+object RenderItemRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<li>line-1</li>
           |<li>line-2</li>
@@ -22,7 +22,7 @@ object RenderItemRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "rendertemplate/render-template.html"
     }
 }

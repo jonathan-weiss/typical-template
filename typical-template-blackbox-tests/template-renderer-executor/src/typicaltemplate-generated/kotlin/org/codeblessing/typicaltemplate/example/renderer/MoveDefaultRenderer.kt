@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `MoveDefaultRenderer`.
@@ -12,9 +12,9 @@ package org.codeblessing.typicaltemplate.example.renderer
  * - file: `move-default.html`
  * - path: `move/move-default.html`
  */
-object MoveDefaultRenderer {
+object MoveDefaultRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<body>
           |    <ul>
@@ -26,7 +26,7 @@ object MoveDefaultRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "move/move-default.html"
     }
 }

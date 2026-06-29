@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `NestingRenderer`.
@@ -12,9 +12,9 @@ import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
  * - file: `nesting.html`
  * - path: `nesting/nesting.html`
  */
-object NestingRenderer {
+object NestingRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(model: HtmlListModel): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<ul>
           |${ model.allListEntries.joinToString("") { entry ->  """${ if(entry.isNotBlank()) { """  <li>* ${entry}</li>
@@ -24,7 +24,7 @@ object NestingRenderer {
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(model: HtmlListModel): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "nesting/nesting.html"
     }
 }

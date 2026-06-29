@@ -6,25 +6,26 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
- * Generate the content for the template `MoveRenderer`.
+ * Generate the content for the template `ForeachRenderer`.
  *
  * This template renderer was generated from the template:
- * - file: `move.html`
- * - path: `move/move.html`
+ * - file: `foreach.html`
+ * - path: `foreach/foreach.html`
  */
-object MoveRenderer : RendererWithBlackboxDefaultModel {
+object ForeachRenderer : RendererWithBlackboxDefaultModel {
 
     override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
-          |<!DOCTYPE html>
           |<html lang="en">
+          |
+          |
+          |<head><title>${model.articleTitle}</title></head>
           |<body>
-          |    <ul>
-          |        <li lang='en' id="b1">Clean Code</li>
-          |        <li id="b2"><span>Refactoring</span></li>
-          |        <li>moved-across-normal-comment:<!-- a plain html comment the move below travels across -->VALUE</li>
-          |        <li>x,y,z,(last)w,UNREACHABLE</li>
-          |    </ul>
+          |<p>Here are the ${model.articleTitle.lowercase()}:</p>
+          |<ul>${ model.listOfArticleNames.joinToString("") { articleName ->  """
+              |    <li>${articleName}</li>""" } }
+          |</ul>
+          |
           |</body>
           |</html>
           |
@@ -32,6 +33,6 @@ object MoveRenderer : RendererWithBlackboxDefaultModel {
     }
 
     override fun filePath(model: BlackboxDefaultModel): String {
-      return "move/move.html"
+      return "foreach/foreach.html"
     }
 }

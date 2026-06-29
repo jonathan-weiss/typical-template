@@ -3,7 +3,7 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-import org.codeblessing.typicaltemplate.example.renderer.model.IfModel
+import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 
 /**
  * Generate the content for the template `IfsRenderer`.
@@ -12,23 +12,23 @@ import org.codeblessing.typicaltemplate.example.renderer.model.IfModel
  * - file: `nesting-ifs.html`
  * - path: `nestingifs/nesting-ifs.html`
  */
-object IfsRenderer {
+object IfsRenderer : RendererWithBlackboxDefaultModel {
 
-    fun renderTemplate(model: IfModel): String {
+    override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
           |<html lang="en">
           |<body>
           |    <ul>
-          |${ if(model.isBook) { """        <li class="book">A book</li>
-              |${ if(model.highlighted) { """        <li class="badge">highlighted</li>
+          |${ if(model.isTrueAttribute) { """        <li class="book">A book</li>
+              |${ if(model.isTrueAttribute) { """        <li class="badge">highlighted</li>
                   |""" } else { """        <li class="badge">plain</li>
-                  |""" } }""" } else if(model.isMovie) { """        <li class="movie">A movie</li>
+                  |""" } }""" } else if(model.isTrueAttribute) { """        <li class="movie">A movie</li>
               |""" } else { """        <li class="other">Something else</li>
               |""" } }
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(model: IfModel): String {
+    override fun filePath(model: BlackboxDefaultModel): String {
       return "nestingifs/nesting-ifs.html"
     }
 }
