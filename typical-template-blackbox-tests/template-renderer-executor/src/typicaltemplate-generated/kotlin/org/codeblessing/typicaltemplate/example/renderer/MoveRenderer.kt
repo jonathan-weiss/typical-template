@@ -22,7 +22,7 @@ object MoveRenderer {
           |    <ul>
           |        <li lang='en' id="b1">Clean Code</li>
           |        <li id="b2"><span>Refactoring</span></li>
-          |        <li><!-- a plain html comment the move below travels across -->moved-across-normal-comment:VALUE</li>
+          |        <li>moved-across-normal-comment:<!-- a plain html comment the move below travels across -->VALUE</li>
           |        <li>x,y,z,(last)w,UNREACHABLE</li>
           |    </ul>
           |</body>
