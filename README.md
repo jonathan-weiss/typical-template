@@ -34,7 +34,8 @@ single source of truth; the renderer is always derived from it.
 
 - **Any file format that supports comments can be a source file.** typical-template does not
   care about the language — it only needs a comment syntax it can recognize so it can find the
-  `@tt{{{ ... }}}@` command blocks. (see [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)).
+  `@tt{{{ ... }}}@` command blocks inside the source code comment, e.g. 
+  `<!-- @tt{{{ ... }}}@ -->` in HTML. (see [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)).
 
 - **typical-template only generates renderers — nothing more.** It is a tool whose single job
   is to turn an annotated source file into a Kotlin renderer class. It does **not** write
@@ -45,9 +46,18 @@ single source of truth; the renderer is always derived from it.
 
 ---
 
+## Syntax
+
+Write block comments (e.g. `/* ... */`, `<!-- ... -->`) or line comments (e.g. `// ...`) in your source file.
+Of course, the comment style depends on the language of the source file.
+All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax
+for typical template.
+Inside the magic brackets, write one or many typical-template commands. For a list of all command, look at the 
+[COMMAND-REFERENCE.md](COMMAND-REFERENCE.md).
+
 ## Example
 
-Here is an example source code file (here it is HTML, the file is named ```news.html```) enriched with typical-template commands:
+Here is an example HTML source code file (the file is named ```news.html```) enriched with typical-template commands:
 
 ```html
 <html lang="en">
@@ -99,8 +109,11 @@ package org.codeblessing.typicaltemplate.example.renderer
 import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
 
 /**
- * Generate the content for the template HtmlListPageRenderer filled up
- * with the content of the passed models.
+ * Generate the content for the template `HtmlListPageRenderer`.
+ *
+ * This template renderer was generated from the template:
+ * - file: `news.html`
+ * - path: `documentation/news.html`
  */
 object HtmlListPageRenderer {
 
@@ -109,24 +122,21 @@ object HtmlListPageRenderer {
           |<html lang="en">
           |
           |
-          |
           |<head><title>${listPageModel.pageTitle}</title></head>
           |<body>
           |<p>Here are the ${listPageModel.pageTitle.lowercase()}:</p>
           |<ul>${ listPageModel.allListEntries.joinToString("") { pageArticleTitle ->  """
-              |    <li>${pageArticleTitle}</li>
-          """ } }
+              |    <li>${pageArticleTitle}</li>""" } }
           |</ul>
           |
           |</body>
-          |
           |</html>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
     fun filePath(listPageModel: HtmlListModel): String {
-        return "news.html"
+        return "documentation/news.html"
     }
 }
 ```
@@ -143,15 +153,7 @@ Notice how the typical template commands in the HTML have been transferred into 
 You then use `HtmlListPageRenderer.renderTemplate(model)` in your own code to produce HTML.
 If your base source file change, you re-run typical template and the kotlin template renderer class will be updated/rewritten.
 
-## Syntax
-
-Write block comments (e.g. `/* ... */`, `<!-- ... -->`) or line comments (e.g. `// ...`) in your source file.
-Of course, the comment style depends on the language of the source file.
-All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax 
-for typical template.
-Inside the magic brackets, write one or many typical-template commands (see [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)).
-
-## Let typical template generate the renderer classes
+## Setup
 
 To let typical template generate the renderer classes, include the dependencies in your build (shown here for [Gradle](https://gradle.org/), 
 but similar in [Maven](https://maven.apache.org/)):
@@ -173,7 +175,7 @@ dependencies {
 > The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled.
 
 Then, call the typical-template main method ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` (see [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)) or
-call typical-template directly with a code snippet like the following in your kotlin or java code:
+call typical-template directly with a code snippet like the following in your kotlin code:
 ```kotlin
 
 import org.codeblessing.typicaltemplate.FileSearchLocation
