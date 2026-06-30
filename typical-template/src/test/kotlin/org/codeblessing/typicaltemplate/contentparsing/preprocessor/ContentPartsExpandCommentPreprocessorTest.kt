@@ -491,16 +491,42 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `with text before the comment on the same line nothing is removed`() {
+        fun `with text before the comment strips the trailing blanks but keeps the line break`() {
             val input = ContentPartBuilder.create()
                 .addText("foo ")
                 .addTemplateComment().end()
                 .addText("   \nbar")
                 .build()
 
+            // Non-blank text before, only blanks then the line break after: everything before the
+            // comment is kept, the blanks after it are removed but the line break stays.
+            val expected = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().end()
+                .addText("\nbar")
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun `with text before the comment and only blanks until end of content strips those blanks`() {
+            val input = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().end()
+                .addText("   ")
+                .build()
+
+            val expected = ContentPartBuilder.create()
+                .addText("foo ")
+                .addTemplateComment().end()
+                .build()
+
+            val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
+
+            assertEquals(expected, result)
         }
 
         @Test
@@ -616,11 +642,20 @@ class ContentPartsExpandCommentPreprocessorTest {
                 .addText("   \n")
                 .build()
 
-            // Neither comment is standalone: the first has non-blank text after it on the line,
-            // the second has non-blank text before it. Nothing is removed.
+            // Neither comment stands alone on its line: the first has non-blank text after it, so it
+            // is left untouched; the second has non-blank text before it but only blanks then the
+            // line break after it, so its trailing blanks are stripped while the line break stays.
+            val expected = ContentPartBuilder.create()
+                .addText("   ")
+                .addTemplateComment().end()
+                .addText(" X ")
+                .addTemplateComment().end()
+                .addText("\n")
+                .build()
+
             val result = ContentPartsExpandCommentPreprocessor.runPreprocessing(input)
 
-            assertEquals(input, result)
+            assertEquals(expected, result)
         }
 
         @Test

@@ -8,22 +8,26 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
 /**
  * Removes whitespace around typical template comments.
  *
- * The before side and the after side of a comment are handled independently. The processing
- * follows these steps for every comment:
+ * The default decision looks only at the text directly before the comment (up to the start of its
+ * line) and directly after the comment (up to the end of its line) and distinguishes four cases:
  *
- * 1. Decide once whether the default whitespace behaviour applies at all: it applies only when
- *    the comment is the only non-blank content on its line, i.e. when only blanks precede it up
- *    to the start of the line and only blanks follow it up to the end of the line.
- * 2. From that, derive a default decision per side. When the default applies, the blanks before
- *    the comment are removed (the preceding line break is kept) and the blanks together with the
- *    trailing line break after the comment are removed, so the whole comment line collapses.
- *    When the default does not apply, nothing is removed on either side.
- * 3. Each side is then processed on its own.
- * 4. A remove-blanks command overrides the default decision for its own side only (and never
- *    touches the other side).
- * 5. The no-default-whitespace-remove command switches the default decision off for both sides,
- *    so that nothing but the comment itself is removed. Explicit remove-blanks commands still
- *    override that (now disabled) default for their own side.
+ * 1. Non-blank text before the comment, only blanks (and then the line break) after it: everything
+ *    before the comment is kept, the blanks after the comment are removed but the line break is
+ *    kept (a trailing comment is removed without leaving trailing blanks behind).
+ * 2. Only blanks before the comment, non-blank text after it: nothing is removed; only the comment
+ *    itself disappears (a leading comment keeps its indentation and the following text).
+ * 3. Only blanks before the comment and only blanks after it: the comment stands alone on its line,
+ *    so the blanks before it are removed (the preceding line break is kept) and the blanks together
+ *    with the trailing line break after it are removed, collapsing the whole comment line.
+ * 4. Any other case (non-blank text on both sides): nothing is removed.
+ *
+ * The before side and the after side are then processed on their own:
+ *
+ * - A remove-blanks command overrides the default decision for its own side only (and never
+ *   touches the other side).
+ * - The no-default-whitespace-remove command switches the default decision off for both sides, so
+ *   that nothing but the comment itself is removed. Explicit remove-blanks commands still override
+ *   that (now disabled) default for their own side.
  *
  * Conflicting remove commands on the same side cannot occur (they are rejected earlier by
  * the validators), and a command that does the same thing as the default decision is simply a
@@ -68,22 +72,33 @@ object ContentPartsExpandCommentPreprocessor {
         val precedingText = parts.getOrNull(precedingIndex) as? TextContentPart
         val followingText = parts.getOrNull(followingIndex) as? TextContentPart
 
-        // Step 1: does the default whitespace behaviour apply at all?
+        // Step 1: classify the text directly before and after the comment.
         val onlyBlanksBefore = precedingText == null || onlyBlanksUpToLineStart(precedingText.text)
         val onlyBlanksAfter = followingText == null || !firstLineHasNonBlank(followingText.text)
-        val isStandaloneOnLine = onlyBlanksBefore && onlyBlanksAfter
 
         // The no-default-whitespace-remove command disables the default whitespace handling
         // entirely, so that only the comment itself is removed and no surrounding blanks or line
         // breaks. Explicit remove-blanks commands still override the (now disabled) default per side.
-        val defaultRemovalEnabled = isStandaloneOnLine &&
-                comment.keywordCommands.none { it.commandKey == CommandKey.NO_DEFAULT_WHITESPACE_REMOVE }
+        val defaultRemovalEnabled =
+            comment.keywordCommands.none { it.commandKey == CommandKey.NO_DEFAULT_WHITESPACE_REMOVE }
 
-        // Step 2: default decision per side (only meaningful when standalone and not disabled)
-        val beforeDefault = if (defaultRemovalEnabled) WhitespaceAction.STRIP_BLANKS else WhitespaceAction.KEEP
-        val afterDefault = if (defaultRemovalEnabled) WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK else WhitespaceAction.KEEP
+        // Step 2: derive the default decision per side from the four cases (see the class
+        // documentation). The before side is only stripped when the comment stands alone on its
+        // line; the after side strips the trailing blanks whenever no non-blank text follows on the
+        // line, and also the trailing line break when the comment stands alone.
+        val beforeDefault = when {
+            !defaultRemovalEnabled -> WhitespaceAction.KEEP
+            onlyBlanksBefore && onlyBlanksAfter -> WhitespaceAction.STRIP_BLANKS
+            else -> WhitespaceAction.KEEP
+        }
+        val afterDefault = when {
+            !defaultRemovalEnabled -> WhitespaceAction.KEEP
+            !onlyBlanksAfter -> WhitespaceAction.KEEP
+            onlyBlanksBefore -> WhitespaceAction.STRIP_BLANKS_AND_LINEBREAK
+            else -> WhitespaceAction.STRIP_BLANKS
+        }
 
-        // Steps 3-5: a command overrides the default for its own side only
+        // Steps 3-4: a command overrides the default for its own side only
         val beforeAction = comment.commandAction(BEFORE_COMMAND_ACTIONS) ?: beforeDefault
         val afterAction = comment.commandAction(AFTER_COMMAND_ACTIONS) ?: afterDefault
 

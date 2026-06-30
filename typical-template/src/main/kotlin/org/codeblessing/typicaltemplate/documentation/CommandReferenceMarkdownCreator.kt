@@ -12,10 +12,17 @@ object CommandReferenceMarkdownCreator {
     // Shared note appended to every remove-blanks command, explaining the default whitespace
     // handling and how these commands override it per side.
     private val DEFAULT_WHITESPACE_HANDLING_NOTE =
-        "Note on the default behaviour: a comment that stands alone on its line (only blanks before it on its line and " +
-                "only blanks after it up to the line break) has its surrounding whitespace collapsed automatically: the " +
-                "blanks before the comment as well as the blanks and the line break after the comment are removed. The before " +
-                "side and the after side are decided independently: a remove-blanks command overrides the default " +
+        "Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its " +
+                "line) and directly after it (up to the end of its line) and distinguishes four cases. " +
+                "(1) Non-blank text before the comment and only blanks (then the line break) after it: everything before " +
+                "the comment is kept, the blanks after it are removed but the line break is kept. " +
+                "(2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself " +
+                "disappears. " +
+                "(3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the " +
+                "blanks before it are removed (the preceding line break is kept) and the blanks together with the trailing " +
+                "line break after it are removed, collapsing the whole comment line. " +
+                "(4) Any other case (non-blank text on both sides): nothing is removed. " +
+                "The before side and the after side are decided independently: a remove-blanks command overrides the default " +
                 "decision only for its own side and never affects the other side (e.g. using only " +
                 "```${COMMAND_PREFIX}${CommandKey.REMOVE_BLANKS_BEFORE_COMMENT.keyword}``` on an otherwise stand-alone comment " +
                 "still lets the default handling remove the blanks and the line break after it). A command that requests the " +
