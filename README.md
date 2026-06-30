@@ -1,14 +1,49 @@
-# typical-template - reverse template engine
+# Typical-Template - Reverse Template Engine
 
-Typical template is a reverse template engine to create template renderer kotlin classes.
-The procedure is as follows:
-* Your write your real source code (HTML, Java, kotlin, CSS, etc.).
-* Then you add (wrapped into source code comments) typical template commands to your source code.
-* With help of these commands, typical-template can create kotlin multi-line templates for you.
+## What is typical-template?
 
-The advantage of this approach is, that when you extend your real source code components and classes, 
-the synchronization of the template is done by only run again typical-template. 
-You do not have to keep your templates and your source code in sync manually.
+typical-template is a **reverse template engine** for Kotlin. Instead of writing a template
+first and deriving real output from it, you do it the other way around:
+
+1. You write **real, working source code** — HTML, Kotlin, TypeScript, SCSS, XML, or anything
+   else. The file stays valid and editable in its native tooling.
+2. You **annotate that source file with typical-template commands**, written *inside ordinary
+   source-code comments* (`<!-- ... -->`, `/* ... */`, `// ...`, depending on the language).
+3. You **run typical-template**. It reads those annotated files and **generates a Kotlin
+   renderer class** for each one — a class whose `renderTemplate(...)` function reproduces the
+   file's content as a multiline string, with your dynamic parts (loops, conditions, value
+   replacements) woven in.
+
+### Why this approach?
+
+The painful part of classic templating is keeping two things in sync by hand: the real
+component (which you keep editing, restyling, refactoring) and the template that is supposed
+to reproduce it. Every change to the source forces a manual change to the template.
+
+typical-template removes that manual step. When your real source file changes, you simply
+**re-run typical-template** and the renderer class is regenerated. The source file is the
+single source of truth; the renderer is always derived from it.
+
+```
+   edit real source file  ─────────────►  re-run typical-template  ─────────────►  renderer is up to date
+   (HTML, Kotlin, SCSS…)                   (no manual editing of                    automatically
+                                            the renderer needed)
+```
+
+### Two important boundaries
+
+- **Any file format that supports comments can be a source file.** typical-template does not
+  care about the language — it only needs a comment syntax it can recognize so it can find the
+  `@tt{{{ ... }}}@` command blocks. (see [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)).
+
+- **typical-template only generates renderers — nothing more.** It is a tool whose single job
+  is to turn an annotated source file into a Kotlin renderer class. It does **not** write
+  output files for you, it does **not** create your model classes, and it does **not** run the
+  renderers. Building the model, calling the renderer, and writing the produced string to disk
+  are all *your* responsibility in *your* application. Keeping that boundary sharp is what keeps
+  typical-template small and predictable.
+
+---
 
 ## Example
 
@@ -95,7 +130,17 @@ object HtmlListPageRenderer {
     }
 }
 ```
-You can use this class to generate dynamic HTML files.
+
+Notice how the typical template commands in the HTML have been transferred into the template:
+
+- Every `@tt{{{ ... }}}@` comment is gone, and the whitespace around it has been cleaned up.
+- The `@replace-value-by-expression` scope turned the literal `News`/`news` text into model
+  expressions.
+- The `@foreach` scope became a `joinToString` loop, repeating the single `<li>` line.
+- The `@ignore-text` scope removed the two extra sample `<li>` items, which existed only so the
+  raw `news.html` looked complete in a browser.
+
+You then use `HtmlListPageRenderer.renderTemplate(model)` in your own code to produce HTML.
 If your base source file change, you re-run typical template and the kotlin template renderer class will be updated/rewritten.
 
 ## Syntax
@@ -123,6 +168,9 @@ dependencies {
 }
 // ...
 ```
+
+> Typical-template includes no additional external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
+> The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled.
 
 Then, call the typical-template main method ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` (see [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)) or
 call typical-template directly with a code snippet like the following in your kotlin or java code:
@@ -160,15 +208,19 @@ fun executeTypicalTemplateAndCreateRenderers() {
 ```
 When the function ``executeTypicalTemplateAndCreateRenderers`` is called, typical template will search for templates and create appropriate template renderers.
 
-## Varia
-
-* No external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
-* The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled via ServiceLoader (see ``META-INF/services/`` in the typical-template module).
-* All supported comment styles are defined in a [configuration file](typical-template/src/main/resources/typical-template-config.properties)
-  that can be extended/overwritten by providing a resource file ```typical-template-config-overwrite.properties``` in your JVM.
-* For a full example, see the Gradle subproject [typical-template-blackbox-tests](typical-template-blackbox-tests).
-
 ## License
 
 The source code is licensed under the MIT license, which you can find in
 the [LICENSE](LICENSE) file.
+
+## Where to go next
+
+- The complete list of commands, their attributes, and their closing/auto-close behavior:
+  [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)
+- Advanced topics like nesting, scopes and autoclosing : [ADVANCED-TOPICS.md](ADVANCED-TOPICS.md)
+- The exact whitespace rules and override commands: [WHITESPACE-HANDLING.md](WHITESPACE-HANDLING.md)
+- Running typical-template from the command line: [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)
+- All supported file formats and its comment formats: [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)
+- A full, runnable example project: the Gradle subproject
+  [typical-template-blackbox-tests](typical-template-blackbox-tests)
+

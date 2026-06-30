@@ -1,9 +1,31 @@
-# Whitespace Handling
+# Whitespace Handling - How template comments disappear from the output
 
-typical-template automatically removes whitespace around every template comment
-(the thing like `<-- @tt{{{ ... }}}@ -->`) so the generated output stays clean. This document explains
-the default behavior, the *why* behind it, and how to override the default behavior with the
-`no-default-whitespace-remove` command and the `remove-...` commands.
+Template comments are instructions, not content — so the generated renderer must never print
+them. typical-template guarantees this in two steps.
+
+## Step 1 — the comment itself is always removed
+
+The full comment carrier, including the host language's comment delimiters and the magic
+brackets, is always dropped:
+
+```
+<-- @tt{{{ @foreach [...] }}}@ -->          ◄── the entire comment is removed from the output
+```
+
+What the comment *does* (open a scope, replace a value, …) is applied to the surrounding plain
+text; what the comment *looks like* never appears.
+
+> Note: this only applies to comments that actually contain `@tt{{{ ... }}}@`. A plain comment
+> with no typical-template instructions is just plain text and is reproduced verbatim in the
+> output.
+
+## Step 2 — the whitespace around the comment is cleaned up
+
+If only the comment text vanished but its surrounding indentation and line break stayed, the
+output would be littered with blank, indented lines and stray spaces. So typical-template also
+trims the whitespace **directly around** each comment, looking only at the text on the
+comment's own line — what comes before it (up to the start of the line) and after it (up to the
+end of the line).
 
 > Legend for the visualizations:
 > 
@@ -14,11 +36,7 @@ the default behavior, the *why* behind it, and how to override the default behav
 > -  Parts marked with `╳` are removed, the rest is kept. The template comment itself always disappears. 
 
 
-Note that the whitespace removal only applies to typical-template-comments 
-containing the ``@tt{{{ ... }}}@`` — plain comments 
-without typical-template instructions are left untouched.
-
-## What is looked at
+### What is looked at
 
 The comment itself (```<-- @tt{{{ ... }}}@ -->```) is always removed in the output.
 The decision considers **only** the text *directly before* the comment (up to
