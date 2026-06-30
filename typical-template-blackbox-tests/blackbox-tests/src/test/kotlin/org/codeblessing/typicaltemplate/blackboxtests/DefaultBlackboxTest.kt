@@ -59,20 +59,20 @@ class DefaultBlackboxTest : AbstractBlackboxTest() {
         ),
         NESTING_REPLACES(
             SourceType.HTML,
-            subpackage = "nestingreplaces",
+            subpackage = "nesting",
             templateName = "nesting-replaces",
         ),
         TEMPLATE_RENDERER_FANCY(
             SourceType.HTML,
-            subpackage = "nestingtemplaterenderer",
+            subpackage = "nesting",
             templateName = "nesting-template-renderer",
-            outputName = "fancy-output"
+            outputName = "nesting-template-renderer-fancy-output"
         ),
         TEMPLATE_RENDERER_PLAIN(
             SourceType.HTML,
-            subpackage = "nestingtemplaterenderer",
+            subpackage = "nesting",
             templateName = "nesting-template-renderer",
-            outputName = "plain-output"
+            outputName = "nesting-template-renderer-plain-output"
         ),
         RENDER_TEMPLATE(
             SourceType.HTML,

@@ -4,24 +4,25 @@
 package org.codeblessing.typicaltemplate.example.renderer
 
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
+import java.time.DayOfWeek
 
 /**
- * Generate the content for the template `PlainRenderer`.
+ * Generate the content for the template `NestingTemplateFancyRenderer`.
  *
  * This template renderer was generated from the template:
  * - file: `nesting-template-renderer.html`
- * - path: `nestingtemplaterenderer/nesting-template-renderer.html`
+ * - path: `nesting/nesting-template-renderer.html`
  */
-object PlainRenderer : RendererWithBlackboxDefaultModel {
+object NestingTemplateFancyRenderer : RendererWithBlackboxDefaultModel {
 
     override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
-          |        <li class="plain">TOKEN rendered on Day</li>
+          |        <li class="fancy">REPLACED-IN-A rendered on ${DayOfWeek.MONDAY}</li>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
     override fun filePath(model: BlackboxDefaultModel): String {
-      return "nestingtemplaterenderer/plain-output.html"
+      return "nesting/nesting-template-renderer-fancy-output.html"
     }
 }

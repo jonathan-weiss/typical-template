@@ -10,7 +10,7 @@ import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultMo
  *
  * This template renderer was generated from the template:
  * - file: `nesting-replaces.html`
- * - path: `nestingreplaces/nesting-replaces.html`
+ * - path: `nesting/nesting-replaces.html`
  */
 object NestingReplacesRenderer : RendererWithBlackboxDefaultModel {
 
@@ -29,6 +29,6 @@ object NestingReplacesRenderer : RendererWithBlackboxDefaultModel {
     }
 
     override fun filePath(model: BlackboxDefaultModel): String {
-      return "nestingreplaces/nesting-replaces.html"
+      return "nesting/nesting-replaces.html"
     }
 }

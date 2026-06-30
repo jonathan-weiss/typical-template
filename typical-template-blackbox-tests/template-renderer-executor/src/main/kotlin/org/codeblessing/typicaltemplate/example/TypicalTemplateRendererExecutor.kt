@@ -5,13 +5,11 @@ import org.codeblessing.typicaltemplate.example.SourceType.KOTLIN
 import org.codeblessing.typicaltemplate.example.renderer.ElseIfRenderer
 import org.codeblessing.typicaltemplate.example.renderer.ElseRenderer
 import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
-import org.codeblessing.typicaltemplate.example.renderer.FancyRenderer
 import org.codeblessing.typicaltemplate.example.renderer.ForeachRenderer
 import org.codeblessing.typicaltemplate.example.renderer.MoveDefaultRenderer
 import org.codeblessing.typicaltemplate.example.renderer.MoveRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestingRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestingReplacesRenderer
-import org.codeblessing.typicaltemplate.example.renderer.PlainRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RendererWithBlackboxDefaultModel
@@ -19,6 +17,8 @@ import org.codeblessing.typicaltemplate.example.renderer.EnumRenderer
 import org.codeblessing.typicaltemplate.example.renderer.HtmlListPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.IfRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestedElseRenderer
+import org.codeblessing.typicaltemplate.example.renderer.NestingTemplateFancyRenderer
+import org.codeblessing.typicaltemplate.example.renderer.NestingTemplatePlainRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
@@ -44,7 +44,7 @@ private data class RendererDeclaration(
 
 private const val PRINT_GENERATED_CONTENT = false
 private val ALL_DEFAULT_RENDERERS = listOf(
-    RendererDeclaration(sourceType = HTML, renderer = FancyRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = NestingTemplateFancyRenderer),
     RendererDeclaration(sourceType = HTML, renderer = ForeachRenderer),
     RendererDeclaration(sourceType = HTML, renderer = IfRenderer),
     RendererDeclaration(sourceType = HTML, renderer = NestedElseRenderer),
@@ -54,7 +54,7 @@ private val ALL_DEFAULT_RENDERERS = listOf(
     RendererDeclaration(sourceType = HTML, renderer = MoveRenderer),
     RendererDeclaration(sourceType = HTML, renderer = NestingRenderer),
     RendererDeclaration(sourceType = HTML, renderer = NestingReplacesRenderer),
-    RendererDeclaration(sourceType = HTML, renderer = PlainRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = NestingTemplatePlainRenderer),
     RendererDeclaration(sourceType = HTML, renderer = RenderItemRenderer),
     RendererDeclaration(sourceType = HTML, renderer = RenderPageRenderer),
     RendererDeclaration(sourceType = HTML, renderer = WhitespaceHtmlRenderer),

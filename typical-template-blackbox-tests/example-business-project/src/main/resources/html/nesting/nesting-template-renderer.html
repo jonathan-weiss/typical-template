@@ -7,20 +7,20 @@
 <body>
     <ul>
         <!-- @tt{{{
-            @template-renderer [ templateRendererClassName="FancyRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
+            @template-renderer [ templateRendererClassName="NestingTemplateFancyRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
             @replace-value-by-value [ searchValue="TOKEN" replaceByValue="REPLACED-IN-A" ]
                 [ searchValue="nesting-template-renderer.html" replaceByValue="fancy-output.html" ]
             @add-import-to-renderer [ importClassName="DayOfWeek" importPackageName="java.time" ]
             @replace-value-by-expression [ searchValue="DAY" replaceByExpression="DayOfWeek.MONDAY" ]
-            @replace-value-by-value [ searchValue="nesting-template-renderer.html" replaceByValue="fancy-output.html" ]
+            @replace-value-by-value [ searchValue="nesting-template-renderer.html" replaceByValue="nesting-template-renderer-fancy-output.html" ]
             @modify-provided-filepath-by-replacements
         }}}@ -->
         <li class="fancy">TOKEN rendered on DAY</li>
         <!-- @tt{{{ @end-template-renderer }}}@ -->
         <!-- @tt{{{
-            @template-renderer [ templateRendererClassName="PlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
+            @template-renderer [ templateRendererClassName="NestingTemplatePlainRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" templateRendererInterfaceName="RendererWithBlackboxDefaultModel" templateRendererInterfacePackageName="org.codeblessing.typicaltemplate.example.renderer" ] [ modelName="model" modelClassName="BlackboxDefaultModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
             @replace-value-by-value [ searchValue="DAY" replaceByValue="Day" ]
-            @replace-value-by-value [ searchValue="nesting-template-renderer.html" replaceByValue="plain-output.html" ]
+            @replace-value-by-value [ searchValue="nesting-template-renderer.html" replaceByValue="nesting-template-renderer-plain-output.html" ]
             @modify-provided-filepath-by-replacements
          }}}@ -->
         <li class="plain">TOKEN rendered on DAY</li>
