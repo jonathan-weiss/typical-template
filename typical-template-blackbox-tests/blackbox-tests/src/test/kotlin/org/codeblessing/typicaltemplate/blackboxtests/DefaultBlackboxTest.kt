@@ -84,6 +84,11 @@ class DefaultBlackboxTest : AbstractBlackboxTest() {
             subpackage = "whitespace",
             templateName = "whitespace",
         ),
+        PRINT_TEXT(
+            SourceType.HTML,
+            subpackage = "printtext",
+            templateName = "print-text",
+        ),
         ;
 
         val fileExtension: String = sourceType.fileExtension

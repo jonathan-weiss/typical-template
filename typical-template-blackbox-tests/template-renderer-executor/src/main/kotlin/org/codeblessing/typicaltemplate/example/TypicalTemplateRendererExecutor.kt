@@ -19,6 +19,7 @@ import org.codeblessing.typicaltemplate.example.renderer.IfRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestedElseRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestingTemplateFancyRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestingTemplatePlainRenderer
+import org.codeblessing.typicaltemplate.example.renderer.PrintTextRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
@@ -58,6 +59,7 @@ private val ALL_DEFAULT_RENDERERS = listOf(
     RendererDeclaration(sourceType = HTML, renderer = RenderItemRenderer),
     RendererDeclaration(sourceType = HTML, renderer = RenderPageRenderer),
     RendererDeclaration(sourceType = HTML, renderer = WhitespaceHtmlRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = PrintTextRenderer),
 )
 
 fun main(args: Array<String>) {
