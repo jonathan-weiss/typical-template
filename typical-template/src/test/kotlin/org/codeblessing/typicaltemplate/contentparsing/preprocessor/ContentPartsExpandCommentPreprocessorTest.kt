@@ -491,7 +491,7 @@ class ContentPartsExpandCommentPreprocessorTest {
         }
 
         @Test
-        fun `with text before the comment strips the trailing blanks but keeps the line break`() {
+        fun `with text before the comment strips the trailing blanks on both sides but keeps the line break`() {
             val input = ContentPartBuilder.create()
                 .addText("foo ")
                 .addTemplateComment().end()
@@ -499,9 +499,10 @@ class ContentPartsExpandCommentPreprocessorTest {
                 .build()
 
             // Non-blank text before, only blanks then the line break after: everything before the
-            // comment is kept, the blanks after it are removed but the line break stays.
+            // comment is kept except the blanks between the last non-blank and the comment, which
+            // are removed; the blanks after it are removed too but the line break stays.
             val expected = ContentPartBuilder.create()
-                .addText("foo ")
+                .addText("foo")
                 .addTemplateComment().end()
                 .addText("\nbar")
                 .build()
@@ -520,7 +521,7 @@ class ContentPartsExpandCommentPreprocessorTest {
                 .build()
 
             val expected = ContentPartBuilder.create()
-                .addText("foo ")
+                .addText("foo")
                 .addTemplateComment().end()
                 .build()
 
@@ -644,11 +645,12 @@ class ContentPartsExpandCommentPreprocessorTest {
 
             // Neither comment stands alone on its line: the first has non-blank text after it, so it
             // is left untouched; the second has non-blank text before it but only blanks then the
-            // line break after it, so its trailing blanks are stripped while the line break stays.
+            // line break after it, so the trailing blanks on both sides are stripped while the line
+            // break stays.
             val expected = ContentPartBuilder.create()
                 .addText("   ")
                 .addTemplateComment().end()
-                .addText(" X ")
+                .addText(" X")
                 .addTemplateComment().end()
                 .addText("\n")
                 .build()

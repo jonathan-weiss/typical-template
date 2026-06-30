@@ -21,8 +21,8 @@ object WhitespaceHtmlRenderer : RendererWithBlackboxDefaultModel {
           |    <ul>
           |        <li>default is applied as only whitespaces before and after the comment START
           |        END</li>
-          |        <li>default is only applied after comment as there is text before the comment START
-          |x            
+          |        <li>default strips the blanks before and after the comment as there is text before the comment START
+          |x
           |            END</li>
           |        <li>default is not applied as there is text after the comment START
           |            x

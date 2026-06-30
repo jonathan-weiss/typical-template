@@ -2,8 +2,8 @@
 
 typical-template automatically removes whitespace around every template comment
 (the thing like `<-- @tt{{{ ... }}}@ -->`) so the generated output stays clean. This document explains
-the default behavior, the *why* behind it, and how to override the default behavior it with the
-`no-default-whitespace-remove` command and the `remove-*` commands.
+the default behavior, the *why* behind it, and how to override the default behavior with the
+`no-default-whitespace-remove` command and the `remove-...` commands.
 
 > Legend for the visualizations:
 > 
@@ -31,7 +31,7 @@ line):
               before the comment           after the comment
 ```
 
-## Default behaviour
+## Default whitespace removing behavior
 
 
 There are four cases, depending on whether the text before and after the comment
@@ -39,17 +39,18 @@ There are four cases, depending on whether the text before and after the comment
 
 ### Case 1 — text before, only whitespace after (trailing comment)
 
-Everything before the comment is kept; the blanks after it are removed, but the
-line break is kept.
+Everything before the comment is kept, except the blanks between the last
+non-blank and the comment, which are removed; the blanks after it are removed as
+well, but the line break is kept.
 
 ```
-END</li>····<-- @tt{{{ ... }}}@ -->····⏎     -->   END</li>····⏎
-            ^^^^^^^^^^^^^^^^^^^^^^^╳╳╳╳
+END</li>····<-- @tt{{{ ... }}}@ -->····⏎     -->   END</li>⏎
+        ╳╳╳╳^^^^^^^^^^^^^^^^^^^^^^^╳╳╳╳
 ```
 
 ### Case 2 — only whitespace before, text after (leading comment)
 
-Nothing is removed — the indentation and the following text are preserved.
+Nothing is removed  (apart from the comment itself) — the indentation and the following text are preserved.
 
 ```
 ····<-- @tt{{{ ... }}}@ -->START</li>     -->   ····START</li>
@@ -76,7 +77,7 @@ A····<-- @tt{{{ ... }}}@ -->····B     -->   A····B
      ^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-## Why this behaviour?
+## Why this behavior?
 
 - **So you don't constantly end up with doubled blank lines or wrong
   indentation.** A comment standing alone on its line (case 3) would otherwise
@@ -89,38 +90,37 @@ A····<-- @tt{{{ ... }}}@ -->····B     -->   A····B
   text next to it instead (cases 1, 2, 4), the indentation is likely
   intentional and is preserved.
 - **Only a single comment is ever considered on its own**, never in combination
-  with neighbouring comments — this keeps the behaviour local and predictable.
+  with neighboring comments — this keeps the behavior local and predictable.
 
-## Overriding with the `remove-*` commands
+## Overriding the default behavior
 
-When the default behaviour isn't enough, it can be overridden per side. There
-are two sets of commands — one for the side *before* and one for the side
-*after* the comment — each in two strengths:
+When the default behavior isn't enough, it can be overridden per side.
 
-- remove only the **blanks**, or
-- remove the **blanks and the line break**.
+|                                          | Before the comment                                                                                            | After the comment                                                                                            |
+|------------------------------------------|---------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| Remove only the **blanks**               | [remove-blanks-before-comment](COMMAND-REFERENCE.md#remove-blanks-before-comment)                             | [remove-blanks-after-comment](COMMAND-REFERENCE.md#remove-blanks-after-comment)                              |
+| Remove the **blanks and the line break** | [remove-blanks-and-linebreak-before-comment](COMMAND-REFERENCE.md#remove-blanks-and-linebreak-before-comment) | [remove-blanks-and-linebreak-after-comment](COMMAND-REFERENCE.md#remove-blanks-and-linebreak-after-comment)  |
+
 
 ```
 preceding text⏎····<-- @tt{{{ ... }}}@ -->····⏎following text
-               ├──┤                       ├──┤
-               │  └ remove-blanks-after-comment ────────► ····  removed
-               │    remove-blanks-and-linebreak-after ──► ····⏎ removed
-               │
-               └ remove-blanks-before-comment ──────────► ····  removed
-                 remove-blanks-and-linebreak-before ────► ⏎···· removed
+              ├───┤                       ├───┤
+              │                           └ remove-blanks-after-comment ────────────────► ····  removed
+              │                             remove-blanks-and-linebreak-after-comment ──► ····⏎ removed
+              │
+              └ remove-blanks-before-comment ───────────────────────────────────────────► ····  removed
+                remove-blanks-and-linebreak-before-comment ─────────────────────────────► ⏎···· removed
 ```
 
 Rules:
 
 - A `remove-*` command overrides the default decision **for its own side
   only** and leaves the other side untouched.
-- `no-default-whitespace-remove` switches the default behaviour off for **both**
+- `no-default-whitespace-remove` switches the default behavior off for **both**
   sides; then only the comment itself disappears. Explicit `remove-*` commands
   still take effect (and override the now-disabled default for their side).
 - A command that asks for exactly what the default would already do is a no-op.
   Conflicting commands on the same side are rejected by the validator.
 
-The individual commands including their aliases are documented in
-[COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) (sections
-`remove-blanks-*-comment`, `remove-blanks-and-linebreak-*-comment`, and
-`no-default-whitespace-remove`).
+The individual commands including their shorter aliases are documented in
+[COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md).

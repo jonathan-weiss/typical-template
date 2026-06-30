@@ -15,7 +15,8 @@ object CommandReferenceMarkdownCreator {
         "Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its " +
                 "line) and directly after it (up to the end of its line) and distinguishes four cases. " +
                 "(1) Non-blank text before the comment and only blanks (then the line break) after it: everything before " +
-                "the comment is kept, the blanks after it are removed but the line break is kept. " +
+                "the comment is kept except the blanks between the last non-blank and the comment, which are removed; " +
+                "the blanks after it are removed too but the line break is kept. " +
                 "(2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself " +
                 "disappears. " +
                 "(3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the " +

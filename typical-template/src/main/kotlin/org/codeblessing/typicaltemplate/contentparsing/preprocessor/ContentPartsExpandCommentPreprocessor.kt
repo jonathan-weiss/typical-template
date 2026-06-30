@@ -12,8 +12,9 @@ import org.codeblessing.typicaltemplate.contentparsing.resolver.TextContentPart
  * line) and directly after the comment (up to the end of its line) and distinguishes four cases:
  *
  * 1. Non-blank text before the comment, only blanks (and then the line break) after it: everything
- *    before the comment is kept, the blanks after the comment are removed but the line break is
- *    kept (a trailing comment is removed without leaving trailing blanks behind).
+ *    before the comment is kept, but the blanks between the last non-blank and the comment are
+ *    removed; the blanks after the comment are removed too but the line break is kept (a trailing
+ *    comment is removed without leaving trailing blanks behind on either side).
  * 2. Only blanks before the comment, non-blank text after it: nothing is removed; only the comment
  *    itself disappears (a leading comment keeps its indentation and the following text).
  * 3. Only blanks before the comment and only blanks after it: the comment stands alone on its line,
@@ -83,12 +84,13 @@ object ContentPartsExpandCommentPreprocessor {
             comment.keywordCommands.none { it.commandKey == CommandKey.NO_DEFAULT_WHITESPACE_REMOVE }
 
         // Step 2: derive the default decision per side from the four cases (see the class
-        // documentation). The before side is only stripped when the comment stands alone on its
-        // line; the after side strips the trailing blanks whenever no non-blank text follows on the
-        // line, and also the trailing line break when the comment stands alone.
+        // documentation). The before side strips the trailing blanks whenever no non-blank text
+        // follows the comment on its line (so a trailing or standalone comment leaves no blanks
+        // behind); the after side strips the trailing blanks whenever no non-blank text follows on
+        // the line, and also the trailing line break when the comment stands alone.
         val beforeDefault = when {
             !defaultRemovalEnabled -> WhitespaceAction.KEEP
-            onlyBlanksBefore && onlyBlanksAfter -> WhitespaceAction.STRIP_BLANKS
+            onlyBlanksAfter -> WhitespaceAction.STRIP_BLANKS
             else -> WhitespaceAction.KEEP
         }
         val afterDefault = when {
