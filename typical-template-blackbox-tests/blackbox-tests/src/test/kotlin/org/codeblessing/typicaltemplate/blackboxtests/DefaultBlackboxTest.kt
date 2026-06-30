@@ -32,6 +32,26 @@ class DefaultBlackboxTest : AbstractBlackboxTest() {
             subpackage = "move",
             templateName = "move-default",
         ),
+        IF_CASE(
+            SourceType.HTML,
+            subpackage = "ifelse",
+            templateName = "if-case",
+        ),
+        NESTED_ELSE_CASE(
+            SourceType.HTML,
+            subpackage = "ifelse",
+            templateName = "nested-else-case",
+        ),
+        ELSE_IF_CASE(
+            SourceType.HTML,
+            subpackage = "ifelse",
+            templateName = "else-if-case",
+        ),
+        ELSE_CASE(
+            SourceType.HTML,
+            subpackage = "ifelse",
+            templateName = "else-case",
+        ),
         NESTING(
             SourceType.HTML,
             subpackage = "nesting",

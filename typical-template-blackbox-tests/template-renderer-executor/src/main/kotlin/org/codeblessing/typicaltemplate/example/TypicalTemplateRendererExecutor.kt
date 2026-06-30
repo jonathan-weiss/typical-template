@@ -2,10 +2,11 @@ package org.codeblessing.typicaltemplate.example
 
 import org.codeblessing.typicaltemplate.example.SourceType.HTML
 import org.codeblessing.typicaltemplate.example.SourceType.KOTLIN
+import org.codeblessing.typicaltemplate.example.renderer.ElseIfRenderer
+import org.codeblessing.typicaltemplate.example.renderer.ElseRenderer
 import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
 import org.codeblessing.typicaltemplate.example.renderer.FancyRenderer
 import org.codeblessing.typicaltemplate.example.renderer.ForeachRenderer
-import org.codeblessing.typicaltemplate.example.renderer.IfsRenderer
 import org.codeblessing.typicaltemplate.example.renderer.MoveDefaultRenderer
 import org.codeblessing.typicaltemplate.example.renderer.MoveRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestingRenderer
@@ -15,6 +16,8 @@ import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RendererWithBlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.EnumRenderer
+import org.codeblessing.typicaltemplate.example.renderer.IfRenderer
+import org.codeblessing.typicaltemplate.example.renderer.NestedElseRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
@@ -41,7 +44,10 @@ private const val PRINT_GENERATED_CONTENT = true
 private val ALL_DEFAULT_RENDERERS = listOf(
     RendererDeclaration(sourceType = HTML, renderer = FancyRenderer),
     RendererDeclaration(sourceType = HTML, renderer = ForeachRenderer),
-    RendererDeclaration(sourceType = HTML, renderer = IfsRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = IfRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = NestedElseRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = ElseIfRenderer),
+    RendererDeclaration(sourceType = HTML, renderer = ElseRenderer),
     RendererDeclaration(sourceType = HTML, renderer = MoveDefaultRenderer),
     RendererDeclaration(sourceType = HTML, renderer = MoveRenderer),
     RendererDeclaration(sourceType = HTML, renderer = NestingRenderer),
