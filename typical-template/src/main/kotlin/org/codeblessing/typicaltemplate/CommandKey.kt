@@ -197,6 +197,7 @@ enum class CommandKey(
     ),
     NO_DEFAULT_WHITESPACE_REMOVE(
         keyword = "no-default-whitespace-remove",
+        aliases = setOf("ndr"),
     ),
     ;
 

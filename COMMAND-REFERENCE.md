@@ -26,7 +26,7 @@ The following keywords/commands are supported:
 * [remove-blanks-after-comment](#remove-blanks-after-comment) (rba)
 * [remove-blanks-and-linebreak-before-comment](#remove-blanks-and-linebreak-before-comment) (rlb)
 * [remove-blanks-and-linebreak-after-comment](#remove-blanks-and-linebreak-after-comment) (rla)
-* [no-default-whitespace-remove](#no-default-whitespace-remove)
+* [no-default-whitespace-remove](#no-default-whitespace-remove) (ndr)
 
 Commands always start with a `@`.
 
@@ -780,7 +780,7 @@ Syntax:
 @no-default-whitespace-remove
 ``````
 
-Aliases: _none_
+Aliases: ```@ndr``` (can be used in place of ```@no-default-whitespace-remove```)
 
 Disables the default whitespace handling for the comment it is written in. Only the comment itself is removed; no blanks and no line breaks before or after the comment are touched.
 
