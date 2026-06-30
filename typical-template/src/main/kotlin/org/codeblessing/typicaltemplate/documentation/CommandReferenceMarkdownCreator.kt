@@ -250,10 +250,13 @@ object CommandReferenceMarkdownCreator {
             sb.appendLine("""
 
                     ## ${commandKey.keyword}
-
-                    Syntax: ```${commandKey.commandSyntax()}```
                 """.trimIndent()
             )
+            sb.appendLine()
+            sb.appendLine("Syntax: ")
+            sb.appendLine("``````")
+            sb.appendLine(commandKey.commandSyntax())
+            sb.appendLine("``````")
             sb.appendLine("""
 
                     ${commandKey.aliasesDescription()}
@@ -330,19 +333,20 @@ object CommandReferenceMarkdownCreator {
         sb.append("${commandPrefix()}${keyword}")
         if (!isClosingCommand) {
             for (constraint in attributeGroupConstraints) {
-                sb.append(" [ ")
+                sb.append("\n    [")
                 constraint.allowedAttributes.forEach { attribute ->
                     val attributeValue = if (attribute.allowedValues == null) "..." else attribute.allowedValues.joinToString("|") { it.value }
-                    sb.append("${attribute.keyAsString}=\"${attributeValue}\" ")
+                    sb.append("\n        ${attribute.keyAsString}=\"${attributeValue}\"")
                 }
-                sb.append("]")
+                sb.append("\n    ]")
                 if (constraint.occurrence == AttributeGroupOccurrence.MANY_ATTRIBUTE_GROUP
                     || constraint.occurrence == AttributeGroupOccurrence.ZERO_OR_MANY_ATTRIBUTE_GROUP) {
-                    sb.append(" [ ... ]")
+                    sb.append("\n    [ ... ]")
                 }
             }
             correspondingClosingCommandKey?.let { closingKey ->
-                sb.append(" .... ${closingKey.commandPrefix()}${closingKey.keyword}")
+                sb.append("\n    ....")
+                sb.append("\n${closingKey.commandPrefix()}${closingKey.keyword}")
             }
         }
         return sb.toString()

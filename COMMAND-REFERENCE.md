@@ -34,7 +34,25 @@ Commands always start with a `@`.
 
 ## template-renderer
 
-Syntax: ```@template-renderer [ templateRendererClassName="..." templateRendererPackageName="..." templateRendererInterfaceName="..." templateRendererInterfacePackageName="..." ] [ modelClassName="..." modelName="..." modelPackageName="..." isList="yes|no" ] [ ... ] .... @end-template-renderer```
+Syntax: 
+``````
+@template-renderer
+    [
+        templateRendererClassName="..."
+        templateRendererPackageName="..."
+        templateRendererInterfaceName="..."
+        templateRendererInterfacePackageName="..."
+    ]
+    [
+        modelClassName="..."
+        modelName="..."
+        modelPackageName="..."
+        isList="yes|no"
+    ]
+    [ ... ]
+    ....
+@end-template-renderer
+``````
 
 Aliases: _none_
 
@@ -97,7 +115,10 @@ Repeatable Group Attributes:
 
 ## end-template-renderer
 
-Syntax: ```@end-template-renderer```
+Syntax: 
+``````
+@end-template-renderer
+``````
 
 Aliases: _none_
 
@@ -110,7 +131,17 @@ Varia:
 
 ## replace-value-by-expression
 
-Syntax: ```@replace-value-by-expression [ searchValue="..." replaceByExpression="..." ] [ ... ] .... @end-replace-value-by-expression```
+Syntax: 
+``````
+@replace-value-by-expression
+    [
+        searchValue="..."
+        replaceByExpression="..."
+    ]
+    [ ... ]
+    ....
+@end-replace-value-by-expression
+``````
 
 Aliases: _none_
 
@@ -137,7 +168,10 @@ Repeatable Group Attributes:
 
 ## end-replace-value-by-expression
 
-Syntax: ```@end-replace-value-by-expression```
+Syntax: 
+``````
+@end-replace-value-by-expression
+``````
 
 Aliases: _none_
 
@@ -150,7 +184,17 @@ Varia:
 
 ## replace-value-by-value
 
-Syntax: ```@replace-value-by-value [ searchValue="..." replaceByValue="..." ] [ ... ] .... @end-replace-value-by-value```
+Syntax: 
+``````
+@replace-value-by-value
+    [
+        searchValue="..."
+        replaceByValue="..."
+    ]
+    [ ... ]
+    ....
+@end-replace-value-by-value
+``````
 
 Aliases: _none_
 
@@ -177,7 +221,10 @@ Repeatable Group Attributes:
 
 ## end-replace-value-by-value
 
-Syntax: ```@end-replace-value-by-value```
+Syntax: 
+``````
+@end-replace-value-by-value
+``````
 
 Aliases: _none_
 
@@ -190,7 +237,15 @@ Varia:
 
 ## if
 
-Syntax: ```@if [ conditionExpression="..." ] .... @end-if```
+Syntax: 
+``````
+@if
+    [
+        conditionExpression="..."
+    ]
+    ....
+@end-if
+``````
 
 Aliases: _none_
 
@@ -212,7 +267,13 @@ Attributes:
 
 ## else-if
 
-Syntax: ```@else-if [ conditionExpression="..." ]```
+Syntax: 
+``````
+@else-if
+    [
+        conditionExpression="..."
+    ]
+``````
 
 Aliases: _none_
 
@@ -234,7 +295,10 @@ Attributes:
 
 ## else
 
-Syntax: ```@else```
+Syntax: 
+``````
+@else
+``````
 
 Aliases: _none_
 
@@ -249,7 +313,10 @@ Varia:
 
 ## end-if
 
-Syntax: ```@end-if```
+Syntax: 
+``````
+@end-if
+``````
 
 Aliases: ```@fi``` (can be used in place of ```@end-if```)
 
@@ -262,7 +329,16 @@ Varia:
 
 ## foreach
 
-Syntax: ```@foreach [ iteratorExpression="..." loopVariable="..." ] .... @end-foreach```
+Syntax: 
+``````
+@foreach
+    [
+        iteratorExpression="..."
+        loopVariable="..."
+    ]
+    ....
+@end-foreach
+``````
 
 Aliases: _none_
 
@@ -289,7 +365,10 @@ Attributes:
 
 ## end-foreach
 
-Syntax: ```@end-foreach```
+Syntax: 
+``````
+@end-foreach
+``````
 
 Aliases: _none_
 
@@ -302,7 +381,12 @@ Varia:
 
 ## ignore-text
 
-Syntax: ```@ignore-text .... @end-ignore-text```
+Syntax: 
+``````
+@ignore-text
+    ....
+@end-ignore-text
+``````
 
 Aliases: _none_
 
@@ -317,7 +401,10 @@ Varia:
 
 ## end-ignore-text
 
-Syntax: ```@end-ignore-text```
+Syntax: 
+``````
+@end-ignore-text
+``````
 
 Aliases: _none_
 
@@ -330,7 +417,13 @@ Varia:
 
 ## print-text
 
-Syntax: ```@print-text [ text="..." ]```
+Syntax: 
+``````
+@print-text
+    [
+        text="..."
+    ]
+``````
 
 Aliases: _none_
 
@@ -352,7 +445,13 @@ Attributes:
 
 ## remark
 
-Syntax: ```@remark [ text="..." ]```
+Syntax: 
+``````
+@remark
+    [
+        text="..."
+    ]
+``````
 
 Aliases: _none_
 
@@ -376,7 +475,10 @@ Attributes:
 
 ## modify-provided-filepath-by-replacements
 
-Syntax: ```@modify-provided-filepath-by-replacements```
+Syntax: 
+``````
+@modify-provided-filepath-by-replacements
+``````
 
 Aliases: _none_
 
@@ -397,7 +499,19 @@ Varia:
 
 ## render-template
 
-Syntax: ```@render-template [ templateRendererClassName="..." templateRendererPackageName="..." ] [ modelName="..." modelExpression="..." ] [ ... ]```
+Syntax: 
+``````
+@render-template
+    [
+        templateRendererClassName="..."
+        templateRendererPackageName="..."
+    ]
+    [
+        modelName="..."
+        modelExpression="..."
+    ]
+    [ ... ]
+``````
 
 Aliases: _none_
 
@@ -438,7 +552,15 @@ Repeatable Group Attributes:
 
 ## add-import-to-renderer
 
-Syntax: ```@add-import-to-renderer [ importClassName="..." importPackageName="..." ] [ ... ]```
+Syntax: 
+``````
+@add-import-to-renderer
+    [
+        importClassName="..."
+        importPackageName="..."
+    ]
+    [ ... ]
+``````
 
 Aliases: _none_
 
@@ -469,7 +591,16 @@ Repeatable Group Attributes:
 
 ## move-comment-backward
 
-Syntax: ```@move-comment-backward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: 
+``````
+@move-comment-backward
+    [
+        beforeFirstOccurrenceOf="..."
+        afterFirstOccurrenceOf="..."
+        beforeLastOccurrenceOf="..."
+        afterLastOccurrenceOf="..."
+    ]
+``````
 
 Aliases: ```@mvb``` (can be used in place of ```@move-comment-backward```)
 
@@ -510,7 +641,16 @@ Attributes:
 
 ## move-comment-forward
 
-Syntax: ```@move-comment-forward [ beforeFirstOccurrenceOf="..." afterFirstOccurrenceOf="..." beforeLastOccurrenceOf="..." afterLastOccurrenceOf="..." ]```
+Syntax: 
+``````
+@move-comment-forward
+    [
+        beforeFirstOccurrenceOf="..."
+        afterFirstOccurrenceOf="..."
+        beforeLastOccurrenceOf="..."
+        afterLastOccurrenceOf="..."
+    ]
+``````
 
 Aliases: ```@mvf``` (can be used in place of ```@move-comment-forward```)
 
@@ -547,7 +687,10 @@ Attributes:
 
 ## remove-blanks-before-comment
 
-Syntax: ```@remove-blanks-before-comment```
+Syntax: 
+``````
+@remove-blanks-before-comment
+``````
 
 Aliases: ```@rbb``` (can be used in place of ```@remove-blanks-before-comment```)
 
@@ -566,7 +709,10 @@ Varia:
 
 ## remove-blanks-after-comment
 
-Syntax: ```@remove-blanks-after-comment```
+Syntax: 
+``````
+@remove-blanks-after-comment
+``````
 
 Aliases: ```@rba``` (can be used in place of ```@remove-blanks-after-comment```)
 
@@ -585,7 +731,10 @@ Varia:
 
 ## remove-blanks-and-linebreak-before-comment
 
-Syntax: ```@remove-blanks-and-linebreak-before-comment```
+Syntax: 
+``````
+@remove-blanks-and-linebreak-before-comment
+``````
 
 Aliases: ```@rlb``` (can be used in place of ```@remove-blanks-and-linebreak-before-comment```)
 
@@ -604,7 +753,10 @@ Varia:
 
 ## remove-blanks-and-linebreak-after-comment
 
-Syntax: ```@remove-blanks-and-linebreak-after-comment```
+Syntax: 
+``````
+@remove-blanks-and-linebreak-after-comment
+``````
 
 Aliases: ```@rla``` (can be used in place of ```@remove-blanks-and-linebreak-after-comment```)
 
@@ -623,7 +775,10 @@ Varia:
 
 ## no-default-whitespace-remove
 
-Syntax: ```@no-default-whitespace-remove```
+Syntax: 
+``````
+@no-default-whitespace-remove
+``````
 
 Aliases: _none_
 
