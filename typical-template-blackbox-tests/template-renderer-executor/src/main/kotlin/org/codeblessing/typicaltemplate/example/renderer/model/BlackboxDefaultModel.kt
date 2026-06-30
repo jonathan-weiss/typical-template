@@ -14,6 +14,4 @@ class BlackboxDefaultModel{
         "What’s Blooming Now? July’s Star Flowers and How to Care for Them",
         "The Hidden Life of Soil: Why Healthy Dirt Means a Healthy Garden",
     )
-
-    val statusEnum: EnumRenderModel = EnumRenderModel("Status", listOf("new", "in_progress", "finished"))
 }
