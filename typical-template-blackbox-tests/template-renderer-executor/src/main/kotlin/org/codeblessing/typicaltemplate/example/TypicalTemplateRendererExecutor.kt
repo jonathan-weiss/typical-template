@@ -16,6 +16,7 @@ import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RendererWithBlackboxDefaultModel
 import org.codeblessing.typicaltemplate.example.renderer.EnumRenderer
+import org.codeblessing.typicaltemplate.example.renderer.HtmlListPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.IfRenderer
 import org.codeblessing.typicaltemplate.example.renderer.NestedElseRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
@@ -23,6 +24,7 @@ import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultMo
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.DtoFieldRenderModel
 import org.codeblessing.typicaltemplate.example.renderer.model.EnumRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.createDirectories
@@ -78,6 +80,30 @@ fun main(args: Array<String>) {
 
     }
 
+    // documentation renderer
+
+    val listPageModel = HtmlListModel(
+        filenameWithoutPrefix = "today-news",
+        pageTitle = "news of today",
+        allListEntries = listOf(
+            "Tech Startup Raises $200M in Latest Funding Round",
+            "Markets Rally as Inflation Cools to Two-Year Low",
+            "New AI Tool Promises to Cut Software Development Time in Half",
+            "Underdogs Stun Champions in Last-Minute Comeback",
+            "Veteran Player Announces Retirement After Record-Breaking Career",
+        ),
+    )
+    val sourceType = HTML
+    writeGeneratedContentToFile(
+        sourceType = sourceType,
+        model = listPageModel,
+        content = HtmlListPageRenderer.renderTemplate(listPageModel),
+        filepath = sourceType.basePathToGeneratedFiles().resolve("documentation/today-news.html")
+    )
+
+
+    // default renderers
+
     ALL_DEFAULT_RENDERERS.forEach { defaultRenderer ->
         val blackboxDefaultModel = BlackboxDefaultModel()
         val content = defaultRenderer.renderer.renderTemplate(blackboxDefaultModel)
@@ -90,6 +116,8 @@ fun main(args: Array<String>) {
             filepath = defaultRenderer.sourceType.basePathToGeneratedFiles().resolve(filepath)
         )
     }
+
+    // enum type example renderers
 
     enumTypes().forEach { enumType ->
         val blackboxDefaultModel = BlackboxDefaultModel()
@@ -104,6 +132,8 @@ fun main(args: Array<String>) {
             filepath = sourceType.basePathToGeneratedFiles().resolve(filepath)
         )
     }
+
+    // DTO example renderers
 
     val dtoRenderModels = listOf(
         createDtoEntity("Category"),
