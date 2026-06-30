@@ -42,12 +42,18 @@ class DefaultBlackboxTest : AbstractBlackboxTest() {
             subpackage = "nestingreplaces",
             templateName = "nesting-replaces",
         ),
-//        TEMPLATE_RENDERER(
-//            SourceType.HTML,
-//            subpackage = "nestingtemplaterenderer",
-//            templateName = "nesting-template-renderer",
-//            outputName = "fancy-output"
-//        ),
+        TEMPLATE_RENDERER_FANCY(
+            SourceType.HTML,
+            subpackage = "nestingtemplaterenderer",
+            templateName = "nesting-template-renderer",
+            outputName = "fancy-output"
+        ),
+        TEMPLATE_RENDERER_PLAIN(
+            SourceType.HTML,
+            subpackage = "nestingtemplaterenderer",
+            templateName = "nesting-template-renderer",
+            outputName = "plain-output"
+        ),
         RENDER_TEMPLATE(
             SourceType.HTML,
             subpackage = "rendertemplate",
@@ -68,7 +74,7 @@ class DefaultBlackboxTest : AbstractBlackboxTest() {
     fun `test output of move-comment-backward and move-comment-forward commands`(description: TestDescription) {
         assertSameContent(
             fileWithTypicalTemplateSyntax = sourceBasePath(description).resolve("${description.subpackage}/${description.templateName}.${description.fileExtension}"),
-            generatedFile = generatedSourceBasePath(description).resolve("${description.subpackage}/${description.templateName}.${description.fileExtension}"),
+            generatedFile = generatedSourceBasePath(description).resolve("${description.subpackage}/${description.outputName}.${description.fileExtension}"),
             expectedContentResourceName = "${description.subpackage}/${description.outputName}.expectation.${description.fileExtension}",
         )
     }

@@ -1,10 +1,8 @@
 package org.codeblessing.typicaltemplate.example.renderer.model
 
-data class BlackboxDefaultModel(
-    val simpleName: String = "Simple Name",
-    val allListEntries: List<String> = listOf("alpha", "beta", "gamma"),
-
-    ) {
+class BlackboxDefaultModel{
+    val simpleName: String = "Simple Name"
+    val allListEntries: List<String> = listOf("alpha", "beta", "gamma")
     val isTrueAttribute: Boolean = true
     val isFalseAttribute: Boolean = false
 
@@ -16,4 +14,6 @@ data class BlackboxDefaultModel(
         "What’s Blooming Now? July’s Star Flowers and How to Care for Them",
         "The Hidden Life of Soil: Why Healthy Dirt Means a Healthy Garden",
     )
+
+    val statusEnum: EnumRenderModel = EnumRenderModel("Status", listOf("new", "in_progress", "finished"))
 }

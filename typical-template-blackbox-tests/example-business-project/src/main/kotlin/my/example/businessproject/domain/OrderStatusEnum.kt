@@ -3,10 +3,10 @@ package my.example.businessproject.domain
 /* @tt{{{
   @move-comment-backward
   @template-renderer [
-      templateRendererClassName="StatusEnumRenderer"
+      templateRendererClassName="EnumRenderer"
       templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer"
   ][
-      modelClassName="StatusEnumRenderModel"
+      modelClassName="EnumRenderModel"
       modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model"
       modelName="model"
   ]
@@ -17,8 +17,8 @@ package my.example.businessproject.domain
 }}}@ */
 enum class OrderStatus {
 /* @tt{{{
-    @foreach [ iteratorExpression="model.statusValues" loopVariable="statusValue" ]
-    @replace-value-by-expression [ searchValue="PENDING" replaceByExpression="statusValue" ]
+    @foreach [ iteratorExpression="model.enumValues" loopVariable="enumValue" ]
+    @replace-value-by-expression [ searchValue="PENDING" replaceByExpression="enumValue" ]
     }}}@
 */
     PENDING,

@@ -17,9 +17,6 @@ object FancyRenderer : RendererWithBlackboxDefaultModel {
 
     override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
-          |<html lang="en">
-          |<body>
-          |    <ul>
           |        <li class="fancy">REPLACED-IN-A rendered on ${DayOfWeek.MONDAY}</li>
           |
         """.trimMargin(marginPrefix = "|")

@@ -3,28 +3,28 @@
  */
 package org.codeblessing.typicaltemplate.example.renderer
 
-import org.codeblessing.typicaltemplate.example.renderer.model.StatusEnumRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.EnumRenderModel
 
 /**
- * Generate the content for the template `StatusEnumRenderer`.
+ * Generate the content for the template `EnumRenderer`.
  *
  * This template renderer was generated from the template:
  * - file: `OrderStatusEnum.kt`
  * - path: `my/example/businessproject/domain/OrderStatusEnum.kt`
  */
-object StatusEnumRenderer {
+object EnumRenderer {
 
-    fun renderTemplate(model: StatusEnumRenderModel): String {
+    fun renderTemplate(model: EnumRenderModel): String {
         return """
           |package my.example.businessproject.domain
           |enum class ${model.enumName} {
-          |${ model.statusValues.joinToString("") { statusValue ->  """    ${statusValue},
+          |${ model.enumValues.joinToString("") { enumValue ->  """    ${enumValue},
               |""" } }}
           |
         """.trimMargin(marginPrefix = "|")
     }
 
-    fun filePath(model: StatusEnumRenderModel): String {
+    fun filePath(model: EnumRenderModel): String {
       return "my/example/businessproject/domain/${model.enumName}Enum.kt"
     }
 }

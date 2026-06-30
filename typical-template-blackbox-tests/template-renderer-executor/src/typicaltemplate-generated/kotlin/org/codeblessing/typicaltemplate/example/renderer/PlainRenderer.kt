@@ -16,12 +16,12 @@ object PlainRenderer : RendererWithBlackboxDefaultModel {
 
     override fun renderTemplate(model: BlackboxDefaultModel): String {
         return """
-          |        <li class="plain">TOKEN rendered on DAY</li>
+          |        <li class="plain">TOKEN rendered on Day</li>
           |
         """.trimMargin(marginPrefix = "|")
     }
 
     override fun filePath(model: BlackboxDefaultModel): String {
-      return "nestingtemplaterenderer/nesting-template-renderer.html"
+      return "nestingtemplaterenderer/plain-output.html"
     }
 }

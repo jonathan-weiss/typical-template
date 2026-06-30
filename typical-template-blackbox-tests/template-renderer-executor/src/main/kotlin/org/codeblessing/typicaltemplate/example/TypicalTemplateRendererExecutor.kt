@@ -1,6 +1,8 @@
 package org.codeblessing.typicaltemplate.example
 
 import org.codeblessing.typicaltemplate.example.SourceType.HTML
+import org.codeblessing.typicaltemplate.example.SourceType.KOTLIN
+import org.codeblessing.typicaltemplate.example.renderer.EntityDtoTemplateRenderer
 import org.codeblessing.typicaltemplate.example.renderer.FancyRenderer
 import org.codeblessing.typicaltemplate.example.renderer.ForeachRenderer
 import org.codeblessing.typicaltemplate.example.renderer.IfsRenderer
@@ -12,8 +14,13 @@ import org.codeblessing.typicaltemplate.example.renderer.PlainRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderItemRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RenderPageRenderer
 import org.codeblessing.typicaltemplate.example.renderer.RendererWithBlackboxDefaultModel
+import org.codeblessing.typicaltemplate.example.renderer.EnumRenderer
 import org.codeblessing.typicaltemplate.example.renderer.WhitespaceHtmlRenderer
 import org.codeblessing.typicaltemplate.example.renderer.model.BlackboxDefaultModel
+import org.codeblessing.typicaltemplate.example.renderer.model.DtoEntityRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.DtoFieldRenderModel
+import org.codeblessing.typicaltemplate.example.renderer.model.EnumRenderModel
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
@@ -57,28 +64,107 @@ fun main(args: Array<String>) {
 
     println("Use template renderer with typical template")
 
+    fun SourceType.basePathToGeneratedFiles(): Path {
+        return when(this) {
+            KOTLIN -> pathToGeneratedKotlinFiles
+            HTML -> pathToGeneratedHtmlFiles
+        }
+
+    }
 
     ALL_DEFAULT_RENDERERS.forEach { defaultRenderer ->
         val blackboxDefaultModel = BlackboxDefaultModel()
         val content = defaultRenderer.renderer.renderTemplate(blackboxDefaultModel)
         val filepath = defaultRenderer.renderer.filePath(blackboxDefaultModel)
 
-        val basePathToGeneratedFiles = when(defaultRenderer.sourceType) {
-            SourceType.KOTLIN -> pathToGeneratedKotlinFiles
-            HTML -> pathToGeneratedHtmlFiles
-        }
-        val targetFilePath = basePathToGeneratedFiles
-            .resolve(filepath)
-
-        targetFilePath.parent.createDirectories()
-        targetFilePath.writeText(content)
-
-        if(PRINT_GENERATED_CONTENT) {
-            println(" ------------------------------------------------------------------------------------------------------------ ")
-            println(" ${defaultRenderer.sourceType} (${defaultRenderer.renderer::class.simpleName}) ")
-            println(" $targetFilePath ")
-            println(" ------------------------------------------------------------------------------------------------------------ ")
-            println(content)
-        }
+        writeGeneratedContentToFile(
+            sourceType = defaultRenderer.sourceType,
+            model = blackboxDefaultModel,
+            content = content,
+            filepath = defaultRenderer.sourceType.basePathToGeneratedFiles().resolve(filepath)
+        )
     }
+
+    enumTypes().forEach { enumType ->
+        val blackboxDefaultModel = BlackboxDefaultModel()
+        val content = EnumRenderer.renderTemplate(enumType)
+        val filepath = EnumRenderer.filePath(enumType)
+
+        val sourceType = KOTLIN
+        writeGeneratedContentToFile(
+            sourceType = sourceType,
+            model = blackboxDefaultModel,
+            content = content,
+            filepath = sourceType.basePathToGeneratedFiles().resolve(filepath)
+        )
+    }
+
+    val dtoRenderModels = listOf(
+        createDtoEntity("Category"),
+        createDtoEntity("Cart"),
+        createDtoEntity("User"),
+        createDtoEntity("RelatedProduct"),
+    )
+
+    dtoRenderModels.forEach { dtoRenderModel ->
+        val sourceType = KOTLIN
+        val content = EntityDtoTemplateRenderer.renderTemplate(model = dtoRenderModel)
+        val filepath = sourceType.basePathToGeneratedFiles()
+            .resolve(dtoRenderModel.dtoNestedPackageDirectory)
+            .resolve(dtoRenderModel.kotlinDtoFileName)
+
+        writeGeneratedContentToFile(
+            sourceType = sourceType,
+            model = dtoRenderModel,
+            content = content,
+            filepath = sourceType.basePathToGeneratedFiles().resolve(filepath)
+        )
+    }
+}
+
+private fun enumTypes(): List<EnumRenderModel> {
+    return listOf(
+        EnumRenderModel("WorkStatus", listOf("new", "inProgress", "finished")),
+        EnumRenderModel("Season", listOf("winter", "spring", "summer", "fall")),
+        EnumRenderModel("PaymentStatus", listOf("PENDING", "PAID", "REFUNDED")),
+    )
+}
+
+private fun <M> writeGeneratedContentToFile(
+    sourceType: SourceType,
+    model: M,
+    content: String,
+    filepath: Path
+) {
+    filepath.parent.createDirectories()
+    filepath.writeText(content)
+
+    if(PRINT_GENERATED_CONTENT) {
+        println(" ------------------------------------------------------------------------------------------------------------ ")
+        println(" $sourceType (Model: ${model}) ")
+        println(" $filepath ")
+        println(" ------------------------------------------------------------------------------------------------------------ ")
+        println(content)
+    }
+}
+
+private fun createDtoEntity(entityName: String): DtoEntityRenderModel {
+    val entityNameDecapitalized = entityName.replaceFirstChar { it.lowercase() }
+    return DtoEntityRenderModel(
+        entityName = entityName,
+        fields = listOf(
+            createDtoField("${entityNameDecapitalized}Key"),
+            createDtoField("${entityNameDecapitalized}Ean", type = "Int"),
+            createDtoField("${entityNameDecapitalized}Text"),
+            createDtoField("${entityNameDecapitalized}Description", isNullable = true),
+        )
+    )
+}
+
+private fun createDtoField(fieldName: String, type: String = "String", isNullable: Boolean = false): DtoFieldRenderModel {
+    return DtoFieldRenderModel(
+        fieldName = fieldName,
+        fieldTypeName = type,
+        isNullable = isNullable
+    )
 }
