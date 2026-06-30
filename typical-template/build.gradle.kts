@@ -22,6 +22,7 @@ tasks.named("build") {
 tasks.register("generateDocumentation") {
     dependsOn("generateCommandReferenceDocumentation")
     dependsOn("generateMainFunctionUsageDocumentation")
+    dependsOn("generateSupportedFileFormatsDocumentation")
 }
 
 tasks.register<JavaExec>("generateMainFunctionUsageDocumentation") {
@@ -47,6 +48,19 @@ tasks.register<JavaExec>("generateCommandReferenceDocumentation") {
 
     doFirst {
         standardOutput = commandReferenceMdFile.outputStream()
+    }
+}
+
+tasks.register<JavaExec>("generateSupportedFileFormatsDocumentation") {
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.codeblessing.typicaltemplate.documentation.SupportedFileFormatsMarkdownCreatorMainKt")
+
+    val supportedFileFormatsMdFile: File = rootProject.file("SUPPORTED-FILE-FORMATS.md")
+    outputs.file(supportedFileFormatsMdFile)
+
+    doFirst {
+        standardOutput = supportedFileFormatsMdFile.outputStream()
     }
 }
 
