@@ -42,7 +42,7 @@ private data class RendererDeclaration(
     val renderer: RendererWithBlackboxDefaultModel,
 )
 
-private const val PRINT_GENERATED_CONTENT = true
+private const val PRINT_GENERATED_CONTENT = false
 private val ALL_DEFAULT_RENDERERS = listOf(
     RendererDeclaration(sourceType = HTML, renderer = FancyRenderer),
     RendererDeclaration(sourceType = HTML, renderer = ForeachRenderer),
