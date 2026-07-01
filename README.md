@@ -143,8 +143,7 @@ object HtmlListPageRenderer {
 
 Notice how the tavnit commands in the HTML have been transferred into the template:
 
-- Every `@tt{{{ ... }}}@` comment is gone, and the whitespace around it has been cleaned up 
-  (see [WHITESPACE-HANDLING.md](WHITESPACE-HANDLING.md) for more about whitespace removal).
+- Every `@tt{{{ ... }}}@` comment is gone, and the [whitespace around](WHITESPACE-HANDLING.md) it has been cleaned up.
 - The `@replace-value-by-expression` scope turned the literal `News`/`news` text into model
   expressions.
 - The `@foreach` scope became a `joinToString` loop, repeating the single `<li>` line.
@@ -220,10 +219,11 @@ the [LICENSE](LICENSE) file.
 
 - The complete list of commands, their attributes, and their closing/auto-close behavior:
   [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)
-- Advanced topics like nesting, scopes and autoclosing : [ADVANCED-TOPICS.md](ADVANCED-TOPICS.md)
+- Nesting commands, command scopes and autoclosing : [NESTING-AND-SCOPE.md](NESTING-AND-SCOPE.md)
 - The exact whitespace rules and override commands: [WHITESPACE-HANDLING.md](WHITESPACE-HANDLING.md)
 - Running tavnit from the command line: [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)
 - All supported file formats and its comment formats: [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)
+- Technical internals and details : [TECHNICAL-INTERNALS.md](TECHNICAL-INTERNALS.md)
 - A full, runnable example project: the Gradle subproject
   [tavnit-blackbox-tests](tavnit-blackbox-tests)
 
