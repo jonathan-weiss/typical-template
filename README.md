@@ -143,7 +143,8 @@ object HtmlListPageRenderer {
 
 Notice how the tavnit commands in the HTML have been transferred into the template:
 
-- Every `@tt{{{ ... }}}@` comment is gone, and the whitespace around it has been cleaned up.
+- Every `@tt{{{ ... }}}@` comment is gone, and the whitespace around it has been cleaned up 
+  (see [WHITESPACE-HANDLING.md](WHITESPACE-HANDLING.md) for more about whitespace removal).
 - The `@replace-value-by-expression` scope turned the literal `News`/`news` text into model
   expressions.
 - The `@foreach` scope became a `joinToString` loop, repeating the single `<li>` line.
