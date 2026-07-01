@@ -165,8 +165,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project("org.codeblessing.tavnit:tavnit-api:0.0.18"))
-    runtimeOnly(project("org.codeblessing.tavnit:tavnit:0.0.18"))
+    implementation(project("org.codeblessing.tavnit:tavnit-api:0.0.19"))
+    runtimeOnly(project("org.codeblessing.tavnit:tavnit:0.0.19"))
 }
 // ...
 ```
