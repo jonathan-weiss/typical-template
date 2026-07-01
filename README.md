@@ -1,15 +1,15 @@
-# Typical-Template - Reverse Template Engine
+# Tavnit - Reverse Template Engine
 
-## What is typical-template?
+## What is tavnit?
 
-typical-template is a **reverse template engine** for Kotlin. Instead of writing a template
+tavnit is a **reverse template engine** for Kotlin. Instead of writing a template
 first and deriving real output from it, you do it the other way around:
 
 1. You write **real, working source code** — HTML, Kotlin, TypeScript, SCSS, XML, or anything
    else. The file stays valid and editable in its native tooling.
-2. You **annotate that source file with typical-template commands**, written *inside ordinary
+2. You **annotate that source file with tavnit commands**, written *inside ordinary
    source-code comments* (`<!-- ... -->`, `/* ... */`, `// ...`, depending on the language).
-3. You **run typical-template**. It reads those annotated files and **generates a Kotlin
+3. You **run tavnit**. It reads those annotated files and **generates a Kotlin
    renderer class** for each one — a class whose `renderTemplate(...)` function reproduces the
    file's content as a multiline string, with your dynamic parts (loops, conditions, value
    replacements) woven in.
@@ -20,29 +20,29 @@ The painful part of classic templating is keeping two things in sync by hand: th
 component (which you keep editing, restyling, refactoring) and the template that is supposed
 to reproduce it. Every change to the source forces a manual change to the template.
 
-typical-template removes that manual step. When your real source file changes, you simply
-**re-run typical-template** and the renderer class is regenerated. The source file is the
+tavnit removes that manual step. When your real source file changes, you simply
+**re-run tavnit** and the renderer class is regenerated. The source file is the
 single source of truth; the renderer is always derived from it.
 
 ```
-   edit real source file  ─────────────►  re-run typical-template  ─────────────►  renderer is up to date
+   edit real source file  ─────────────►  re-run tavnit  ─────────────►  renderer is up to date
    (HTML, Kotlin, SCSS…)                   (no manual editing of                    automatically
                                             the renderer needed)
 ```
 
 ### Two important boundaries
 
-- **Any file format that supports comments can be a source file.** typical-template does not
+- **Any file format that supports comments can be a source file.** tavnit does not
   care about the language — it only needs a comment syntax it can recognize so it can find the
   `@tt{{{ ... }}}@` command blocks inside the source code comment, e.g. 
   `<!-- @tt{{{ ... }}}@ -->` in HTML. (see [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)).
 
-- **typical-template only generates renderers — nothing more.** It is a tool whose single job
+- **tavnit only generates renderers — nothing more.** It is a tool whose single job
   is to turn an annotated source file into a Kotlin renderer class. It does **not** write
   output files for you, it does **not** create your model classes, and it does **not** run the
   renderers. Building the model, calling the renderer, and writing the produced string to disk
   are all *your* responsibility in *your* application. Keeping that boundary sharp is what keeps
-  typical-template small and predictable.
+  tavnit small and predictable.
 
 ---
 
@@ -51,13 +51,13 @@ single source of truth; the renderer is always derived from it.
 Write block comments (e.g. `/* ... */`, `<!-- ... -->`) or line comments (e.g. `// ...`) in your source file.
 Of course, the comment style depends on the language of the source file.
 All comments containing the magic brackets ```@tt{{{``` ... ```}}}@``` will be considered as syntax
-for typical template.
-Inside the magic brackets, write one or many typical-template commands. For a list of all command, look at the 
+for tavnit.
+Inside the magic brackets, write one or many tavnit commands. For a list of all command, look at the 
 [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md).
 
 ## Example
 
-Here is an example HTML source code file (the file is named ```news.html```) enriched with typical-template commands:
+Here is an example HTML source code file (the file is named ```news.html```) enriched with tavnit commands:
 
 ```html
 <html lang="en">
@@ -68,8 +68,8 @@ Here is an example HTML source code file (the file is named ```news.html```) enr
   @move-comment-backward
   
   @template-renderer 
-     [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.typicaltemplate.example.renderer" ]
-     [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.typicaltemplate.example.renderer.model" ]
+     [ templateRendererClassName="HtmlListPageRenderer" templateRendererPackageName="org.codeblessing.tavnit.example.renderer" ]
+     [ modelName="listPageModel" modelClassName="HtmlListModel" modelPackageName="org.codeblessing.tavnit.example.renderer.model" ]
   
   @replace-value-by-expression
     [ searchValue="News" replaceByExpression="listPageModel.pageTitle" ]
@@ -99,14 +99,14 @@ Here is an example HTML source code file (the file is named ```news.html```) enr
 </html>
 
 ```
-Based on that given HTML input, typical-template will generate a kotlin renderer like this:
+Based on that given HTML input, tavnit will generate a kotlin renderer like this:
 ```kotlin
 /*
- * This file is generated using typical-template.
+ * This file is generated using tavnit.
  */
-package org.codeblessing.typicaltemplate.example.renderer
+package org.codeblessing.tavnit.example.renderer
 
-import org.codeblessing.typicaltemplate.example.renderer.model.HtmlListModel
+import org.codeblessing.tavnit.example.renderer.model.HtmlListModel
 
 /**
  * Generate the content for the template `HtmlListPageRenderer`.
@@ -141,7 +141,7 @@ object HtmlListPageRenderer {
 }
 ```
 
-Notice how the typical template commands in the HTML have been transferred into the template:
+Notice how the tavnit commands in the HTML have been transferred into the template:
 
 - Every `@tt{{{ ... }}}@` comment is gone, and the whitespace around it has been cleaned up.
 - The `@replace-value-by-expression` scope turned the literal `News`/`news` text into model
@@ -151,11 +151,11 @@ Notice how the typical template commands in the HTML have been transferred into 
   raw `news.html` looked complete in a browser.
 
 You then use `HtmlListPageRenderer.renderTemplate(model)` in your own code to produce HTML.
-If your base source file change, you re-run typical template and the kotlin template renderer class will be updated/rewritten.
+If your base source file change, you re-run tavnit and the kotlin template renderer class will be updated/rewritten.
 
 ## Setup
 
-To let typical template generate the renderer classes, include the dependencies in your build (shown here for [Gradle](https://gradle.org/), 
+To let tavnit generate the renderer classes, include the dependencies in your build (shown here for [Gradle](https://gradle.org/), 
 but similar in [Maven](https://maven.apache.org/)):
 ```kotlin
 // ...
@@ -165,30 +165,30 @@ repositories {
 }
 
 dependencies {
-    implementation(project("org.codeblessing.typical-template:typical-template-api:0.0.18"))
-    runtimeOnly(project("org.codeblessing.typical-template:typical-template:0.0.18"))
+    implementation(project("org.codeblessing.tavnit:tavnit-api:0.0.18"))
+    runtimeOnly(project("org.codeblessing.tavnit:tavnit:0.0.18"))
 }
 // ...
 ```
 
-> Typical-template includes no additional external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
-> The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled.
+> Tavnit includes no additional external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
+> The API [tavnit-api](tavnit-api) and the implementation [tavnit](tavnit) are decoupled.
 
-Then, call the typical-template main method ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` (see [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)) or
-call typical-template directly with a code snippet like the following in your kotlin code:
+Then, call the tavnit main method ```org.codeblessing.tavnit.TavnitKt``` (see [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)) or
+call tavnit directly with a code snippet like the following in your kotlin code:
 ```kotlin
 
-import org.codeblessing.typicaltemplate.FileSearchLocation
-import org.codeblessing.typicaltemplate.TemplateRendererConfiguration
-import org.codeblessing.typicaltemplate.TemplatingConfiguration
-import org.codeblessing.typicaltemplate.TypicalTemplateApi
+import org.codeblessing.tavnit.FileSearchLocation
+import org.codeblessing.tavnit.TemplateRendererConfiguration
+import org.codeblessing.tavnit.TemplatingConfiguration
+import org.codeblessing.tavnit.TavnitApi
 
 // ...
 
-fun executeTypicalTemplateAndCreateRenderers() {
+fun executeTavnitAndCreateRenderers() {
     val config = TemplatingConfiguration(
         // a list, where to search for your real source code like Kotlin files or HTML files 
-        // that are enriched with typical template commands
+        // that are enriched with tavnit commands
         fileSearchLocations = listOf(
             FileSearchLocation(
                 rootDirectoryToSearch = "/Users/thatsme/myproject/src/main/kotlin",
@@ -204,11 +204,11 @@ fun executeTypicalTemplateAndCreateRenderers() {
             templateRendererTargetSourceBasePath = "/Users/thatsme/myproject/src/generated/kotlin",
         ),
     )
-    TypicalTemplateApi.runTypicalTemplate(listOf(config))    
+    TavnitApi.runTavnit(listOf(config))    
 }
 
 ```
-When the function ``executeTypicalTemplateAndCreateRenderers`` is called, typical template will search for templates and create appropriate template renderers.
+When the function ``executeTavnitAndCreateRenderers`` is called, tavnit will search for templates and create appropriate template renderers.
 
 ## License
 
@@ -221,8 +221,8 @@ the [LICENSE](LICENSE) file.
   [COMMAND-REFERENCE.md](COMMAND-REFERENCE.md)
 - Advanced topics like nesting, scopes and autoclosing : [ADVANCED-TOPICS.md](ADVANCED-TOPICS.md)
 - The exact whitespace rules and override commands: [WHITESPACE-HANDLING.md](WHITESPACE-HANDLING.md)
-- Running typical-template from the command line: [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)
+- Running tavnit from the command line: [MAIN-FUNCTION-USAGE.md](MAIN-FUNCTION-USAGE.md)
 - All supported file formats and its comment formats: [SUPPORTED-FILE-FORMATS.md](SUPPORTED-FILE-FORMATS.md)
 - A full, runnable example project: the Gradle subproject
-  [typical-template-blackbox-tests](typical-template-blackbox-tests)
+  [tavnit-blackbox-tests](tavnit-blackbox-tests)
 

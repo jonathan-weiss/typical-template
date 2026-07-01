@@ -1,9 +1,9 @@
 # Main function usage
 
-Call the main function ```org.codeblessing.typicaltemplate.TypicalTemplateKt``` with the following parameter:
+Call the main function ```org.codeblessing.tavnit.TavnitKt``` with the following parameter:
 
 ```
-Usage: <typical-template> --template-renderer <path> --search <path>:<pattern> [--search <path>:<pattern> ...]
+Usage: <tavnit> --template-renderer <path> --search <path>:<pattern> [--search <path>:<pattern> ...]
 
 Options:
   --template-renderer <path>   Target base directory for generated renderer classes (required)
@@ -11,11 +11,11 @@ Options:
   --help                       Show this help message
 
 Examples:
-  <typical-template> --template-renderer ./src/generated --search ./src/main/kotlin:*.kt
-  <typical-template> --template-renderer ./src/generated --search ./src/main/kotlin:*.kt --search ./src/main/resources:*.html
+  <tavnit> --template-renderer ./src/generated --search ./src/main/kotlin:*.kt
+  <tavnit> --template-renderer ./src/generated --search ./src/main/kotlin:*.kt --search ./src/main/resources:*.html
   
-Where <typical-template> is:    
-    java -cp ./typical-template-api.jar:./typical-template.jar:$KOTLIN_HOME/lib/kotlin-stdlib.jar org.codeblessing.typicaltemplate.TypicalTemplateKt
+Where <tavnit> is:    
+    java -cp ./tavnit-api.jar:./tavnit.jar:$KOTLIN_HOME/lib/kotlin-stdlib.jar org.codeblessing.tavnit.TavnitKt
 or 
-    kotlin -classpath ./typical-template-api.jar:./typical-template.jar org.codeblessing.typicaltemplate.TypicalTemplateKt
+    kotlin -classpath ./tavnit-api.jar:./tavnit.jar org.codeblessing.tavnit.TavnitKt
 ```

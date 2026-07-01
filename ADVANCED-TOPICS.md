@@ -1,16 +1,16 @@
 # Advanced Topics
 
-This document explains how **typical-template** works conceptually: what it does, how it
+This document explains how **tavnit** works conceptually: what it does, how it
 treats your source files internally, and how its commands nest, scope, and finally
 disappear from the generated output.
 
 ## 1. How a file is decomposed internally
 
-To understand how commands behave, it helps to see how typical-template *reads* a file.
+To understand how commands behave, it helps to see how tavnit *reads* a file.
 
 Internally, a source file is **tokenized into a flat chain of two kinds of parts**:
 
-- **Plain text** — everything that is *not* a typical-template command block. Crucially, this
+- **Plain text** — everything that is *not* a tavnit command block. Crucially, this
   includes ordinary comments. A normal `<!-- a real comment -->` that does **not** contain the
   magic `@tt{{{ ... }}}@` brackets is treated as plain text like any other character in the
   file.
@@ -27,7 +27,7 @@ Take this small HTML source fragment:
 </ul>
 ```
 
-typical-template tokenizes it into an alternating chain of plain-text and template-comment
+tavnit tokenizes it into an alternating chain of plain-text and template-comment
 parts:
 
 ```
@@ -48,7 +48,7 @@ The key mental model:
   *how* to treat the plain-text parts around them, and they are deleted from the final output
   (see [section 4](#4-how-template-comments-disappear-from-the-output)).
 
-A file that contains **no** template comments at all is ignored entirely — typical-template
+A file that contains **no** template comments at all is ignored entirely — tavnit
 generates nothing for it.
 
 ### How the chain is processed
@@ -99,7 +99,7 @@ A scope-opening command is closed in one of two ways:
    `@end-template-renderer`). Some have aliases — `@fi` closes `@if`.
 2. **By auto-close**, for commands that support it. `@template-renderer`,
    `@replace-value-by-expression`, `@replace-value-by-value`, and `@ignore-text` may have their
-   `@end-…` omitted; typical-template closes them automatically. Auto-closing is triggered when
+   `@end-…` omitted; tavnit closes them automatically. Auto-closing is triggered when
    an enclosing scope closes, or at the end of the file. (`@if` and `@foreach` do **not**
    support auto-close — they must be closed explicitly.)
 
@@ -111,7 +111,7 @@ closing command.
 ### Nesting and how scopes stack
 
 Commands nest like brackets: a scope opened later must be closed before a scope opened earlier.
-typical-template tracks open scopes on a stack. When a closing command appears, it must match
+tavnit tracks open scopes on a stack. When a closing command appears, it must match
 the **most recently opened** scope, otherwise parsing fails with a clear error.
 
 ```
@@ -157,7 +157,7 @@ and is left open will instead raise an `UNCLOSED_OPENING_COMMAND` error.
 ### Directly-nested commands
 
 A few commands must sit **directly inside** a specific parent. `@else` and `@else-if` must be
-directly nested in an `@if`. typical-template validates this and rejects a misplaced `@else`.
+directly nested in an `@if`. tavnit validates this and rejects a misplaced `@else`.
 
 ### Nested template renderers are independent
 
@@ -169,6 +169,6 @@ apply to it. Each renderer class stands on its own.
 # 3. Varia
 
 * No external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
-* The API [typical-template-api](typical-template-api) and the implementation [typical-template](typical-template) are decoupled via ServiceLoader (see ``META-INF/services/`` in the typical-template module).
-* All supported comment styles are defined in a [configuration file](typical-template/src/main/resources/typical-template-config.properties)
-  that can be extended/overwritten by providing a resource file ```typical-template-config-overwrite.properties``` in your JVM.
+* The API [tavnit-api](tavnit-api) and the implementation [tavnit](tavnit) are decoupled via ServiceLoader (see ``META-INF/services/`` in the tavnit module).
+* All supported comment styles are defined in a [configuration file](tavnit/src/main/resources/tavnit-config.properties)
+  that can be extended/overwritten by providing a resource file ```tavnit-config-overwrite.properties``` in your JVM.

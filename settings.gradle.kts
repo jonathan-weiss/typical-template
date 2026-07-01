@@ -1,4 +1,4 @@
-rootProject.name = "typical-template"
+rootProject.name = "tavnit"
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -14,9 +14,9 @@ dependencyResolutionManagement {
 }
 
 
-include("typical-template")
-include("typical-template-api")
-include("typical-template-blackbox-tests:blackbox-tests")
-include("typical-template-blackbox-tests:template-renderer-creator")
-include("typical-template-blackbox-tests:template-renderer-executor")
-include("typical-template-blackbox-tests:example-business-project")
+include("tavnit")
+include("tavnit-api")
+include("tavnit-blackbox-tests:blackbox-tests")
+include("tavnit-blackbox-tests:template-renderer-creator")
+include("tavnit-blackbox-tests:template-renderer-executor")
+include("tavnit-blackbox-tests:example-business-project")

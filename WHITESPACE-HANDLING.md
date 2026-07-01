@@ -1,7 +1,7 @@
 # Whitespace Handling - How template comments disappear from the output
 
 Template comments are instructions, not content — so the generated renderer must never print
-them. typical-template guarantees this in two steps.
+them. tavnit guarantees this in two steps.
 
 ## Step 1 — the comment itself is always removed
 
@@ -16,13 +16,13 @@ What the comment *does* (open a scope, replace a value, …) is applied to the s
 text; what the comment *looks like* never appears.
 
 > Note: this only applies to comments that actually contain `@tt{{{ ... }}}@`. A plain comment
-> with no typical-template instructions is just plain text and is reproduced verbatim in the
+> with no tavnit instructions is just plain text and is reproduced verbatim in the
 > output.
 
 ## Step 2 — the whitespace around the comment is cleaned up
 
 If only the comment text vanished but its surrounding indentation and line break stayed, the
-output would be littered with blank, indented lines and stray spaces. So typical-template also
+output would be littered with blank, indented lines and stray spaces. So tavnit also
 trims the whitespace **directly around** each comment, looking only at the text on the
 comment's own line — what comes before it (up to the start of the line) and after it (up to the
 end of the line).

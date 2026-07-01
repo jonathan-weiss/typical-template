@@ -568,7 +568,7 @@ Adds one or more imports to the generated template renderer class. Each repeatin
 
 Once a symbol is imported, it can be referenced by its short name in any expression (e.g. in ```if``` conditions, ```foreach``` iterables or ```replace-value-by-expression``` expressions). This lets you keep those expressions short and readable instead of repeating the fully qualified name (e.g. write ```DayOfWeek.WEDNESDAY``` instead of ```java.time.DayOfWeek.WEDNESDAY```).
 
-Imports are added to the renderer class header in addition to the imports typical-template derives automatically (model classes, the renderer interface and rendered sub-templates). Duplicate imports are removed.
+Imports are added to the renderer class header in addition to the imports tavnit derives automatically (model classes, the renderer interface and rendered sub-templates). Duplicate imports are removed.
 
 Varia:
 * This command stands for itself and does not need to be closed by another command.
@@ -696,7 +696,7 @@ Aliases: ```@rbb``` (can be used in place of ```@remove-blanks-before-comment```
 
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
-This is useful if you don't want to have dangling spaces/indents in your template output if the typical template comments itself have to follow some indentation rules (e.g. by your linter).
+This is useful if you don't want to have dangling spaces/indents in your template output if the tavnit comments itself have to follow some indentation rules (e.g. by your linter).
 
 Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its line) and directly after it (up to the end of its line) and distinguishes four cases. (1) Non-blank text before the comment and only blanks (then the line break) after it: everything before the comment is kept except the blanks between the last non-blank and the comment, which are removed; the blanks after it are removed too but the line break is kept. (2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself disappears. (3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the blanks before it are removed (the preceding line break is kept) and the blanks together with the trailing line break after it are removed, collapsing the whole comment line. (4) Any other case (non-blank text on both sides): nothing is removed. The before side and the after side are decided independently: a remove-blanks command overrides the default decision only for its own side and never affects the other side (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment still lets the default handling remove the blanks and the line break after it). A command that requests the same thing as the default decision is simply a no-op.
 
@@ -718,7 +718,7 @@ Aliases: ```@rba``` (can be used in place of ```@remove-blanks-after-comment```)
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part. Stops before the line-ending; the line-ending itself is kept.
 
-This is useful if you don't want to have dangling spaces/indents in your template output if the typical template comments itself have to follow some indentation rules (e.g. by your linter).
+This is useful if you don't want to have dangling spaces/indents in your template output if the tavnit comments itself have to follow some indentation rules (e.g. by your linter).
 
 Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its line) and directly after it (up to the end of its line) and distinguishes four cases. (1) Non-blank text before the comment and only blanks (then the line break) after it: everything before the comment is kept except the blanks between the last non-blank and the comment, which are removed; the blanks after it are removed too but the line break is kept. (2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself disappears. (3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the blanks before it are removed (the preceding line break is kept) and the blanks together with the trailing line break after it are removed, collapsing the whole comment line. (4) Any other case (non-blank text on both sides): nothing is removed. The before side and the after side are decided independently: a remove-blanks command overrides the default decision only for its own side and never affects the other side (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment still lets the default handling remove the blanks and the line break after it). A command that requests the same thing as the default decision is simply a no-op.
 
@@ -740,7 +740,7 @@ Aliases: ```@rlb``` (can be used in place of ```@remove-blanks-and-linebreak-bef
 
 Removes the consecutive blanks (spaces and tabs) directly preceding the comment from the neighboring text part, including the immediately adjacent line-ending.
 
-This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
+This is useful if you don't want to have empty lines in your template output due to the tavnits comments.
 
 Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its line) and directly after it (up to the end of its line) and distinguishes four cases. (1) Non-blank text before the comment and only blanks (then the line break) after it: everything before the comment is kept except the blanks between the last non-blank and the comment, which are removed; the blanks after it are removed too but the line break is kept. (2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself disappears. (3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the blanks before it are removed (the preceding line break is kept) and the blanks together with the trailing line break after it are removed, collapsing the whole comment line. (4) Any other case (non-blank text on both sides): nothing is removed. The before side and the after side are decided independently: a remove-blanks command overrides the default decision only for its own side and never affects the other side (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment still lets the default handling remove the blanks and the line break after it). A command that requests the same thing as the default decision is simply a no-op.
 
@@ -762,7 +762,7 @@ Aliases: ```@rla``` (can be used in place of ```@remove-blanks-and-linebreak-aft
 
 Removes the consecutive blanks (spaces and tabs) directly following the comment from the neighboring text part, including the immediately adjacent line-ending.
 
-This is useful if you don't want to have empty lines in your template output due to the typical templates comments.
+This is useful if you don't want to have empty lines in your template output due to the tavnits comments.
 
 Note on the default behaviour: it looks only at the text directly before the comment (up to the start of its line) and directly after it (up to the end of its line) and distinguishes four cases. (1) Non-blank text before the comment and only blanks (then the line break) after it: everything before the comment is kept except the blanks between the last non-blank and the comment, which are removed; the blanks after it are removed too but the line break is kept. (2) Only blanks before the comment and non-blank text after it: nothing is removed; only the comment itself disappears. (3) Only blanks before the comment and only blanks after it (the comment stands alone on its line): the blanks before it are removed (the preceding line break is kept) and the blanks together with the trailing line break after it are removed, collapsing the whole comment line. (4) Any other case (non-blank text on both sides): nothing is removed. The before side and the after side are decided independently: a remove-blanks command overrides the default decision only for its own side and never affects the other side (e.g. using only ```@remove-blanks-before-comment``` on an otherwise stand-alone comment still lets the default handling remove the blanks and the line break after it). A command that requests the same thing as the default decision is simply a no-op.
 

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**typical-template** is a reverse template engine for Kotlin. It parses real source files (HTML, Kotlin, TypeScript, SCSS) annotated with special comment-based commands (`@tt{{{ ... }}}@`) and generates Kotlin renderer classes that produce output using multiline string templates.
+**tavnit** is a reverse template engine for Kotlin. It parses real source files (HTML, Kotlin, TypeScript, SCSS) annotated with special comment-based commands (`@tt{{{ ... }}}@`) and generates Kotlin renderer classes that produce output using multiline string templates.
 
 ## Guidelines
 
@@ -21,6 +21,6 @@
 
 ## Key Conventions
 
-- The API and implementation are decoupled via `ServiceLoader` (see `META-INF/services/` in the typical-template module).
+- The API and implementation are decoupled via `ServiceLoader` (see `META-INF/services/` in the tavnit module).
 - No external runtime dependencies beyond Kotlin stdlib — pure Kotlin implementation.
 

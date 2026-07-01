@@ -1,6 +1,6 @@
 # Supported file formats
 
-typical-template recognizes the template commands (```@tt{{{ ... }}}@```) inside the comments of the
+tavnit recognizes the template commands (```@tt{{{ ... }}}@```) inside the comments of the
 processed source files. Which comment syntax is understood depends on the file extension.
 
 The following table lists every file extension that is configured out of the box together with the
@@ -8,9 +8,9 @@ comment formats that are supported for it. A file format can support several com
 case any of them can be used to host the template commands.
 
 Supported comment styles are defined in a classpath resource file 
-[typical-template-config.properties](typical-template/src/main/resources/typical-template-config.properties)
+[tavnit-config.properties](tavnit/src/main/resources/tavnit-config.properties)
 and can be extended by provide an individual 
-classpath resource `/typical-template-config-overwrite.properties`.
+classpath resource `/tavnit-config-overwrite.properties`.
 
 
 | File Extension | Supported Comment Format |
